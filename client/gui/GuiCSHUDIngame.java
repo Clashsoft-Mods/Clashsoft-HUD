@@ -1,5 +1,7 @@
 package clashsoft.mods.cshud.client.gui;
 
+import static clashsoft.mods.cshud.CSHUDMod.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,7 +28,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -34,15 +35,13 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 public class GuiCSHUDIngame extends GuiIngameForge
 {
-	public static ResourceLocation	inventoryBackground	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
-	
 	public final Minecraft			mc;
 	
-	public int						lastItemPickupTime	= 0;
-	public List<ItemPickup>			itemPickups			= new ArrayList();
+	public int						lastItemPickupTime				= 0;
+	public List<ItemPickup>			itemPickups						= new ArrayList();
 	
-	public int						width				= 0;
-	public int						height				= 0;
+	public int						width							= 0;
+	public int						height							= 0;
 	
 	public GuiCSHUDIngame(Minecraft mc)
 	{
@@ -55,7 +54,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	{
 		Iterator<ItemPickup> iterator = itemPickups.iterator();
 		
-		if (lastItemPickupTime < 120)
+		if (lastItemPickupTime < maxPickupTime + 20)
 		{
 			lastItemPickupTime++;
 		}
@@ -65,7 +64,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			ItemPickup itemPickup = iterator.next();
 			itemPickup.time++;
 			
-			if (itemPickup.time > 120)
+			if (itemPickup.time > maxPickupTime + 20)
 			{
 				iterator.remove();
 			}
@@ -104,7 +103,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			this.renderCurrentObject();
 			this.renderPickups();
 			this.renderActivePotionEffects();
-		}		
+		}
 	}
 	
 	public void renderActivePotionEffects()
@@ -116,19 +115,69 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			List<PotionEffect> potionEffects = new ArrayList(activeEffects);
 			for (int i = 0; i < potionEffects.size(); i++)
 			{
-				this.drawPotionEffect(0, i * 17, potionEffects.get(i));
+				this.drawPotionEffect(0, i * pickupBoxHeight, potionEffects.get(i));
 			}
 		}
 	}
 	
 	public void drawPotionEffect(int x, int y, PotionEffect potionEffect)
 	{
-		Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 		String s = String.format("%s %s (%s)", I18n.getString(potionEffect.getEffectName()), CSString.convertToRoman(potionEffect.getAmplifier() + 1), Potion.getDurationString(potionEffect));
+		int color = this.getPotionEffectColor(potionEffect);
+		this.drawHoveringFrameAtPos(x, y, this.mc.fontRenderer.getStringWidth(s) + 10, potionEffectBoxHeight, color);
 		
-		this.drawHoveringFrameAtPos(x, y, this.mc.fontRenderer.getStringWidth(s) + 10, 17, !potionEffect.getIsAmbient() ? (potion != null ? (potion.getIsBadEffect() ? 0xFF0000 : 0x00FF00) : 0xFFFFFF) : 0x0081FF);
+		this.mc.fontRenderer.drawStringWithShadow(s, x + 5, y + 5, potionUseColorForText ? color : 0xFFFFFF);
+	}
+	
+	protected int getPotionEffectColor(PotionEffect potionEffect)
+	{
+		if (potionEffect != null)
+		{
+			if (potionEffect.getIsAmbient())
+			{
+				return potionAmbientEffectColor;
+			}
+			else
+			{
+				Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
+				if (potion != null)
+				{
+					return potion.getIsBadEffect() ? potionBadEffectColor : potionGoodEffectColor;
+				}
+			}
+		}
+		return potionNoEffectColor;
+	}
+	
+	public void renderPickups()
+	{
+		int l = (this.lastItemPickupTime < pickupBoxHeight ? this.lastItemPickupTime : pickupBoxHeight);
 		
-		this.mc.fontRenderer.drawStringWithShadow(s, x + 5, y + 5, 0xFFFFFF);
+		for (int i = 0;; i++)
+		{
+			// Avoid ConcurrentModificationException
+			if (i < this.itemPickups.size())
+			{
+				ItemPickup itemPickup = this.itemPickups.get(i);
+				int k = (itemPickup.time > maxPickupTime ? itemPickup.time - maxPickupTime : 0) * 8;
+				
+				this.drawItemPickup(this.width + k, ((i - 1) * pickupBoxHeight) + l, itemPickup);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	
+	public void drawItemPickup(int x, int y, ItemPickup itemPickup)
+	{
+		ItemStack stack = itemPickup.stack;
+		String s = stack.stackSize == 1 ? stack.getDisplayName() : String.format("%s (%d)", stack.getDisplayName(), stack.stackSize);
+		int width = this.mc.fontRenderer.getStringWidth(s) + 10;
+		
+		this.drawHoveringFrameAtPos(x - width, y, width, pickupBoxHeight, pickupBoxColor);
+		this.mc.fontRenderer.drawString(s, x - width + 5, y + 5, pickupTextColor);
 	}
 	
 	public void renderCurrentObject()
@@ -139,9 +188,9 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			boolean isEntity = mop.typeOfHit == EnumMovingObjectType.ENTITY;
 			
 			String renderName = "";
-			int width = 20;
-			int height = 20;
-			int color = 0xFFFFFF;
+			int width = 0;
+			int height = 0;
+			int color = 0;
 			int x0 = 0;
 			int y0 = 0;
 			int x1 = 0;
@@ -173,15 +222,19 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				
 				if (entity.isCreatureType(EnumCreatureType.monster, false))
 				{
-					color = 0xFF0000;
+					color = currentObjMonsterEntityColor;
 				}
 				else if (entity.isCreatureType(EnumCreatureType.waterCreature, false))
 				{
-					color = 0x00FFFF;
+					color = currentObjWaterEntityColor;
 				}
 				else if (entity.isCreatureType(EnumCreatureType.creature, false))
 				{
-					color = 0x00FF00;
+					color = currentObjAnimalEntityColor;
+				}
+				else
+				{
+					color = currentObjOtherEntityColor;
 				}
 			}
 			else
@@ -192,7 +245,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				stack = Block.blocksList[blockID].getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 				if (stack == null)
 				{
-				stack = new ItemStack(blockID, 1, metadata);
+					stack = new ItemStack(blockID, 1, metadata);
 				}
 				
 				renderName = stack.getDisplayName();
@@ -200,6 +253,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				height = 24;
 				x1 = 24;
 				y1 = 8;
+				
+				color = currentObjBlockColor;
 			}
 			
 			x0 = ((this.width - width) / 2);
@@ -221,7 +276,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				RenderHelper.disableStandardItemLighting();
 			}
 			
-			this.drawString(this.mc.fontRenderer, renderName, x0 + x1, y0 + y1, 0xFFFFFF);
+			this.drawString(this.mc.fontRenderer, renderName, x0 + x1, y0 + y1, currentObjUseColorForText ? color : 0xFFFFFF);
 		}
 	}
 	
@@ -252,38 +307,6 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-	}
-	
-	public void renderPickups()
-	{
-		int i1 = 17;
-		int l = (this.lastItemPickupTime < i1 ? this.lastItemPickupTime : i1);
-		
-		for (int i = 0;; i++)
-		{
-			// Avoid ConcurrentModificationException
-			if (i < this.itemPickups.size())
-			{
-				ItemPickup itemPickup = this.itemPickups.get(i);
-				int k = (itemPickup.time > 100 ? itemPickup.time - 100 : 0) * 12;
-				
-				this.drawItemPickup(this.width + k, (i * i1) - i1 + l, itemPickup);
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-	
-	public void drawItemPickup(int x, int y, ItemPickup itemPickup)
-	{
-		ItemStack stack = itemPickup.stack;
-		String s = stack.stackSize == 1 ? stack.getDisplayName() : String.format("%s (%d)", stack.getDisplayName(), stack.stackSize);
-		int width = this.mc.fontRenderer.getStringWidth(s) + 10;
-		
-		this.drawHoveringFrameAtPos(x - width, y, width, 17, 0xA4A4A4);
-		this.mc.fontRenderer.drawString(s, x - width + 5, y + 5, 0xFFFFFF);
 	}
 	
 	public void drawHoveringText(List<String> list, int x, int y, FontRenderer fontrenderer)
@@ -326,7 +349,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				y1 = this.height - height - 6;
 			}
 			
-			this.drawHoveringFrame(x1, y1, width, height, 0x5000FF);
+			this.drawHoveringFrame(x1, y1, width, height, hoveringFrameDefaultColor);
 			
 			for (int i = 0; i < list.size(); ++i)
 			{
@@ -356,7 +379,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
-		int l1 = -267386864;
+		int l1 = hoveringFrameBackgroundColor;
 		this.drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, l1, l1);
 		this.drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, l1, l1);
 		this.drawGradientRect(x - 3, y - 3, x + width + 3, y + height + 3, l1, l1);
