@@ -35,6 +35,7 @@ public class CSHUDMod
 	public static int				pickupTextColor					= 0xFFFFFF;
 	
 	public static boolean			potionUseColorForText			= true;
+	public static int				potionEffectDisplayMode			= 0b111;
 	public static int				potionEffectBoxHeight			= 17;
 	public static int				potionGoodEffectColor			= 0x00FF00;
 	public static int				potionBadEffectColor			= 0xFF0000;

@@ -16,7 +16,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -29,6 +28,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -36,13 +36,15 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 public class GuiCSHUDIngame extends GuiIngameForge
 {
-	public final Minecraft			mc;
+	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
 	
-	public int						lastItemPickupTime				= 0;
-	public List<ItemPickup>			itemPickups						= new ArrayList();
+	public final Minecraft					mc;
 	
-	public int						width							= 0;
-	public int						height							= 0;
+	public int								lastItemPickupTime	= 0;
+	public List<ItemPickup>					itemPickups			= new ArrayList();
+	
+	public int								width				= 0;
+	public int								height				= 0;
 	
 	public GuiCSHUDIngame(Minecraft mc)
 	{
@@ -101,9 +103,14 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		
 		if (this.mc.inGameHasFocus)
 		{
-			this.renderCurrentObject();
+			GL11.glPushMatrix();
+			
+			GL11.glColor4f(1F, 1F, 1F, 1F);
 			this.renderPickups();
 			this.renderActivePotionEffects();
+			this.renderCurrentObject();
+			
+			GL11.glPopMatrix();
 		}
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -117,71 +124,124 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		if (!activeEffects.isEmpty())
 		{
 			List<PotionEffect> potionEffects = new ArrayList(activeEffects);
-			for (int i = 0; i < potionEffects.size(); i++)
+			for (int i = 0, j = 0; i < potionEffects.size() && j < this.height; i++)
 			{
-				this.drawPotionEffect(0, i * pickupBoxHeight, potionEffects.get(i));
+				j += this.drawPotionEffect(0, j, potionEffects.get(i));
 			}
 		}
 	}
 	
-	public void drawPotionEffect(int x, int y, PotionEffect potionEffect)
+	public int drawPotionEffect(int x, int y, PotionEffect potionEffect)
 	{
-		String s = String.format("%s %s (%s)", I18n.getString(potionEffect.getEffectName()), CSString.convertToRoman(potionEffect.getAmplifier() + 1), Potion.getDurationString(potionEffect));
-		int color = this.getPotionEffectColor(potionEffect);
-		this.drawHoveringFrameAtPos(x, y, this.mc.fontRenderer.getStringWidth(s) + 10, potionEffectBoxHeight, color);
+		Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 		
-		this.mc.fontRenderer.drawStringWithShadow(s, x + 5, y + 5, potionUseColorForText ? color : 0xFFFFFF);
+		int mode = potionEffectDisplayMode;
+		boolean renderIcon = (mode & 1) != 0;
+		boolean renderDuration = (mode & 2) != 0;
+		boolean renderAmplifier = (mode & 4) != 0;
+		int color = this.getPotionEffectColor(potion, potionEffect.getIsAmbient());
+		int textColor = potionUseColorForText ? color : 0xFFFFFF;
+		
+		if (!renderIcon)
+		{
+			String s = getPotionEffectDisplayString(potionEffect, renderDuration, renderAmplifier);
+			
+			this.drawHoveringFrameAtPos(x, y, Math.max(80, this.mc.fontRenderer.getStringWidth(s) + 10), potionEffectBoxHeight, color);
+			
+			this.mc.fontRenderer.drawStringWithShadow(s, x + 5, y + 5, textColor);
+			return potionEffectBoxHeight;
+		}
+		else
+		{
+			this.drawHoveringFrameAtPos(x, y, 28, 28, color);
+			
+			if (potion.hasStatusIcon())
+			{
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+				this.mc.renderEngine.bindTexture(inventoryTexture);
+				int l = potion.getStatusIconIndex();
+				this.drawTexturedModalRect(x + 5, y + 5, 0 + l % 8 * 18, 198 + l / 8 * 18, 18, 18);
+			}
+			
+			if (renderAmplifier && potionEffect.getAmplifier() > 0)
+			{
+				this.mc.fontRenderer.drawStringWithShadow(CSString.convertToRoman(potionEffect.getAmplifier() + 1), x + 3, y + 3, textColor);
+			}
+			if (renderDuration)
+			{
+				String duration = Potion.getDurationString(potionEffect);
+				int width = this.mc.fontRenderer.getStringWidth(duration);
+				
+				this.mc.fontRenderer.drawStringWithShadow(duration, x + 26 - width, y + 18, 0xFFFFFF);
+			}
+			
+			return 28;
+		}
 	}
 	
-	protected int getPotionEffectColor(PotionEffect potionEffect)
+	protected String getPotionEffectDisplayString(PotionEffect potionEffect, boolean duration, boolean amplifier)
 	{
-		if (potionEffect != null)
+		String effectName = I18n.getString(potionEffect.getEffectName());
+		if (amplifier && duration)
 		{
-			if (potionEffect.getIsAmbient())
-			{
-				return potionAmbientEffectColor;
-			}
-			else
-			{
-				Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
-				if (potion != null)
-				{
-					return potion.getIsBadEffect() ? potionBadEffectColor : potionGoodEffectColor;
-				}
-			}
+			return String.format("%s %s (%s)", effectName, CSString.convertToRoman(potionEffect.getAmplifier() + 1), Potion.getDurationString(potionEffect));
 		}
-		return potionNoEffectColor;
+		else if (amplifier)
+		{
+			return String.format("%s %s", effectName, CSString.convertToRoman(potionEffect.getAmplifier() + 1));
+		}
+		else
+		{
+			return String.format("%s (%s)", effectName, Potion.getDurationString(potionEffect));
+		}
+	}
+	
+	protected int getPotionEffectColor(Potion potion, boolean isAmbient)
+	{
+		if (isAmbient)
+		{
+			return potionAmbientEffectColor;
+		}
+		else if (potion != null)
+		{
+			return potion.getIsBadEffect() ? potionBadEffectColor : potionGoodEffectColor;
+		}
+		else
+		{
+			return potionNoEffectColor;
+		}
 	}
 	
 	public void renderPickups()
 	{
-		int l = (this.lastItemPickupTime < pickupBoxHeight ? this.lastItemPickupTime : pickupBoxHeight);
+		int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
 		
-		for (int i = 0;; i++)
+		for (int i = 0, j = 0; i < this.itemPickups.size() && j < this.height; i++)
 		{
-			// Avoid ConcurrentModificationException
-			if (i < this.itemPickups.size())
-			{
-				ItemPickup itemPickup = this.itemPickups.get(i);
-				int k = (itemPickup.time > maxPickupTime ? itemPickup.time - maxPickupTime : 0) * 8;
-				
-				this.drawItemPickup(this.width + k, ((i - 1) * pickupBoxHeight) + l, itemPickup);
-			}
-			else
-			{
-				break;
-			}
+			ItemPickup itemPickup = this.itemPickups.get(i);
+			
+			j += this.drawItemPickup(this.width, j - l, itemPickup);
 		}
 	}
 	
-	public void drawItemPickup(int x, int y, ItemPickup itemPickup)
+	public int drawItemPickup(int x, int y, ItemPickup itemPickup)
 	{
 		ItemStack stack = itemPickup.stack;
+		
 		String s = stack.stackSize == 1 ? stack.getDisplayName() : String.format("%s (%d)", stack.getDisplayName(), stack.stackSize);
-		int width = this.mc.fontRenderer.getStringWidth(s) + 10;
+		int width = Math.max(80, this.mc.fontRenderer.getStringWidth(s) + 10);
+		
+		if (itemPickup.time > maxPickupTime)
+		{
+			float f = width / 20F;
+			int i = itemPickup.time - maxPickupTime;
+			x += i * f;
+		}
 		
 		this.drawHoveringFrameAtPos(x - width, y, width, pickupBoxHeight, pickupBoxColor);
 		this.mc.fontRenderer.drawString(s, x - width + 5, y + 5, pickupTextColor);
+		
+		return pickupBoxHeight;
 	}
 	
 	public void renderCurrentObject()
@@ -210,19 +270,19 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				int width1;
 				if (aabb != null)
 				{
-					width1 = (int) Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ);
-					height = (int) (aabb.maxY - aabb.minY);
+					height = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
+					width1 = (int) (Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ));
 				}
 				else
 				{
-					width1 = 40;
-					height = (int) (entity.height * 16);
+					height = (int) (Math.max(entity.height, entity.getEyeHeight() + 0.5F) * 16);
+					width1 = height + 16;
 				}
 				
 				width = width1 + this.mc.fontRenderer.getStringWidth(renderName);
 				height += 8;
 				x1 = width1 - 4;
-				y1 = 10;
+				y1 = 8;
 				
 				if (entity.isCreatureType(EnumCreatureType.monster, false))
 				{
@@ -270,13 +330,22 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			
 			if (isEntity)
 			{
-				this.renderEntity(mop.entityHit, x0 + 16, y0 + height - 4, 16);
+				GL11.glPushMatrix();
+				this.renderEntity(mop.entityHit, x0 + (x1 / 2), y0 + height - 4, 16);
+				GL11.glPopMatrix();
 			}
 			else
 			{
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				RenderHelper.enableGUIStandardItemLighting();
-				new RenderItem().renderItemIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, stack, x0 + 4, y0 + ((height - 16) / 2), true);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				
+				RenderItem itemRenderer = new RenderItem();
+				int x2 = x0 + 4;
+				int y2 = y0 + y1 - 4;
+				
+				itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, y2);
+				itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, x2, null);
+				
 				RenderHelper.disableStandardItemLighting();
 			}
 			
@@ -286,31 +355,25 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	
 	public void renderEntity(Entity par5EntityLivingBase, int x, int y, float scale)
 	{
+		GL11.glPushMatrix();
+		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		
-		GL11.glPushMatrix();
-		
 		GL11.glTranslatef((float) x, (float) y, 50.0F);
-		GL11.glScalef(-scale, scale, scale);
 		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+		GL11.glScalef(scale, scale, scale);
 		
-		GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
-		RenderHelper.enableStandardItemLighting();
-		GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+		RenderHelper.enableGUIStandardItemLighting();
 		
 		GL11.glTranslatef(0.0F, par5EntityLivingBase.yOffset, 0.0F);
 		
 		RenderManager.instance.playerViewY = 180.0F;
 		RenderManager.instance.renderEntityWithPosYaw(par5EntityLivingBase, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 		
-		GL11.glPopMatrix();
-		
 		RenderHelper.disableStandardItemLighting();
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+		
+		GL11.glPopMatrix();
 	}
 	
 	public void drawHoveringText(List<String> list, int x, int y, FontRenderer fontrenderer)
