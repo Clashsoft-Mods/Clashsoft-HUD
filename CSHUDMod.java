@@ -84,5 +84,6 @@ public class CSHUDMod
 		lr.addStringLocalization("entity.MinecartTNT.name", "Minecart with TNT");
 		lr.addStringLocalization("entity.MinecartHopper.name", "Minecart with Hopper");
 		lr.addStringLocalization("entity.ItemFrame.name", "Item Frame");
+		lr.addStringLocalization("entity.LeashKnot.name", "Leash Knot");
 	}
 }

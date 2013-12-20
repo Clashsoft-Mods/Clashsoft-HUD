@@ -15,6 +15,7 @@ import clashsoft.cslib.util.CSString;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -104,6 +105,9 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			this.renderPickups();
 			this.renderActivePotionEffects();
 		}
+		
+		GL11.glColor4f(1F, 1F, 1F, 1F);
+		this.mc.renderEngine.bindTexture(GuiContainer.icons);
 	}
 	
 	public void renderActivePotionEffects()
