@@ -16,11 +16,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -39,6 +41,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
 	
 	public final Minecraft					mc;
+	
+	public RenderItem						itemRenderer		= new RenderItem();
 	
 	public int								lastItemPickupTime	= 0;
 	public List<ItemPickup>					itemPickups			= new ArrayList();
@@ -106,9 +110,9 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			GL11.glPushMatrix();
 			
 			GL11.glColor4f(1F, 1F, 1F, 1F);
-			this.renderPickups();
+			this.renderPickups(event.partialTicks);
 			this.renderActivePotionEffects();
-			this.renderCurrentObject();
+			this.renderCurrentObject(event.partialTicks);
 			
 			GL11.glPopMatrix();
 		}
@@ -204,7 +208,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		}
 		else if (potion != null)
 		{
-			return potion.getIsBadEffect() ? potionBadEffectColor : potionGoodEffectColor;
+			return potion.isBadEffect() ? potionBadEffectColor : potionGoodEffectColor;
 		}
 		else
 		{
@@ -212,7 +216,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		}
 	}
 	
-	public void renderPickups()
+	public void renderPickups(float partialTickTime)
 	{
 		int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
 		
@@ -220,11 +224,11 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		{
 			ItemPickup itemPickup = this.itemPickups.get(i);
 			
-			j += this.drawItemPickup(this.width, j - l, itemPickup);
+			j += this.drawItemPickup(this.width, j - l, partialTickTime, itemPickup);
 		}
 	}
 	
-	public int drawItemPickup(int x, int y, ItemPickup itemPickup)
+	public int drawItemPickup(int x, int y, float partialTickTime, ItemPickup itemPickup)
 	{
 		ItemStack stack = itemPickup.stack;
 		
@@ -234,8 +238,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		if (itemPickup.time > maxPickupTime)
 		{
 			float f = width / 20F;
-			int i = itemPickup.time - maxPickupTime;
-			x += i * f;
+			float f1 = (itemPickup.time - maxPickupTime) + partialTickTime;
+			x += f * f1;
 		}
 		
 		this.drawHoveringFrameAtPos(x - width, y, width, pickupBoxHeight, pickupBoxColor);
@@ -244,7 +248,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		return pickupBoxHeight;
 	}
 	
-	public void renderCurrentObject()
+	public void renderCurrentObject(float partialTickTime)
 	{
 		MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
 		if (mop != null)
@@ -266,17 +270,27 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				Entity entity = mop.entityHit;
 				
 				renderName = entity.getEntityName();
-				AxisAlignedBB aabb = entity.getBoundingBox();
 				int width1;
-				if (aabb != null)
+				
+				if (entity instanceof EntityHanging)
 				{
-					height = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
-					width1 = (int) (Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ));
+					EntityHanging entityhanging = (EntityHanging) mop.entityHit;
+					width1 = entityhanging.getWidthPixels() + 12;
+					height = entityhanging.getHeightPixels();
 				}
 				else
 				{
-					height = (int) (Math.max(entity.height, entity.getEyeHeight() + 0.5F) * 16);
-					width1 = height + 16;
+					AxisAlignedBB aabb = entity.getBoundingBox();
+					if (aabb != null)
+					{
+						height = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
+						width1 = (int) (Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ));
+					}
+					else
+					{
+						height = (int) (Math.max(entity.height, entity.getEyeHeight() + 0.5F) * 16);
+						width1 = height + 16;
+					}
 				}
 				
 				width = width1 + this.mc.fontRenderer.getStringWidth(renderName);
@@ -330,22 +344,21 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			
 			if (isEntity)
 			{
-				GL11.glPushMatrix();
-				this.renderEntity(mop.entityHit, x0 + (x1 / 2), y0 + height - 4, 16);
-				GL11.glPopMatrix();
+				int y2 = y0 + (mop.entityHit instanceof EntityHanging ? height / 2 : height - 4);
+				
+				this.renderEntity(mop.entityHit, x0 + (x1 / 2), y2, 16, partialTickTime);
 			}
 			else
 			{
-				RenderHelper.enableGUIStandardItemLighting();
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				
-				RenderItem itemRenderer = new RenderItem();
 				int x2 = x0 + 4;
 				int y2 = y0 + y1 - 4;
 				
+				RenderHelper.enableGUIStandardItemLighting();
+				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, y2);
-				itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, x2, null);
-				
 				RenderHelper.disableStandardItemLighting();
 			}
 			
@@ -353,7 +366,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		}
 	}
 	
-	public void renderEntity(Entity par5EntityLivingBase, int x, int y, float scale)
+	public void renderEntity(Entity entity, int x, int y, float scale, float partialTickTime)
 	{
 		GL11.glPushMatrix();
 		
@@ -366,10 +379,10 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		
 		RenderHelper.enableGUIStandardItemLighting();
 		
-		GL11.glTranslatef(0.0F, par5EntityLivingBase.yOffset, 0.0F);
+		GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
 		
 		RenderManager.instance.playerViewY = 180.0F;
-		RenderManager.instance.renderEntityWithPosYaw(par5EntityLivingBase, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
 		
 		RenderHelper.disableStandardItemLighting();
 		
