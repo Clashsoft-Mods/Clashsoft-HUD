@@ -27,10 +27,8 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumMovingObjectType;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -39,6 +37,8 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 public class GuiCSHUDIngame extends GuiIngameForge
 {
 	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
+	public static final ResourceLocation	sunTexture			= new ResourceLocation("minecraft", "textures/environment/sun.png");
+	public static final ResourceLocation	moonTexture			= new ResourceLocation("minecraft", "textures/environment/moon_phases.png");
 	
 	public final Minecraft					mc;
 	
@@ -105,14 +105,28 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		this.width = event.resolution.getScaledWidth();
 		this.height = event.resolution.getScaledHeight();
 		
-		if (this.mc.inGameHasFocus)
+		if (alwaysShow || this.mc.inGameHasFocus)
 		{
 			GL11.glPushMatrix();
 			
 			GL11.glColor4f(1F, 1F, 1F, 1F);
-			this.renderPickups(event.partialTicks);
-			this.renderActivePotionEffects();
-			this.renderCurrentObject(event.partialTicks);
+			
+			if (showPickupDisplay)
+			{
+				this.renderPickups(event.partialTicks);
+			}
+			if (showPotionEffectDisplay)
+			{
+				this.renderActivePotionEffects();
+			}
+			if (showWorldInfo)
+			{
+				this.renderWorldInfo();
+			}
+			if (showCurrentObject)
+			{
+				this.renderCurrentObject(event.partialTicks);
+			}
 			
 			GL11.glPopMatrix();
 		}
@@ -214,6 +228,43 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		{
 			return potionNoEffectColor;
 		}
+	}
+	
+	public void renderWorldInfo()
+	{
+		World world = this.mc.theWorld;
+		int time = (int) world.getWorldTime() % 24000;
+		boolean isDay = time < 12500;
+		int color = isDay ? weatherDayColor : weatherNightColor;
+		
+		GL11.glPushMatrix();
+		
+		this.drawHoveringFrameAtPos(0, height - 32, 80, 32, color);
+		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), 28, height - 26, 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), 28, height - 14, weatherUseColorForText ? color : 0xFFFFFF);
+		
+		if (isDay)
+		{
+			this.mc.renderEngine.bindTexture(sunTexture);
+			
+			GL11.glTranslatef(4F, height - 28F, 1F);
+			GL11.glScalef(0.125F, 0.125F, 1F);
+			this.drawTexturedModalRect(0, 0, 32, 32, 192, 192);
+		}
+		else
+		{
+			int moonPhase = world.getMoonPhase();
+			int x1 = (moonPhase & 3) * 64;
+			int y1 = (moonPhase >> 2) * 128;
+			
+			this.mc.renderEngine.bindTexture(moonTexture);
+			
+			GL11.glTranslatef(4F, height - 28F, 1F);
+			GL11.glScalef(0.5F, 0.25F, 1F);
+			this.drawTexturedModalRect(0, 0, 8 + x1, 16 + y1, 48, 96);
+		}
+		
+		GL11.glPopMatrix();
 	}
 	
 	public void renderPickups(float partialTickTime)
@@ -370,8 +421,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	{
 		GL11.glPushMatrix();
 		
-		GL11.glColor4f(1F, 1F, 1F, 1F);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+		GL11.glColor4f(1F, 1F, 1F, 1F);
 		
 		GL11.glTranslatef((float) x, (float) y, 50.0F);
 		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
@@ -385,6 +436,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
 		
 		RenderHelper.disableStandardItemLighting();
+		
+		GL11.glDisable(GL11.GL_COLOR_MATERIAL);
 		
 		GL11.glPopMatrix();
 	}

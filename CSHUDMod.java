@@ -19,6 +19,12 @@ public class CSHUDMod
 	public static final int			REVISION						= 0;
 	public static final String		VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
+	public static boolean			alwaysShow						= false;
+	public static boolean			showCurrentObject				= true;
+	public static boolean			showPotionEffectDisplay			= true;
+	public static boolean			showPickupDisplay				= true;
+	public static boolean			showWorldInfo					= true;
+	
 	public static int				hoveringFrameDefaultColor		= 0x5000FF;
 	public static int				hoveringFrameBackgroundColor	= -0xFEFFFF0;
 	
@@ -35,17 +41,27 @@ public class CSHUDMod
 	public static int				pickupTextColor					= 0xFFFFFF;
 	
 	public static boolean			potionUseColorForText			= true;
-	public static int				potionEffectDisplayMode			= 0b111;
+	public static int				potionEffectDisplayMode			= 7;
 	public static int				potionEffectBoxHeight			= 17;
 	public static int				potionGoodEffectColor			= 0x00FF00;
 	public static int				potionBadEffectColor			= 0xFF0000;
 	public static int				potionAmbientEffectColor		= 0x0081FF;
 	public static int				potionNoEffectColor				= 0xFFFFFF;
 	
+	public static boolean			weatherUseColorForText			= false;
+	public static int				weatherDayColor					= 0xFFFF00;
+	public static int				weatherNightColor				= 0x0000FF;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		CSConfig.loadConfig(event.getSuggestedConfigurationFile());
+		
+		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
+		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
+		showPotionEffectDisplay = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffectDisplay);
+		showPickupDisplay = CSConfig.getBool("general", "Show Pickup Display", showPickupDisplay);
+		showWorldInfo = CSConfig.getBool("general", "Show World Info", showWorldInfo);
 		
 		hoveringFrameDefaultColor = CSConfig.getInt("hoveringframe", "Default Color", hoveringFrameDefaultColor);
 		hoveringFrameBackgroundColor = CSConfig.getInt("hoveringframe", "Background Color", hoveringFrameBackgroundColor);
@@ -68,6 +84,10 @@ public class CSHUDMod
 		potionBadEffectColor = CSConfig.getInt("potion", "Bad Effect Color", potionBadEffectColor);
 		potionAmbientEffectColor = CSConfig.getInt("potion", "Ambient Effect Color", potionAmbientEffectColor);
 		potionNoEffectColor = CSConfig.getInt("potion", "No Effect Color", potionNoEffectColor);
+		
+		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
+		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
+		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);
 		
 		CSConfig.saveConfig();
 	}
