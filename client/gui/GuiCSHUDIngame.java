@@ -31,6 +31,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
@@ -78,12 +79,13 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		}
 	}
 	
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void onItemPickup(EntityItemPickupEvent event)
 	{
-		ItemStack stack = event.item.getEntityItem().copy();
+		ItemStack stack = event.item.getEntityItem();
 		if (stack != null && stack.stackSize > 0)
 		{
+			stack = stack.copy();
 			for (ItemPickup itemPickup : this.itemPickups)
 			{
 				if (itemPickup.stack.isItemEqual(stack))
