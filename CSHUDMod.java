@@ -26,7 +26,8 @@ public class CSHUDMod
 	public static boolean			showWorldInfo					= true;
 	
 	public static int				hoveringFrameDefaultColor		= 0x5000FF;
-	public static int				hoveringFrameBackgroundColor	= -0xFEFFFF0;
+	public static int				hoveringFrameBackgroundColor	= 0x10000F;
+	public static int				hoveringFrameAlpha				= 0x0000B0;
 	
 	public static boolean			currentObjUseColorForText		= false;
 	public static int				currentObjBlockColor			= 0xFFFFFF;
@@ -55,7 +56,7 @@ public class CSHUDMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CSConfig.loadConfig(event.getSuggestedConfigurationFile());
+		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), "CSHUD");
 		
 		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
 		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
@@ -65,6 +66,7 @@ public class CSHUDMod
 		
 		hoveringFrameDefaultColor = CSConfig.getInt("hoveringframe", "Default Color", hoveringFrameDefaultColor);
 		hoveringFrameBackgroundColor = CSConfig.getInt("hoveringframe", "Background Color", hoveringFrameBackgroundColor);
+		hoveringFrameAlpha = CSConfig.getInt("hoveringframe", "Alpha", hoveringFrameAlpha);
 		
 		currentObjUseColorForText = CSConfig.getBool("currentobj", "Use Frame Color for Text", currentObjUseColorForText);
 		currentObjBlockColor = CSConfig.getInt("currentobj", "Block Color", currentObjBlockColor);

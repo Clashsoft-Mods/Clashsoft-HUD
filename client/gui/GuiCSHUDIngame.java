@@ -31,6 +31,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -102,39 +103,36 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	}
 	
 	@ForgeSubscribe
-	public void onRenderGameOverlay(RenderGameOverlayEvent event)
+	public void onRenderGameOverlay(RenderGameOverlayEvent.Post event)
 	{
-		this.width = event.resolution.getScaledWidth();
-		this.height = event.resolution.getScaledHeight();
-		
-		if (alwaysShow || this.mc.inGameHasFocus)
+		if (event.type == ElementType.HOTBAR)
 		{
-			GL11.glPushMatrix();
+			this.width = event.resolution.getScaledWidth();
+			this.height = event.resolution.getScaledHeight();
+			
+			if (alwaysShow || this.mc.inGameHasFocus)
+			{
+				if (showPickupDisplay)
+				{
+					this.renderPickups(event.partialTicks);
+				}
+				if (showPotionEffectDisplay)
+				{
+					this.renderActivePotionEffects();
+				}
+				if (showWorldInfo)
+				{
+					this.renderWorldInfo();
+				}
+				if (showCurrentObject)
+				{
+					this.renderCurrentObject(event.partialTicks);
+				}
+			}
 			
 			GL11.glColor4f(1F, 1F, 1F, 1F);
-			
-			if (showPickupDisplay)
-			{
-				this.renderPickups(event.partialTicks);
-			}
-			if (showPotionEffectDisplay)
-			{
-				this.renderActivePotionEffects();
-			}
-			if (showWorldInfo)
-			{
-				this.renderWorldInfo();
-			}
-			if (showCurrentObject)
-			{
-				this.renderCurrentObject(event.partialTicks);
-			}
-			
-			GL11.glPopMatrix();
+			this.mc.renderEngine.bindTexture(GuiContainer.icons);
 		}
-		
-		GL11.glColor4f(1F, 1F, 1F, 1F);
-		this.mc.renderEngine.bindTexture(GuiContainer.icons);
 	}
 	
 	public void renderActivePotionEffects()
@@ -514,17 +512,19 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
-		int l1 = hoveringFrameBackgroundColor;
-		this.drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, l1, l1);
-		this.drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, l1, l1);
-		this.drawGradientRect(x - 3, y - 3, x + width + 3, y + height + 3, l1, l1);
-		this.drawGradientRect(x - 4, y - 3, x - 3, y + height + 3, l1, l1);
-		this.drawGradientRect(x + width + 3, y - 3, x + width + 4, y + height + 3, l1, l1);
-		int i2 = 0xF0000000 | color;
-		int j2 = (i2 & 0xFEFEFE) >> 1 | i2 & -0xFFFFFF;
-		this.drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, i2, j2);
-		this.drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, i2, j2);
-		this.drawGradientRect(x - 3, y - 3, x + width + 3, y - 3 + 1, i2, i2);
-		this.drawGradientRect(x - 3, y + height + 2, x + width + 3, y + height + 3, j2, j2);
+		int bgRGB = hoveringFrameBackgroundColor & 0xFFFFFF;
+		int bgRGBA = hoveringFrameAlpha | bgRGB;
+		int colorRGBA = hoveringFrameAlpha | color;
+		int colorGradient = (colorRGBA & 0xFEFEFE) >> 1 | colorRGBA & -0xFFFFFF;
+			
+		drawRect(x - 3, y - 4, x + width + 3, y - 3, bgRGBA);
+		drawRect(x - 3, y + height + 3, x + width + 3, y + height + 4, bgRGBA);
+		drawRect(x - 3, y - 3, x + width + 3, y + height + 3, bgRGBA);
+		drawRect(x - 4, y - 3, x - 3, y + height + 3, bgRGBA);
+		drawRect(x + width + 3, y - 3, x + width + 4, y + height + 3, bgRGBA);
+		this.drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, colorRGBA, colorGradient);
+		this.drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, colorRGBA, colorGradient);
+		drawRect(x - 3, y - 3, x + width + 3, y - 3 + 1, colorRGBA);
+		drawRect(x - 3, y + height + 2, x + width + 3, y + height + 3, colorGradient);
 	}
 }
