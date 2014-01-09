@@ -112,15 +112,20 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 		}
 	}
 	
-	public void drawHoveringFrameAtPos(int x, int y, int width, int height, int color)
+	public void drawHoveringFrame(int x, int y, int width, int height)
 	{
-		this.drawHoveringFrame(x + 4, y + 4, width - 8, height - 8, color);
+		drawHoveringFrame(x, y, width, height, hoveringFrameDefaultColor);
 	}
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
-		int alpha = hoveringFrameAlpha << 24;
-		int bgRGB = hoveringFrameBackgroundColor & 0xFFFFFF;
+		this.drawHoveringFrame(x + 4, y + 4, width - 8, height - 8, color, hoveringFrameBackgroundColor, hoveringFrameAlpha);
+	}
+	
+	public void drawHoveringFrame(int x, int y, int width, int height, int color, int backgroundColor, int alpha)
+	{
+		alpha <<= 24;
+		int bgRGB = backgroundColor & 0xFFFFFF;
 		int bgRGBA = bgRGB | alpha;
 		int colorRGBA = color | alpha;
 		int colorGradient = (colorRGBA & 0xFEFEFE) >> 1 | colorRGBA & -0xFFFFFF;
