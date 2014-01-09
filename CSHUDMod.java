@@ -4,6 +4,7 @@ import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
+import clashsoft.mods.cshud.components.Alignment;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -29,13 +30,14 @@ public class CSHUDMod
 	public static boolean			alwaysShow						= false;
 	public static boolean			showCurrentObject				= true;
 	public static boolean			showPotionEffectDisplay			= true;
-	public static boolean			showPickupDisplay				= true;
+	public static boolean			showItemPickups					= true;
 	public static boolean			showWorldInfo					= true;
 	
 	public static int				hoveringFrameDefaultColor		= 0x5000FF;
 	public static int				hoveringFrameBackgroundColor	= 0x10000F;
 	public static int				hoveringFrameAlpha				= 0x0000B0;
 	
+	public static Alignment			currentObjAlignment				= Alignment.TOP_CENTER;
 	public static boolean			currentObjUseColorForText		= false;
 	public static int				currentObjBlockColor			= 0xFFFFFF;
 	public static int				currentObjAnimalEntityColor		= 0x00FF00;
@@ -43,11 +45,13 @@ public class CSHUDMod
 	public static int				currentObjMonsterEntityColor	= 0xFF0000;
 	public static int				currentObjOtherEntityColor		= 0xFFFFFF;
 	
+	public static Alignment			pickupAlignment					= Alignment.TOP_RIGHT;
 	public static int				maxPickupTime					= 100;
 	public static int				pickupBoxHeight					= 17;
 	public static int				pickupBoxColor					= 0xA4A4A4;
 	public static int				pickupTextColor					= 0xFFFFFF;
 	
+	public static Alignment			potionAlignment					= Alignment.TOP_LEFT;
 	public static boolean			potionUseColorForText			= true;
 	public static int				potionEffectDisplayMode			= 7;
 	public static int				potionEffectBoxHeight			= 17;
@@ -56,6 +60,7 @@ public class CSHUDMod
 	public static int				potionAmbientEffectColor		= 0x0081FF;
 	public static int				potionNoEffectColor				= 0xFFFFFF;
 	
+	public static Alignment			weatherAlignment				= Alignment.BOTTOM_LEFT;
 	public static boolean			weatherUseColorForText			= false;
 	public static int				weatherDayColor					= 0xFFFF00;
 	public static int				weatherNightColor				= 0x0000FF;
@@ -70,13 +75,14 @@ public class CSHUDMod
 		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
 		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
 		showPotionEffectDisplay = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffectDisplay);
-		showPickupDisplay = CSConfig.getBool("general", "Show Pickup Display", showPickupDisplay);
+		showItemPickups = CSConfig.getBool("general", "Show Pickup Display", showItemPickups);
 		showWorldInfo = CSConfig.getBool("general", "Show World Info", showWorldInfo);
 		
 		hoveringFrameDefaultColor = CSConfig.getInt("hoveringframe", "Default Color", hoveringFrameDefaultColor);
 		hoveringFrameBackgroundColor = CSConfig.getInt("hoveringframe", "Background Color", hoveringFrameBackgroundColor);
 		hoveringFrameAlpha = CSConfig.getInt("hoveringframe", "Alpha", hoveringFrameAlpha);
 		
+		currentObjAlignment = Alignment.parseAlignment(CSConfig.getString("currentobj", "Alignment", currentObjAlignment));
 		currentObjUseColorForText = CSConfig.getBool("currentobj", "Use Frame Color for Text", currentObjUseColorForText);
 		currentObjBlockColor = CSConfig.getInt("currentobj", "Block Color", currentObjBlockColor);
 		currentObjAnimalEntityColor = CSConfig.getInt("currentobj", "Animal Entity Color", currentObjAnimalEntityColor);
@@ -84,18 +90,21 @@ public class CSHUDMod
 		currentObjWaterEntityColor = CSConfig.getInt("currentobj", "Water Entity Color", currentObjWaterEntityColor);
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
 		
+		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
 		maxPickupTime = CSConfig.getInt("itempickup", "Max Pickup Display Time", maxPickupTime);
 		pickupBoxHeight = CSConfig.getInt("itempickup", "Pickup Display Box Height", pickupBoxHeight);
 		pickupBoxColor = CSConfig.getInt("itempickup", "Pickup Display Box Color", pickupBoxColor);
 		pickupTextColor = CSConfig.getInt("itempickup", "Pickup Display Text Color", pickupTextColor);
 		
-		potionUseColorForText = CSConfig.getBool("potion", "Use Frame Color for Text", potionUseColorForText);
-		potionEffectBoxHeight = CSConfig.getInt("potion", "Potion Display Box Height", potionEffectBoxHeight);
-		potionGoodEffectColor = CSConfig.getInt("potion", "Good Effect Color", potionGoodEffectColor);
-		potionBadEffectColor = CSConfig.getInt("potion", "Bad Effect Color", potionBadEffectColor);
-		potionAmbientEffectColor = CSConfig.getInt("potion", "Ambient Effect Color", potionAmbientEffectColor);
-		potionNoEffectColor = CSConfig.getInt("potion", "No Effect Color", potionNoEffectColor);
+		potionAlignment = Alignment.parseAlignment(CSConfig.getString("buff", "Alignment", potionAlignment));
+		potionUseColorForText = CSConfig.getBool("buff", "Use Frame Color for Text", potionUseColorForText);
+		potionEffectBoxHeight = CSConfig.getInt("buff", "Potion Display Box Height", potionEffectBoxHeight);
+		potionGoodEffectColor = CSConfig.getInt("buff", "Good Effect Color", potionGoodEffectColor);
+		potionBadEffectColor = CSConfig.getInt("buff", "Bad Effect Color", potionBadEffectColor);
+		potionAmbientEffectColor = CSConfig.getInt("buff", "Ambient Effect Color", potionAmbientEffectColor);
+		potionNoEffectColor = CSConfig.getInt("buff", "No Effect Color", potionNoEffectColor);
 		
+		weatherAlignment = Alignment.parseAlignment(CSConfig.getString("weather", "Alignment", weatherAlignment));
 		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
 		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
 		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);

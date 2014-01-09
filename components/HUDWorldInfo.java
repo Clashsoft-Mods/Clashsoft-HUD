@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -28,6 +29,12 @@ public class HUDWorldInfo extends HUDComponent
 	
 	public void renderWorldInfo()
 	{
+		if (!showWorldInfo)
+		{
+			return;
+		}
+		
+		Alignment align = Alignment.TOP_RIGHT;
 		World world = this.mc.theWorld;
 		int time = (int) world.getWorldTime() % 24000;
 		boolean isDay = time < 12500;
@@ -35,18 +42,26 @@ public class HUDWorldInfo extends HUDComponent
 		boolean isThundering = world.isThundering();
 		int color = isDay ? weatherDayColor : weatherNightColor;
 		
-		this.drawHoveringFrameAtPos(0, this.height - 32, 80, 32, color);
-		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), 28, this.height - 26, 0xFFFFFF);
-		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), 28, this.height - 14, weatherUseColorForText ? color : 0xFFFFFF);
+		int frameX = align.getX(80, this.width);
+		int frameY = align.getY(32, this.height);
+		
+		this.drawHoveringFrameAtPos(frameX, frameY, 80, 32, color);
+		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), frameX + 29, frameY + 4, 0xFFFFFF);
+		
+		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), frameX + 29, frameY + 16, weatherUseColorForText ? color : 0xFFFFFF);
+		
+		GL11.glColor4f(1F, 1F, 1F, 1F);
 		
 		GL11.glPushMatrix();
+		
+		GL11.glTranslatef(frameX + 4F, frameY + 4F, 0F);
 		if (isDay)
 		{
 			this.mc.renderEngine.bindTexture(sunTexture);
 			
-			GL11.glTranslatef(4F, this.height - 28F, 0F);
 			GL11.glScalef(0.125F, 0.125F, 1F);
 			this.drawTexturedModalRect(0, 0, 32, 32, 192, 192);
+			GL11.glScalef(8F, 8F, 1F);
 		}
 		else
 		{
@@ -56,12 +71,10 @@ public class HUDWorldInfo extends HUDComponent
 			
 			this.mc.renderEngine.bindTexture(moonTexture);
 			
-			GL11.glTranslatef(4F, this.height - 28F, 0F);
 			GL11.glScalef(0.5F, 0.25F, 1F);
 			this.drawTexturedModalRect(0, 0, 8 + x1, 16 + y1, 48, 96);
+			GL11.glScalef(2F, 4F, 1F);
 		}
-		GL11.glPopMatrix();
-		
 		if (isRaining)
 		{
 			boolean snow = false;
@@ -88,11 +101,10 @@ public class HUDWorldInfo extends HUDComponent
 				}
 			}
 			
-			GL11.glTranslatef(4F, this.height - 28F, 0F);
 			GL11.glScalef(0.125F, 0.5F, 1F);
 			this.drawTexturedModalRect(0, 0, 0, off, 192, 48);
 			GL11.glScalef(8F, 2F, 1F);
-			GL11.glTranslatef(-4F, -this.height + 28F, 0F);
 		}
+		GL11.glPopMatrix();
 	}
 }
