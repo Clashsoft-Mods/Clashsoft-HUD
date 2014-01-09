@@ -19,6 +19,10 @@ public class HUDPotionEffects extends HUDComponent
 {
 	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
 	
+	public static boolean renderIcon = (potionEffectDisplayMode & 1) != 0;
+	public static boolean renderDuration = (potionEffectDisplayMode & 2) != 0;
+	public static boolean renderAmplifier = (potionEffectDisplayMode & 4) != 0;
+	
 	@Override
 	public void render(float partialTickTime)
 	{
@@ -27,41 +31,83 @@ public class HUDPotionEffects extends HUDComponent
 	
 	public void renderActivePotionEffects()
 	{
-		Collection<PotionEffect> activeEffects = this.mc.thePlayer.getActivePotionEffects();
+		if (!showPotionEffectDisplay)
+		{
+			return;
+		}
 		
+		Collection<PotionEffect> activeEffects = this.mc.thePlayer.getActivePotionEffects();
 		if (!activeEffects.isEmpty())
 		{
 			List<PotionEffect> potionEffects = new ArrayList(activeEffects);
-			for (int i = 0, j = 0; i < potionEffects.size() && j < this.height; i++)
+			this.renderPotionEffects(potionEffects);
+		}
+	}
+	
+	public void renderPotionEffects(List<PotionEffect> potionEffects)
+	{
+		Alignment align = potionAlignment;
+		
+		int count = potionEffects.size();
+		int x = 0;
+		int y = 0;
+		
+		renderIcon = true;
+		
+		if (align.isHorizontallyCentered() && renderIcon)
+		{
+			x = align.getX(count * 28, this.width);
+			y = align.getY(28, this.height);
+			
+			for (PotionEffect potionEffect : potionEffects)
 			{
-				j += this.drawPotionEffect(0, j, potionEffects.get(i));
+				x += drawPotionEffect(x, y, potionEffect, false);
+			}
+		}
+		else
+		{
+			int y1 = renderIcon ? 28 : potionEffectBoxHeight;
+			y = align.getY(count * y1, this.height);
+			
+			for (PotionEffect potionEffect : potionEffects)
+			{
+				x = align.getX(drawPotionEffect(x, y, potionEffect, true), this.width);
+				drawPotionEffect(x, y, potionEffect, false);
+				y += y1;
 			}
 		}
 	}
 	
-	public int drawPotionEffect(int x, int y, PotionEffect potionEffect)
+	public int drawPotionEffect(int x, int y, PotionEffect potionEffect, boolean flag)
 	{
 		Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 		
-		int mode = potionEffectDisplayMode;
-		boolean renderIcon = (mode & 1) != 0;
-		boolean renderDuration = (mode & 2) != 0;
-		boolean renderAmplifier = (mode & 4) != 0;
 		int color = this.getPotionEffectColor(potion, potionEffect.getIsAmbient());
 		int textColor = potionUseColorForText ? color : 0xFFFFFF;
 		
 		if (!renderIcon)
 		{
-			String s = getPotionEffectDisplayString(potionEffect, renderDuration, renderAmplifier);
+			String text = getPotionEffectDisplayString(potionEffect, renderDuration, renderAmplifier);
+			int width = Math.max(80, this.mc.fontRenderer.getStringWidth(text) + 10);
 			
-			this.drawHoveringFrameAtPos(x, y, Math.max(80, this.mc.fontRenderer.getStringWidth(s) + 10), potionEffectBoxHeight, color);
+			if (flag)
+			{
+				return width;
+			}
 			
-			this.mc.fontRenderer.drawStringWithShadow(s, x + 5, y + 5, textColor);
-			return potionEffectBoxHeight;
+			this.drawHoveringFrame(x, y, width, potionEffectBoxHeight, color);
+			
+			this.mc.fontRenderer.drawStringWithShadow(text, x + 5, y + 5, textColor);
+			return width;
 		}
 		else
 		{
-			this.drawHoveringFrameAtPos(x, y, 28, 28, color);
+			if (flag)
+			{
+				return 28;
+			}
+			
+			this.drawHoveringFrame(x, y, 28, 28, color);
 			
 			if (potion.hasStatusIcon())
 			{

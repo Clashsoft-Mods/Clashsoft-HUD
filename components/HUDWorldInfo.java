@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -34,7 +33,7 @@ public class HUDWorldInfo extends HUDComponent
 			return;
 		}
 		
-		Alignment align = Alignment.TOP_RIGHT;
+		Alignment align = weatherAlignment;
 		World world = this.mc.theWorld;
 		int time = (int) world.getWorldTime() % 24000;
 		boolean isDay = time < 12500;
@@ -45,10 +44,10 @@ public class HUDWorldInfo extends HUDComponent
 		int frameX = align.getX(80, this.width);
 		int frameY = align.getY(32, this.height);
 		
-		this.drawHoveringFrameAtPos(frameX, frameY, 80, 32, color);
-		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), frameX + 29, frameY + 4, 0xFFFFFF);
+		this.drawHoveringFrame(frameX, frameY, 80, 32, color);
+		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), frameX + 29, frameY + 6, 0xFFFFFF);
 		
-		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), frameX + 29, frameY + 16, weatherUseColorForText ? color : 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), frameX + 29, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		

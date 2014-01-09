@@ -1,9 +1,6 @@
 package clashsoft.mods.cshud.components;
 
-import static clashsoft.mods.cshud.CSHUDMod.maxPickupTime;
-import static clashsoft.mods.cshud.CSHUDMod.pickupBoxColor;
-import static clashsoft.mods.cshud.CSHUDMod.pickupBoxHeight;
-import static clashsoft.mods.cshud.CSHUDMod.pickupTextColor;
+import static clashsoft.mods.cshud.CSHUDMod.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,6 +38,11 @@ public class HUDItemPickups extends HUDComponent
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void onItemPickup(EntityItemPickupEvent event)
 	{
+		if (!showItemPickups)
+		{
+			return;
+		}
+		
 		ItemStack stack = event.item.getEntityItem();
 		if (stack != null && stack.stackSize > 0)
 		{
@@ -109,7 +111,7 @@ public class HUDItemPickups extends HUDComponent
 			x += f * f1;
 		}
 		
-		this.drawHoveringFrameAtPos(x - width, y, width, pickupBoxHeight, pickupBoxColor);
+		this.drawHoveringFrame(x - width, y, width, pickupBoxHeight, pickupBoxColor);
 		this.mc.fontRenderer.drawString(s, x - width + 5, y + 5, pickupTextColor);
 		
 		return pickupBoxHeight;

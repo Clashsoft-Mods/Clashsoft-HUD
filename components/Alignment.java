@@ -43,6 +43,16 @@ public class Alignment
 		this.horizontal = horizontal;
 	}
 	
+	public boolean isVerticallyCentered()
+	{
+		return this.vertical == 1;
+	}
+	
+	public boolean isHorizontallyCentered()
+	{
+		return this.horizontal == 1;
+	}
+	
 	public int getX(int width, int screenWidth)
 	{
 		switch (this.horizontal)

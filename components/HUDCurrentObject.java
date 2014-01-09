@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL12;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -113,7 +112,7 @@ public class HUDCurrentObject extends HUDComponent
 		
 		textY = (height - textY) / 2;
 		
-		this.drawHoveringFrameAtPos(frameX, frameY, width, height, color);
+		this.drawHoveringFrame(frameX, frameY, width, height, color);
 		
 		if (isEntity)
 		{
@@ -128,13 +127,11 @@ public class HUDCurrentObject extends HUDComponent
 			
 			RenderHelper.enableGUIStandardItemLighting();
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, y2);
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		this.mc.fontRenderer.drawString(renderName, frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(renderName, frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
 	}
 	
 	public int getEntityColor(Entity entity)
