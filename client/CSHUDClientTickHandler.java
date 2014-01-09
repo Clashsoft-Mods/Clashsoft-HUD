@@ -2,6 +2,7 @@ package clashsoft.mods.cshud.client;
 
 import java.util.EnumSet;
 
+import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -10,7 +11,7 @@ public class CSHUDClientTickHandler implements ITickHandler
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		CSHUDClientProxy.theGUIOverlay.updateTick();
+		GuiCSHUDIngame.instance.updateTick();
 	}
 	
 	@Override
