@@ -52,6 +52,8 @@ public class CSHUDMod
 	public static boolean			weatherUseColorForText			= false;
 	public static int				weatherDayColor					= 0xFFFF00;
 	public static int				weatherNightColor				= 0x0000FF;
+	public static boolean			weatherRandomizeDownfall		= false;
+	public static boolean			weatherShowSnowAsRain			= false;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -90,6 +92,8 @@ public class CSHUDMod
 		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
 		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
 		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);
+		weatherShowSnowAsRain = CSConfig.getBool("weather", "Show Snow As Rain", weatherShowSnowAsRain);
+		weatherRandomizeDownfall = CSConfig.getBool("weather", "Randomize Downfall Animation", weatherRandomizeDownfall);
 		
 		CSConfig.saveConfig();
 	}

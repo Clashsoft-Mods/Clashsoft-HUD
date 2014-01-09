@@ -29,6 +29,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -41,6 +42,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
 	public static final ResourceLocation	sunTexture			= new ResourceLocation("minecraft", "textures/environment/sun.png");
 	public static final ResourceLocation	moonTexture			= new ResourceLocation("minecraft", "textures/environment/moon_phases.png");
+	public static final ResourceLocation	rainTexture			= new ResourceLocation("minecraft", "textures/environment/rain.png");
+	public static final ResourceLocation	snowTexture			= new ResourceLocation("minecraft", "textures/environment/snow.png");
 	
 	public final Minecraft					mc;
 	
@@ -61,6 +64,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	@Override
 	public void updateTick()
 	{
+		this.updateCounter++;
+		
 		Iterator<ItemPickup> iterator = itemPickups.iterator();
 		
 		if (lastItemPickupTime < maxPickupTime + 20)
@@ -235,19 +240,20 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		World world = this.mc.theWorld;
 		int time = (int) world.getWorldTime() % 24000;
 		boolean isDay = time < 12500;
+		boolean isRaining = world.isRaining();
+		boolean isThundering = world.isThundering();
 		int color = isDay ? weatherDayColor : weatherNightColor;
-		
-		GL11.glPushMatrix();
 		
 		this.drawHoveringFrameAtPos(0, height - 32, 80, 32, color);
 		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), 28, height - 26, 0xFFFFFF);
 		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), 28, height - 14, weatherUseColorForText ? color : 0xFFFFFF);
 		
+		GL11.glPushMatrix();
 		if (isDay)
 		{
 			this.mc.renderEngine.bindTexture(sunTexture);
 			
-			GL11.glTranslatef(4F, height - 28F, 1F);
+			GL11.glTranslatef(4F, this.height - 28F, 0F);
 			GL11.glScalef(0.125F, 0.125F, 1F);
 			this.drawTexturedModalRect(0, 0, 32, 32, 192, 192);
 		}
@@ -259,12 +265,44 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			
 			this.mc.renderEngine.bindTexture(moonTexture);
 			
-			GL11.glTranslatef(4F, height - 28F, 1F);
+			GL11.glTranslatef(4F, this.height - 28F, 0F);
 			GL11.glScalef(0.5F, 0.25F, 1F);
 			this.drawTexturedModalRect(0, 0, 8 + x1, 16 + y1, 48, 96);
 		}
-		
 		GL11.glPopMatrix();
+		
+		if (isRaining)
+		{
+			boolean snow = false;
+			
+			if (!weatherShowSnowAsRain)
+			{
+				BiomeGenBase biome = world.getBiomeGenForCoords((int) this.mc.thePlayer.posX, (int) this.mc.thePlayer.posZ);
+				snow = biome.getFloatTemperature() <= 0.15F;
+			}
+			
+			this.mc.renderEngine.bindTexture(snow ? snowTexture : rainTexture);
+			
+			int off = 0;
+			if (weatherRandomizeDownfall)
+			{
+				off = this.rand.nextInt(256) | (snow ? 0x7 : 0x3);
+			}
+			else
+			{
+				off = 256 - (this.updateCounter & 255);
+				if (!snow)
+				{
+					off = (off * 8 + (this.updateCounter & 7)) & 255;
+				}
+			}
+			
+			GL11.glTranslatef(4F, this.height - 28F, 0F);
+			GL11.glScalef(0.125F, 0.5F, 1F);
+			this.drawTexturedModalRect(0, 0, 0, off, 192, 48);
+			GL11.glScalef(8F, 2F, 1F);
+			GL11.glTranslatef(-4F, -this.height + 28F, 0F);
+		}
 	}
 	
 	public void renderPickups(float partialTickTime)
@@ -463,13 +501,13 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				}
 			}
 			
-			int x1 = x + 0;
-			int y1 = y - 0;
+			int x1 = x;
+			int y1 = y;
 			int height = 8;
 			
 			if (list.size() > 1)
 			{
-				height += 2 + (list.size() - 1) * 10;
+				height = list.size() * 10;
 			}
 			
 			if (x1 + width > this.width)
@@ -512,11 +550,12 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
+		int alpha = hoveringFrameAlpha << 24;
 		int bgRGB = hoveringFrameBackgroundColor & 0xFFFFFF;
-		int bgRGBA = hoveringFrameAlpha | bgRGB;
-		int colorRGBA = hoveringFrameAlpha | color;
+		int bgRGBA = bgRGB | alpha;
+		int colorRGBA = color | alpha;
 		int colorGradient = (colorRGBA & 0xFEFEFE) >> 1 | colorRGBA & -0xFFFFFF;
-			
+		
 		drawRect(x - 3, y - 4, x + width + 3, y - 3, bgRGBA);
 		drawRect(x - 3, y + height + 3, x + width + 3, y + height + 4, bgRGBA);
 		drawRect(x - 3, y - 3, x + width + 3, y + height + 3, bgRGBA);
