@@ -22,15 +22,15 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 		MinecraftForge.EVENT_BUS.register(GuiCSHUDIngame.instance);
 		MinecraftForge.EVENT_BUS.register(HUDItemPickups.instance);
 		
-		registerHUDComponents();
+		this.registerHUDComponents();
 	}
 	
 	public void registerHUDComponents()
 	{
-		registerHUDComponent(new HUDCurrentObject());
-		registerHUDComponent(new HUDPotionEffects());
-		registerHUDComponent(new HUDWorldInfo());
-		registerHUDComponent(HUDItemPickups.instance);
+		this.registerHUDComponent(new HUDCurrentObject());
+		this.registerHUDComponent(new HUDPotionEffects());
+		this.registerHUDComponent(new HUDWorldInfo());
+		this.registerHUDComponent(HUDItemPickups.instance);
 	}
 	
 	@Override

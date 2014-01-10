@@ -25,7 +25,7 @@ public class HUDWorldInfo extends HUDComponent
 	@Override
 	public void render(float partialTickTime)
 	{
-		renderWorldInfo();
+		this.renderWorldInfo();
 	}
 	
 	public void renderWorldInfo()

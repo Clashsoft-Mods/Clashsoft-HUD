@@ -22,12 +22,11 @@ public class HUDCurrentObject extends HUDComponent
 	@Override
 	public void render(float partialTickTime)
 	{
-		renderCurrentObject(partialTickTime);
+		this.renderCurrentObject(partialTickTime);
 	}
 	
 	public void renderCurrentObject(float partialTickTime)
 	{
-		
 		if (!showCurrentObject)
 		{
 			return;
@@ -85,7 +84,7 @@ public class HUDCurrentObject extends HUDComponent
 			height = entityHeight + 8;
 			textX = entityWidth - 4;
 			textY = 8;
-			color = getEntityColor(entity);
+			color = this.getEntityColor(entity);
 		}
 		else
 		{
@@ -161,7 +160,7 @@ public class HUDCurrentObject extends HUDComponent
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		
-		GL11.glTranslatef((float) x, (float) y, 50.0F);
+		GL11.glTranslatef(x, y, 50.0F);
 		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 		GL11.glScalef(scale, scale, scale);
 		
@@ -178,5 +177,4 @@ public class HUDCurrentObject extends HUDComponent
 		
 		GL11.glPopMatrix();
 	}
-	
 }

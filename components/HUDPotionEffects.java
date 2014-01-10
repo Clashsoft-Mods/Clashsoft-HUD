@@ -26,7 +26,7 @@ public class HUDPotionEffects extends HUDComponent
 	@Override
 	public void render(float partialTickTime)
 	{
-		renderActivePotionEffects();
+		this.renderActivePotionEffects();
 	}
 	
 	public void renderActivePotionEffects()
@@ -61,7 +61,7 @@ public class HUDPotionEffects extends HUDComponent
 			
 			for (PotionEffect potionEffect : potionEffects)
 			{
-				x += drawPotionEffect(x, y, potionEffect, false);
+				x += this.drawPotionEffect(x, y, potionEffect, false);
 			}
 		}
 		else
@@ -71,8 +71,8 @@ public class HUDPotionEffects extends HUDComponent
 			
 			for (PotionEffect potionEffect : potionEffects)
 			{
-				x = align.getX(drawPotionEffect(x, y, potionEffect, true), this.width);
-				drawPotionEffect(x, y, potionEffect, false);
+				x = align.getX(this.drawPotionEffect(x, y, potionEffect, true), this.width);
+				this.drawPotionEffect(x, y, potionEffect, false);
 				y += y1;
 			}
 		}
@@ -87,7 +87,7 @@ public class HUDPotionEffects extends HUDComponent
 		
 		if (!renderIcon)
 		{
-			String text = getPotionEffectDisplayString(potionEffect, renderDuration, renderAmplifier);
+			String text = this.getPotionEffectDisplayString(potionEffect, renderDuration, renderAmplifier);
 			int width = Math.max(80, this.mc.fontRenderer.getStringWidth(text) + 10);
 			
 			if (flag)

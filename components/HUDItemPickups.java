@@ -32,7 +32,7 @@ public class HUDItemPickups extends HUDComponent
 	@Override
 	public void render(float partialTickTime)
 	{
-		renderPickups(partialTickTime);
+		this.renderPickups(partialTickTime);
 	}
 	
 	@ForgeSubscribe(priority = EventPriority.HIGH)
@@ -67,12 +67,12 @@ public class HUDItemPickups extends HUDComponent
 	{
 		super.update();
 		
-		if (lastItemPickupTime < maxPickupTime + 20)
+		if (this.lastItemPickupTime < maxPickupTime + 20)
 		{
-			lastItemPickupTime++;
+			this.lastItemPickupTime++;
 		}
 		
-		Iterator<ItemPickup> iterator = itemPickups.iterator();
+		Iterator<ItemPickup> iterator = this.itemPickups.iterator();
 		while (iterator.hasNext())
 		{
 			ItemPickup itemPickup = iterator.next();

@@ -93,7 +93,7 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 			
 			for (int i = 0; i < list.size(); ++i)
 			{
-				String s1 = (String) list.get(i);
+				String s1 = list.get(i);
 				fontrenderer.drawStringWithShadow(s1, x1, y1, -1);
 				
 				if (i == 0)
@@ -114,7 +114,7 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	
 	public void drawHoveringFrame(int x, int y, int width, int height)
 	{
-		drawHoveringFrame(x, y, width, height, hoveringFrameDefaultColor);
+		this.drawHoveringFrame(x, y, width, height, hoveringFrameDefaultColor);
 	}
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
