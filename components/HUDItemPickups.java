@@ -127,7 +127,7 @@ public class HUDItemPickups extends HUDComponent
 			return width;
 		}
 		
-		int color = pickupBoxColor;
+		int color = pickupTextColor;
 		int alpha = hoveringFrameAlpha;
 		
 		if (itemPickup.time > maxPickupTime)
