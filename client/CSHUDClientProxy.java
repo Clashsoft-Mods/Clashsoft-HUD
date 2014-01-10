@@ -1,12 +1,14 @@
 package clashsoft.mods.cshud.client;
 
 import clashsoft.mods.cshud.api.IHUDComponent;
+import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 import clashsoft.mods.cshud.components.HUDItemPickups;
 import clashsoft.mods.cshud.components.HUDPotionEffects;
 import clashsoft.mods.cshud.components.HUDWorldInfo;
+import clashsoft.mods.cshud.tooltip.VanillaToolTipHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -31,11 +33,19 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 		this.registerHUDComponent(new HUDPotionEffects());
 		this.registerHUDComponent(new HUDWorldInfo());
 		this.registerHUDComponent(HUDItemPickups.instance);
+		
+		this.registerToolTipHandler(new VanillaToolTipHandler());
 	}
 	
 	@Override
 	public void registerHUDComponent(IHUDComponent component)
 	{
 		GuiCSHUDIngame.instance.registerHUDComponent(component);
+	}
+	
+	@Override
+	public void registerToolTipHandler(IToolTipHandler handler)
+	{
+		HUDCurrentObject.registerToolTipHandler(handler);
 	}
 }
