@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
@@ -45,7 +47,7 @@ public class HUDWorldInfo extends HUDComponent
 		int frameY = align.getY(32, this.height);
 		
 		this.drawHoveringFrame(frameX, frameY, 80, 32, color);
-		this.mc.fontRenderer.drawStringWithShadow(world.getWorldInfo().getWorldName(), frameX + 29, frameY + 6, 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(this.getWorldName(), frameX + 29, frameY + 6, 0xFFFFFF);
 		
 		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), frameX + 29, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
 		
@@ -53,13 +55,17 @@ public class HUDWorldInfo extends HUDComponent
 		
 		GL11.glPushMatrix();
 		
-		GL11.glTranslatef(frameX + 4F, frameY + 4F, 0F);
+		GL11.glTranslatef(frameX, frameY, 0F);
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_COLOR);
+		
 		if (isDay)
 		{
 			this.mc.renderEngine.bindTexture(sunTexture);
 			
 			GL11.glScalef(0.125F, 0.125F, 1F);
-			this.drawTexturedModalRect(0, 0, 32, 32, 192, 192);
+			this.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
 			GL11.glScalef(8F, 8F, 1F);
 		}
 		else
@@ -70,10 +76,14 @@ public class HUDWorldInfo extends HUDComponent
 			
 			this.mc.renderEngine.bindTexture(moonTexture);
 			
+			
 			GL11.glScalef(0.5F, 0.25F, 1F);
-			this.drawTexturedModalRect(0, 0, 8 + x1, 16 + y1, 48, 96);
+			this.drawTexturedModalRect(0, 0, x1, y1, 64, 128);
 			GL11.glScalef(2F, 4F, 1F);
 		}
+		
+		GL11.glDisable(GL11.GL_BLEND);
+		
 		if (isRaining)
 		{
 			boolean snow = false;
@@ -100,10 +110,24 @@ public class HUDWorldInfo extends HUDComponent
 				}
 			}
 			
+			GL11.glTranslatef(4F, 4F, 0F);
 			GL11.glScalef(0.125F, 0.5F, 1F);
 			this.drawTexturedModalRect(0, 0, 0, off, 192, 48);
 			GL11.glScalef(8F, 2F, 1F);
 		}
 		GL11.glPopMatrix();
+	}
+	
+	public String getWorldName()
+	{
+		IntegratedServer server = this.mc.getIntegratedServer();
+		if (server != null)
+		{
+			return server.getWorldName();
+		}
+		else
+		{
+			return EnumChatFormatting.ITALIC + "Server World";
+		}
 	}
 }
