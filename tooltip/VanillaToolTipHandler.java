@@ -33,7 +33,6 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		}
 		else
 		{
-			String state = "tooltip.state";
 			String on = "options.on";
 			String off = "options.off";
 			String yes = "gui.yes";
@@ -44,11 +43,11 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			if (block instanceof BlockReed)
 			{
-				lines.add(I18n.getString(state) + ": " + metadata);
+				lines.add(I18n.getString("tooltip.state") + ": " + metadata);
 			}
 			else if (block instanceof BlockSapling)
 			{
-				lines.add(I18n.getString(state) + ": " + (metadata >> 3));
+				lines.add(I18n.getString("tooltip.state") + ": " + (metadata >> 3));
 			}
 			else if (block instanceof BlockRedstoneWire)
 			{
@@ -57,30 +56,30 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			else if (block instanceof BlockRedstoneTorch)
 			{
 				boolean flag = block == Block.torchRedstoneActive;
-				lines.add(I18n.getString(state) + ": " + I18n.getString(flag ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? on : off));
 			}
 			else if (block instanceof BlockRedstoneLight)
 			{
 				boolean flag = block == Block.redstoneLampActive;
-				lines.add(I18n.getString(state) + ": " + I18n.getString(flag ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? on : off));
 			}
 			else if (block instanceof BlockLever || block instanceof BlockTripWireSource || block instanceof BlockButton || block instanceof BlockPistonBase)
 			{
 				boolean flag = (metadata & 8) != 0;
-				lines.add(I18n.getString(state) + ": " + I18n.getString(flag ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? on : off));
 			}
 			else if (block instanceof BlockRedstoneRepeater)
 			{
 				boolean active = block == Block.redstoneRepeaterActive;
 				int delay = ((metadata >> 2) + 1);
-				lines.add(I18n.getString(state) + ": " + (active ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + (active ? on : off));
 				lines.add(I18n.getString("tooltip.delay") + ": " + delay);
 			}
 			else if (block instanceof BlockComparator)
 			{
 				boolean active = (metadata & 8) != 0;
 				boolean mode = (metadata & 4) != 0;
-				lines.add(I18n.getString(state) + ": " + (active ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + (active ? on : off));
 				lines.add(I18n.getString("tooltip.mode") + ": " + (mode ? "-" : "&"));
 			}
 			else if (block instanceof BlockDaylightDetector)
@@ -90,7 +89,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			else if (block instanceof BlockBasePressurePlate)
 			{
 				boolean flag = metadata == 1;
-				lines.add(I18n.getString(state) + ": " + I18n.getString(flag ? on : off));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? on : off));
 			}
 			else if (block instanceof BlockDoor || block instanceof BlockTrapDoor || block instanceof BlockFenceGate)
 			{

@@ -2,7 +2,10 @@ package clashsoft.mods.cshud.components;
 
 import static clashsoft.mods.cshud.CSHUDMod.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.EventPriority;
@@ -47,7 +50,7 @@ public class HUDItemPickups extends HUDComponent
 			stack = stack.copy();
 			for (ItemPickup itemPickup : this.itemPickups)
 			{
-				if (itemPickup.stack.isItemEqual(stack) && Objects.equals(itemPickup.stack, stack))
+				if (itemPickup.stack.isItemEqual(stack) && Objects.equals(itemPickup.stack.stackTagCompound, stack.stackTagCompound))
 				{
 					itemPickup.time = 0;
 					itemPickup.stack.stackSize += stack.stackSize;
@@ -87,7 +90,7 @@ public class HUDItemPickups extends HUDComponent
 	{
 		// int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
 		
-		Alignment align = Alignment.BOTTOM_CENTER;
+		Alignment align = pickupAlignment;
 		int x = 0;
 		int y = 0;
 		int count = this.itemPickups.size();
