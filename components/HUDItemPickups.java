@@ -2,9 +2,7 @@ package clashsoft.mods.cshud.components;
 
 import static clashsoft.mods.cshud.CSHUDMod.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.EventPriority;
@@ -15,8 +13,8 @@ public class HUDItemPickups extends HUDComponent
 {
 	public static class ItemPickup
 	{
-		public ItemStack stack;
-		public int time = 0;
+		public ItemStack	stack;
+		public int			time	= 0;
 		
 		public ItemPickup(ItemStack stack)
 		{
@@ -24,10 +22,10 @@ public class HUDItemPickups extends HUDComponent
 		}
 	}
 	
-	public static final HUDItemPickups instance = new HUDItemPickups();
+	public static final HUDItemPickups	instance			= new HUDItemPickups();
 	
-	public int								lastItemPickupTime	= 0;
-	public List<ItemPickup>					itemPickups			= new ArrayList();
+	public int							lastItemPickupTime	= 0;
+	public List<ItemPickup>				itemPickups			= new ArrayList();
 	
 	@Override
 	public void render(float partialTickTime)
@@ -49,7 +47,7 @@ public class HUDItemPickups extends HUDComponent
 			stack = stack.copy();
 			for (ItemPickup itemPickup : this.itemPickups)
 			{
-				if (itemPickup.stack.isItemEqual(stack))
+				if (itemPickup.stack.isItemEqual(stack) && Objects.equals(itemPickup.stack, stack))
 				{
 					itemPickup.time = 0;
 					itemPickup.stack.stackSize += stack.stackSize;
@@ -87,33 +85,51 @@ public class HUDItemPickups extends HUDComponent
 	
 	public void renderPickups(float partialTickTime)
 	{
-		int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
+		// int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
 		
-		for (int i = 0, j = 0; i < this.itemPickups.size() && j < this.height; i++)
+		Alignment align = Alignment.BOTTOM_CENTER;
+		int x = 0;
+		int y = 0;
+		int count = this.itemPickups.size();
+		int y1 = pickupBoxHeight;
+		y = align.getY(count * y1, this.height);
+		
+		for (ItemPickup itemPickup : this.itemPickups)
 		{
-			ItemPickup itemPickup = this.itemPickups.get(i);
-			
-			j += this.drawItemPickup(this.width, j - l, partialTickTime, itemPickup);
+			x = align.getX(this.drawItemPickup(0, 0, 0F, itemPickup, true), this.width);
+			this.drawItemPickup(x, y, partialTickTime, itemPickup, false);
+			y += y1;
 		}
 	}
 	
-	public int drawItemPickup(int x, int y, float partialTickTime, ItemPickup itemPickup)
+	public int drawItemPickup(int x, int y, float partialTickTime, ItemPickup itemPickup, boolean flag)
 	{
 		ItemStack stack = itemPickup.stack;
 		
 		String s = stack.stackSize == 1 ? stack.getDisplayName() : String.format("%s (%d)", stack.getDisplayName(), stack.stackSize);
-		int width = Math.max(80, this.mc.fontRenderer.getStringWidth(s) + 10);
+		int textWidth = this.mc.fontRenderer.getStringWidth(s);
+		int width = Math.max(80, textWidth + 10);
+		
+		if (flag)
+		{
+			return width;
+		}
+		
+		int color = pickupBoxColor;
+		int alpha = hoveringFrameAlpha;
 		
 		if (itemPickup.time > maxPickupTime)
 		{
-			float f = width / 20F;
-			float f1 = (itemPickup.time - maxPickupTime) + partialTickTime;
-			x += f * f1;
+			float f1 = (itemPickup.time - maxPickupTime);
+			
+			float f = 1F - (f1 / 20F);
+			alpha = Math.min((int) (f * 255F), alpha);
+			color |= alpha << 24;
 		}
 		
-		this.drawHoveringFrame(x - width, y, width, pickupBoxHeight, pickupBoxColor);
-		this.mc.fontRenderer.drawString(s, x - width + 5, y + 5, pickupTextColor);
+		this.drawHoveringFrame(x, y, width, pickupBoxHeight, pickupBoxColor, hoveringFrameBackgroundColor, alpha);
+		this.mc.fontRenderer.drawStringWithShadow(s, x + ((width - textWidth) / 2), y + 5, color);
 		
-		return pickupBoxHeight;
+		return width;
 	}
 }

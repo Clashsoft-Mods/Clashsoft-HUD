@@ -2,31 +2,31 @@ package clashsoft.mods.cshud.components;
 
 public class Alignment
 {
-	public static final int	HORIZONTAL_LEFT		= 0;
-	public static final int	HORIZONTAL_CENTER	= 1;
-	public static final int	HORIZONTAL_RIGHT	= 2;
+	public static final int		HORIZONTAL_LEFT		= 0;
+	public static final int		HORIZONTAL_CENTER	= 1;
+	public static final int		HORIZONTAL_RIGHT	= 2;
 	
-	public static final int	VERTICAL_TOP		= 0;
-	public static final int	VERTICAL_CENTER		= 1;
-	public static final int	VERTICAL_BOTTOM		= 2;
+	public static final int		VERTICAL_TOP		= 0;
+	public static final int		VERTICAL_CENTER		= 1;
+	public static final int		VERTICAL_BOTTOM		= 2;
 	
-	public static final String VERTICAL_CHARS = "tcb";
-	public static final String HORIZONTAL_CHARS = "lcr";
+	public static final String	VERTICAL_CHARS		= "tcb";
+	public static final String	HORIZONTAL_CHARS	= "lcr";
 	
-	public static Alignment	TOP_LEFT			= new Alignment(0, 0);
-	public static Alignment	TOP_CENTER			= new Alignment(0, 1);
-	public static Alignment	TOP_RIGHT			= new Alignment(0, 2);
+	public static Alignment		TOP_LEFT			= new Alignment(0, 0);
+	public static Alignment		TOP_CENTER			= new Alignment(0, 1);
+	public static Alignment		TOP_RIGHT			= new Alignment(0, 2);
 	
-	public static Alignment	CENTER_LEFT			= new Alignment(1, 0);
-	public static Alignment	CENTER				= new Alignment(1, 1);
-	public static Alignment	CENTER_RIGHT		= new Alignment(1, 2);
+	public static Alignment		CENTER_LEFT			= new Alignment(1, 0);
+	public static Alignment		CENTER				= new Alignment(1, 1);
+	public static Alignment		CENTER_RIGHT		= new Alignment(1, 2);
 	
-	public static Alignment	BOTTOM_LEFT			= new Alignment(2, 0);
-	public static Alignment	BOTTOM_CENTER		= new Alignment(2, 1);
-	public static Alignment	BOTTOM_RIGHT		= new Alignment(2, 2);
+	public static Alignment		BOTTOM_LEFT			= new Alignment(2, 0);
+	public static Alignment		BOTTOM_CENTER		= new Alignment(2, 1);
+	public static Alignment		BOTTOM_RIGHT		= new Alignment(2, 2);
 	
-	public int				vertical;
-	public int				horizontal;
+	public int					vertical;
+	public int					horizontal;
 	
 	public Alignment(int vertical, int horizontal)
 	{

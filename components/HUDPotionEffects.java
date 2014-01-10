@@ -19,9 +19,9 @@ public class HUDPotionEffects extends HUDComponent
 {
 	public static final ResourceLocation	inventoryTexture	= new ResourceLocation("minecraft", "textures/gui/container/inventory.png");
 	
-	public static boolean renderIcon = (potionEffectDisplayMode & 1) != 0;
-	public static boolean renderDuration = (potionEffectDisplayMode & 2) != 0;
-	public static boolean renderAmplifier = (potionEffectDisplayMode & 4) != 0;
+	public static boolean					renderIcon			= (potionEffectDisplayMode & 1) != 0;
+	public static boolean					renderDuration		= (potionEffectDisplayMode & 2) != 0;
+	public static boolean					renderAmplifier		= (potionEffectDisplayMode & 4) != 0;
 	
 	@Override
 	public void render(float partialTickTime)
@@ -71,7 +71,7 @@ public class HUDPotionEffects extends HUDComponent
 			
 			for (PotionEffect potionEffect : potionEffects)
 			{
-				x = align.getX(this.drawPotionEffect(x, y, potionEffect, true), this.width);
+				x = align.getX(this.drawPotionEffect(0, 0, potionEffect, true), this.width);
 				this.drawPotionEffect(x, y, potionEffect, false);
 				y += y1;
 			}

@@ -89,7 +89,7 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 				y1 = this.height - height - 6;
 			}
 			
-			this.drawHoveringFrame(x1, y1, width, height, hoveringFrameDefaultColor);
+			this.drawHoveringFrame(x1 - 4, y1 - 4, width + 8, height + 8, hoveringFrameDefaultColor);
 			
 			for (int i = 0; i < list.size(); ++i)
 			{
@@ -119,7 +119,7 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
-		this.drawHoveringFrame(x + 4, y + 4, width - 8, height - 8, color, hoveringFrameBackgroundColor, hoveringFrameAlpha);
+		this.drawHoveringFrame(x, y, width, height, color, hoveringFrameBackgroundColor, hoveringFrameAlpha);
 	}
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color, int backgroundColor, int alpha)
@@ -130,14 +130,17 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 		int colorRGBA = color | alpha;
 		int colorGradient = (colorRGBA & 0xFEFEFE) >> 1 | colorRGBA & -0xFFFFFF;
 		
-		drawRect(x - 3, y - 4, x + width + 3, y - 3, bgRGBA);
-		drawRect(x - 3, y + height + 3, x + width + 3, y + height + 4, bgRGBA);
-		drawRect(x - 3, y - 3, x + width + 3, y + height + 3, bgRGBA);
-		drawRect(x - 4, y - 3, x - 3, y + height + 3, bgRGBA);
-		drawRect(x + width + 3, y - 3, x + width + 4, y + height + 3, bgRGBA);
-		this.drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, colorRGBA, colorGradient);
-		this.drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, colorRGBA, colorGradient);
-		drawRect(x - 3, y - 3, x + width + 3, y - 3 + 1, colorRGBA);
-		drawRect(x - 3, y + height + 2, x + width + 3, y + height + 3, colorGradient);
+		// Render gray rects
+		drawRect		(x + 1, 		y	,			x + width - 1,	y + 1,				bgRGBA);
+		drawRect		(x + 1,			y + height - 1, x + width - 1,	y + height,			bgRGBA);
+		drawRect		(x + 2, 		y + 2, 			x + width - 2,	y + height - 2,		bgRGBA);
+		drawRect		(x,		 		y + 1, 			x + 1, 			y + height - 1,		bgRGBA);
+		drawRect		(x + width - 1, y + 1,			x + width,		y + height - 1,		bgRGBA);
+		
+		// Render colored rects
+		drawGradientRect(x + 1, 		y + 2, 			x + 2, 			y + height - 2,		colorRGBA, colorGradient);
+		drawGradientRect(x + width - 2,	y + 2, 			x + width - 1,	y + height - 2,		colorRGBA, colorGradient);
+		drawRect		(x + 1, 		y + 1, 			x + width - 1,	y + 2,				colorRGBA);
+		drawRect		(x + 1, 		y + height - 2, x + width - 1,	y + height - 1,		colorGradient);
 	}
 }

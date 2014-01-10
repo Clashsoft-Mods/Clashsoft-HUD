@@ -15,12 +15,12 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public class HUDWorldInfo extends HUDComponent
 {
-	public static final ResourceLocation	sunTexture			= new ResourceLocation("minecraft", "textures/environment/sun.png");
-	public static final ResourceLocation	moonTexture			= new ResourceLocation("minecraft", "textures/environment/moon_phases.png");
-	public static final ResourceLocation	rainTexture			= new ResourceLocation("minecraft", "textures/environment/rain.png");
-	public static final ResourceLocation	snowTexture			= new ResourceLocation("minecraft", "textures/environment/snow.png");
+	public static final ResourceLocation	sunTexture	= new ResourceLocation("minecraft", "textures/environment/sun.png");
+	public static final ResourceLocation	moonTexture	= new ResourceLocation("minecraft", "textures/environment/moon_phases.png");
+	public static final ResourceLocation	rainTexture	= new ResourceLocation("minecraft", "textures/environment/rain.png");
+	public static final ResourceLocation	snowTexture	= new ResourceLocation("minecraft", "textures/environment/snow.png");
 	
-	public Random rand = new Random();
+	public Random							rand		= new Random();
 	
 	@Override
 	public void render(float partialTickTime)
@@ -75,7 +75,6 @@ public class HUDWorldInfo extends HUDComponent
 			int y1 = (moonPhase >> 2) * 128;
 			
 			this.mc.renderEngine.bindTexture(moonTexture);
-			
 			
 			GL11.glScalef(0.5F, 0.25F, 1F);
 			this.drawTexturedModalRect(0, 0, x1, y1, 64, 128);
