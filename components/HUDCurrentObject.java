@@ -2,11 +2,17 @@ package clashsoft.mods.cshud.components;
 
 import static clashsoft.mods.cshud.CSHUDMod.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import clashsoft.mods.cshud.api.IToolTipHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -16,9 +22,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 public class HUDCurrentObject extends HUDComponent
 {
+	private static final List<IToolTipHandler> handlers = new ArrayList();
+	
+	public static void registerToolTipHandler(IToolTipHandler handler)
+	{
+		handlers.add(handler);
+	}
+	
 	@Override
 	public void render(float partialTickTime)
 	{
@@ -38,24 +52,21 @@ public class HUDCurrentObject extends HUDComponent
 			return;
 		}
 		
-		boolean isEntity = mop.typeOfHit == EnumMovingObjectType.ENTITY;
-		
 		Alignment align = currentObjAlignment;
-		String renderName = "";
+		World world = this.mc.theWorld;
+		boolean isEntity = mop.typeOfHit == EnumMovingObjectType.ENTITY;
+		List<String> lines = new ArrayList();
 		int width = 0;
 		int height = 0;
 		int color = 0;
-		int frameX = 0;
-		int frameY = 0;
 		int textX = 0;
-		int textY = 0;
 		ItemStack stack = null;
 		
 		if (isEntity)
 		{
 			Entity entity = mop.entityHit;
 			
-			renderName = entity.getEntityName();
+			String name = entity.getEntityName();
 			int entityWidth;
 			int entityHeight;
 			
@@ -80,16 +91,16 @@ public class HUDCurrentObject extends HUDComponent
 				}
 			}
 			
-			width = entityWidth + this.mc.fontRenderer.getStringWidth(renderName);
+			lines.add(name);
+			width = entityWidth;
 			height = entityHeight + 8;
 			textX = entityWidth - 4;
-			textY = 8;
 			color = this.getEntityColor(entity);
 		}
 		else
 		{
-			int blockID = this.mc.theWorld.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
-			int metadata = this.mc.theWorld.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			int blockID = world.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
+			int metadata = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 			
 			stack = Block.blocksList[blockID].getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 			if (stack == null)
@@ -97,22 +108,39 @@ public class HUDCurrentObject extends HUDComponent
 				stack = new ItemStack(blockID, 1, metadata);
 			}
 			
-			renderName = stack.getDisplayName();
-			width = 32 + this.mc.fontRenderer.getStringWidth(renderName);
+			String name = stack.getDisplayName();
+			lines.add(name);
+			width = 32;
 			height = 24;
 			textX = 24;
-			textY = 8;
 			
 			color = currentObjBlockColor;
 		}
 		
-		frameX = align.getX(width, this.width);
-		frameY = align.getY(height, this.height);
+		this.addInformation(lines, world, mop, stack);
 		
-		textY = (height - textY) / 2;
+		// Calculate Positions and Dimensions
+		
+		FontRenderer font = this.mc.fontRenderer;
+		int lineCount = lines.size();
+		int textHeight = lineCount * font.FONT_HEIGHT;
+		
+		if (lineCount > 1)
+		{
+			textHeight += 2;
+		}
+		
+		width = Math.max(width, width + getMaxWidth(lines, font));
+		height = Math.max(height, textHeight + 16);
+		
+		int frameX = align.getX(width, this.width);
+		int frameY = align.getY(height, this.height);
+		
+		int textY = (height - textHeight) / 2;
+		
+		// Do Actual Rendering
 		
 		this.drawHoveringFrame(frameX, frameY, width, height, color);
-		
 		if (isEntity)
 		{
 			int entityY = frameY + (mop.entityHit instanceof EntityHanging ? height / 2 : height - 4);
@@ -122,7 +150,7 @@ public class HUDCurrentObject extends HUDComponent
 		else
 		{
 			int x2 = frameX + 4;
-			int y2 = frameY + textY - 4;
+			int y2 = frameY + ((height - 16) / 2);
 			
 			RenderHelper.enableGUIStandardItemLighting();
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -130,7 +158,42 @@ public class HUDCurrentObject extends HUDComponent
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		this.mc.fontRenderer.drawStringWithShadow(renderName, frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
+		for (int i = 0; i < lineCount; i++)
+		{
+			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
+			
+			if (i == 0)
+			{
+				textY += 2;
+			}
+			
+			textY += font.FONT_HEIGHT;
+		}
+	}
+	
+	public int getMaxWidth(List<String> lines, FontRenderer font)
+	{
+		int width = 0;
+		
+		for (String line : lines)
+		{
+			int w = font.getStringWidth(line);
+			
+			if (w > width)
+			{
+				width = w;
+			}
+		}
+		
+		return width;
+	}
+	
+	public void addInformation(List<String> lines, World world, MovingObjectPosition object, ItemStack block)
+	{
+		for (IToolTipHandler handler : handlers)
+		{
+			handler.addInformation(lines, world, object, block);
+		}
 	}
 	
 	public int getEntityColor(Entity entity)
