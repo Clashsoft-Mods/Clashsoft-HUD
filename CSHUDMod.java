@@ -150,6 +150,15 @@ public class CSHUDMod
 			lr.addStringLocalization("entity.LeashKnot.name", "Leash Knot");
 			lr.addStringLocalization("entity.EnderCrystal.name", "Ender Crystal");
 			
+			lr.addStringLocalization("tooltip.state", "State");
+			lr.addStringLocalization("tooltip.mode", "Mode");
+			lr.addStringLocalization("tooltip.open", "Open");
+			lr.addStringLocalization("tooltip.power", "Power");
+			lr.addStringLocalization("tooltip.delay", "Delay");
+			lr.addStringLocalization("tooltip.lightvalue", "Light Value");
+			
+			lr.addStringLocalization("tooltip.fuse", "Fuse");
+			
 			hasLoaded = true;
 		}
 	}
