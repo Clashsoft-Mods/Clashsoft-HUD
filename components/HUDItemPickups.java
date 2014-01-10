@@ -94,11 +94,20 @@ public class HUDItemPickups extends HUDComponent
 		int y1 = pickupBoxHeight;
 		y = align.getY(count * y1, this.height);
 		
-		for (ItemPickup itemPickup : this.itemPickups)
+		for (int i = 0;; i++)
 		{
-			x = align.getX(this.drawItemPickup(0, 0, 0F, itemPickup, true), this.width);
-			this.drawItemPickup(x, y, partialTickTime, itemPickup, false);
-			y += y1;
+			if (i < this.itemPickups.size())
+			{
+				ItemPickup itemPickup = this.itemPickups.get(i);
+				
+				x = align.getX(this.drawItemPickup(0, 0, 0F, itemPickup, true), this.width);
+				this.drawItemPickup(x, y, partialTickTime, itemPickup, false);
+				y += y1;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 	
