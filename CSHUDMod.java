@@ -63,10 +63,15 @@ public class CSHUDMod
 	
 	public static Alignment			weatherAlignment				= Alignment.BOTTOM_LEFT;
 	public static boolean			weatherUseColorForText			= false;
-	public static int				weatherDayColor					= 0xFFFF00;
-	public static int				weatherNightColor				= 0x0000FF;
 	public static boolean			weatherRandomizeDownfall		= false;
 	public static boolean			weatherShowSnowAsRain			= false;
+	public static int				weatherDayColor					= 0xFFFF00;
+	public static int				weatherNightColor				= 0x0000FF;
+	
+	public static Alignment			armorStatusAlignment			= Alignment.BOTTOM_RIGHT;
+	public static boolean			armorStatusRenderCurrentItem	= true;
+	public static boolean			armorStatusUseColorForText		= false;
+	public static int				armorStatusBoxColor				= 0xFFFFFF;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -92,10 +97,10 @@ public class CSHUDMod
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
-		maxPickupTime = CSConfig.getInt("itempickup", "Max Pickup Display Time", maxPickupTime);
-		pickupBoxHeight = CSConfig.getInt("itempickup", "Pickup Display Box Height", pickupBoxHeight);
-		pickupBoxColor = CSConfig.getInt("itempickup", "Pickup Display Box Color", pickupBoxColor);
-		pickupTextColor = CSConfig.getInt("itempickup", "Pickup Display Text Color", pickupTextColor);
+		maxPickupTime = CSConfig.getInt("itempickup", "Max Display Time", maxPickupTime);
+		pickupBoxHeight = CSConfig.getInt("itempickup", "Box Height", pickupBoxHeight);
+		pickupBoxColor = CSConfig.getInt("itempickup", "Box Color", pickupBoxColor);
+		pickupTextColor = CSConfig.getInt("itempickup", "Text Color", pickupTextColor);
 		
 		potionAlignment = Alignment.parseAlignment(CSConfig.getString("buff", "Alignment", potionAlignment));
 		potionUseColorForText = CSConfig.getBool("buff", "Use Frame Color for Text", potionUseColorForText);
@@ -107,10 +112,15 @@ public class CSHUDMod
 		
 		weatherAlignment = Alignment.parseAlignment(CSConfig.getString("weather", "Alignment", weatherAlignment));
 		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
-		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
-		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);
 		weatherShowSnowAsRain = CSConfig.getBool("weather", "Show Snow As Rain", weatherShowSnowAsRain);
 		weatherRandomizeDownfall = CSConfig.getBool("weather", "Randomize Downfall Animation", weatherRandomizeDownfall);
+		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
+		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);
+		
+		armorStatusAlignment = Alignment.parseAlignment(CSConfig.getString("armorstatus", "Alignment", armorStatusAlignment));
+		armorStatusRenderCurrentItem = CSConfig.getBool("armorstatus", "Render Current Item", armorStatusRenderCurrentItem);
+		armorStatusUseColorForText = CSConfig.getBool("armorstatus", "Use Damage Color for Text", armorStatusUseColorForText);
+		armorStatusBoxColor = CSConfig.getInt("armorstatus", "Box Color", armorStatusBoxColor);
 		
 		CSConfig.saveConfig();
 	}
