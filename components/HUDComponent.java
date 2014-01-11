@@ -16,6 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemStack;
 
 public abstract class HUDComponent extends Gui implements IHUDComponent
 {
@@ -48,6 +49,14 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	}
 	
 	public abstract void render(float partialTickTime);
+	
+	public void drawItem(ItemStack stack, int x, int y)
+	{
+		RenderHelper.enableGUIStandardItemLighting();
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
+		RenderHelper.disableStandardItemLighting();
+	}
 	
 	public void drawHoveringText(List<String> list, int x, int y, FontRenderer fontrenderer)
 	{
@@ -124,6 +133,11 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color, int backgroundColor, int alpha)
 	{
+		if (width < 2 || height < 2)
+		{
+			return;
+		}
+		
 		alpha <<= 24;
 		int bgRGB = backgroundColor & 0xFFFFFF;
 		int bgRGBA = bgRGB | alpha;

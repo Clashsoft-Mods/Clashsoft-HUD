@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import clashsoft.mods.cshud.api.IToolTipHandler;
 
@@ -152,10 +151,7 @@ public class HUDCurrentObject extends HUDComponent
 			int x2 = frameX + 4;
 			int y2 = frameY + ((height - 16) / 2);
 			
-			RenderHelper.enableGUIStandardItemLighting();
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-			itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x2, y2);
-			RenderHelper.disableStandardItemLighting();
+			this.drawItem(stack, x2, y2);
 		}
 		
 		for (int i = 0; i < lineCount; i++)
