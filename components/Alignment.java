@@ -13,6 +13,19 @@ public class Alignment
 	public static final String	VERTICAL_CHARS		= "tcb";
 	public static final String	HORIZONTAL_CHARS	= "lcr";
 	
+	public static Alignment		NONE				= new Alignment(0, 0)
+													{
+														public int getX(int width, int screenWidth)
+														{
+															return -screenWidth;
+														}
+														
+														public int getY(int height, int screenHeight)
+														{
+															return -screenHeight;
+														}
+													};
+	
 	public static Alignment		TOP_LEFT			= new Alignment(0, 0);
 	public static Alignment		TOP_CENTER			= new Alignment(0, 1);
 	public static Alignment		TOP_RIGHT			= new Alignment(0, 2);
@@ -93,38 +106,46 @@ public class Alignment
 	{
 		string = string.toLowerCase();
 		string = string.replace("top", "t").replace("center", "c").replace("bottom", "b").replace("left", "l").replace("right", "r");
-		switch (string)
+		
+		if ("tl".equals(string) || "lt".equals(string))
 		{
-			case "tl":
-			case "lt":
-				return TOP_LEFT;
-			case "tc":
-			case "ct":
-				return TOP_CENTER;
-			case "tr":
-			case "rt":
-				return TOP_RIGHT;
-				
-			case "cl":
-			case "lc":
-				return CENTER_LEFT;
-			case "cc":
-			case "c":
-				return CENTER;
-			case "cr":
-			case "rc":
-				return CENTER_RIGHT;
-				
-			case "bl":
-			case "lb":
-				return BOTTOM_LEFT;
-			case "bc":
-			case "cb":
-				return BOTTOM_CENTER;
-			case "br":
-			case "rb":
-				return BOTTOM_RIGHT;
+			return TOP_LEFT;
 		}
-		return null;
+		else if ("tc".equals(string) || "ct".equals(string))
+		{
+			return TOP_CENTER;
+		}
+		else if ("tr".equals(string) || "rt".equals(string))
+		{
+			return TOP_RIGHT;
+		}
+		else if ("cl".equals(string) || "lc".equals(string))
+		{
+			return CENTER_LEFT;
+		}
+		else if ("cc".equals(string) || "c".equals(string))
+		{
+			return CENTER;
+		}
+		else if ("cr".equals(string) || "rc".equals(string))
+		{
+			return CENTER_RIGHT;
+		}
+		else if ("bl".equals(string) || "lb".equals(string))
+		{
+			return BOTTOM_LEFT;
+		}
+		else if ("bc".equals(string) || "cb".equals(string))
+		{
+			return BOTTOM_CENTER;
+		}
+		else if ("br".equals(string) || "rb".equals(string))
+		{
+			return BOTTOM_RIGHT;
+		}
+		else
+		{
+			return NONE;
+		}
 	}
 }

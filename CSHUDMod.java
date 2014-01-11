@@ -33,6 +33,7 @@ public class CSHUDMod
 	public static boolean			showPotionEffectDisplay			= true;
 	public static boolean			showItemPickups					= true;
 	public static boolean			showWorldInfo					= true;
+	public static boolean			showArmorStatus					= true;
 	
 	public static int				hoveringFrameDefaultColor		= 0x5000FF;
 	public static int				hoveringFrameBackgroundColor	= 0x10000F;
@@ -83,6 +84,7 @@ public class CSHUDMod
 		showPotionEffectDisplay = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffectDisplay);
 		showItemPickups = CSConfig.getBool("general", "Show Pickup Display", showItemPickups);
 		showWorldInfo = CSConfig.getBool("general", "Show World Info", showWorldInfo);
+		showArmorStatus = CSConfig.getBool("general", "Show Armor Status", showArmorStatus);
 		
 		hoveringFrameDefaultColor = CSConfig.getInt("hoveringframe", "Default Color", hoveringFrameDefaultColor);
 		hoveringFrameBackgroundColor = CSConfig.getInt("hoveringframe", "Background Color", hoveringFrameBackgroundColor);

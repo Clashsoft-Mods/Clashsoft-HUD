@@ -21,6 +21,11 @@ public class HUDArmorStatus extends HUDComponent
 	
 	public void renderArmorStatus()
 	{
+		if (!showArmorStatus)
+		{
+			return;
+		}
+		
 		ItemStack[] armorStacks = getArmorStacks(this.mc.thePlayer);
 		if (armorStacks.length == 0)
 		{
