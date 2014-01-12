@@ -148,7 +148,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				lines.add(I18n.getString("tooltip.open") + ": " + I18n.getString(flag ? "gui.yes" : "gui.no"));
 			}
 			
-			if (CSHUDMod.currentObjTileEntityData)
+			if (CSHUDMod.tooltipTileEntityData)
 			{
 				TileEntity te = world.getBlockTileEntity(x, y, z);
 				
@@ -176,6 +176,10 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				else if (te instanceof TileEntityCommandBlock)
 				{
 					addCommandBlockLines(lines, (TileEntityCommandBlock) te);
+				}
+				else if (te instanceof TileEntityMobSpawner)
+				{
+					addSpawnerLines(lines, (TileEntityMobSpawner) te);
 				}
 			}
 		}
@@ -288,15 +292,30 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		
 		if (c != null && !c.isEmpty())
 		{
+			if (c.length() >= CSHUDMod.tooltipCommandThreshold)
+			{
+				int j = c.indexOf(' ');
+				if (j != -1)
+				{
+					c = c.substring(0, j) + " [...]";
+				}
+				else
+				{
+					c = c.substring(0, CSHUDMod.tooltipCommandThreshold) + "[...]";
+				}
+			}
+			
 			lines.add(I18n.getString("tooltip.command") + ": " + c);
 		}
 		if (s != null && !s.isEmpty())
 		{
 			lines.add(I18n.getString("tooltip.command.sender") + ": " + s);
 		}
-		if (i > 0)
-		{
-			lines.add(I18n.getString("tooltip.command.successcount") + ": " + i);
-		}
+	}
+	
+	public void addSpawnerLines(List<String> lines, TileEntityMobSpawner spawner)
+	{
+		String s = spawner.getSpawnerLogic().getEntityNameToSpawn();
+		lines.add(I18n.getString("tooltip.spawner.entity") + ": " + I18n.getString("entity." + s + ".name"));
 	}
 }

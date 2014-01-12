@@ -46,7 +46,9 @@ public class CSHUDMod
 	public static int				currentObjWaterEntityColor		= 0x00FFFF;
 	public static int				currentObjMonsterEntityColor	= 0xFF0000;
 	public static int				currentObjOtherEntityColor		= 0xFFFFFF;
-	public static boolean			currentObjTileEntityData		= true;
+	
+	public static boolean			tooltipTileEntityData			= true;
+	public static int				tooltipCommandThreshold			= 32;
 	
 	public static Alignment			pickupAlignment					= Alignment.TOP_RIGHT;
 	public static int				maxPickupTime					= 100;
@@ -98,7 +100,9 @@ public class CSHUDMod
 		currentObjMonsterEntityColor = CSConfig.getInt("currentobj", "Monster Entity Color", currentObjMonsterEntityColor);
 		currentObjWaterEntityColor = CSConfig.getInt("currentobj", "Water Entity Color", currentObjWaterEntityColor);
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
-		currentObjTileEntityData = CSConfig.getBool("currentobj", "Tile Entity Info", currentObjTileEntityData);
+		
+		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
+		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
 		maxPickupTime = CSConfig.getInt("itempickup", "Max Display Time", maxPickupTime);
@@ -168,10 +172,11 @@ public class CSHUDMod
 			lr.addStringLocalization("tooltip.mode", "Mode");
 			lr.addStringLocalization("tooltip.open", "Open");
 			lr.addStringLocalization("tooltip.deactivated", "Deactivated");
+			
 			lr.addStringLocalization("tooltip.power", "Power");
 			lr.addStringLocalization("tooltip.delay", "Delay");
 			lr.addStringLocalization("tooltip.lightvalue", "Light Value");
-			
+			lr.addStringLocalization("tooltip.child", "Child");
 			lr.addStringLocalization("tooltip.fuse", "Fuse");
 			lr.addStringLocalization("tooltip.fuel", "Fuel");
 			lr.addStringLocalization("tooltip.converting", "Converting");
@@ -193,7 +198,8 @@ public class CSHUDMod
 			
 			lr.addStringLocalization("tooltip.command", "Command");
 			lr.addStringLocalization("tooltip.command.sender", "Sender Name");
-			lr.addStringLocalization("tooltip.command.successcount", "Success Count");
+			
+			lr.addStringLocalization("tooltip.spawner.entity", "Entity");
 			
 			hasLoaded = true;
 		}
