@@ -154,16 +154,13 @@ public class HUDCurrentObject extends HUDComponent
 			this.drawItem(stack, x2, y2);
 		}
 		
-		for (int i = 0; i < lineCount; i++)
+		font.drawStringWithShadow(lines.get(0), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
+		textY += 2;
+		
+		for (int i = 1; i < lineCount; i++)
 		{
-			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
-			
-			if (i == 0)
-			{
-				textY += 2;
-			}
-			
 			textY += font.FONT_HEIGHT;
+			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xA4A4A4);			
 		}
 	}
 	
@@ -231,8 +228,6 @@ public class HUDCurrentObject extends HUDComponent
 		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
 		
 		RenderHelper.disableStandardItemLighting();
-		
-		GL11.glDisable(GL11.GL_COLOR_MATERIAL);
 		
 		GL11.glPopMatrix();
 	}

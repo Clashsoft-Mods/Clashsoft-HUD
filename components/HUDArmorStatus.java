@@ -66,6 +66,7 @@ public class HUDArmorStatus extends HUDComponent
 				float f = (float) damage / (float) maxDamage;
 				int f1 = (int) (f * 56F);
 				int color = Color.HSBtoRGB(f / 3F, 1F, 1F);
+				damage++;
 				
 				if (armorStatusUseColorForText)
 				{
