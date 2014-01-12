@@ -149,7 +149,7 @@ public class CSHUDMod
 	
 	private static void load()
 	{
-		if (!hasLoaded)
+		if (!hasLoaded && proxy.isClient())
 		{
 			proxy.init();
 			

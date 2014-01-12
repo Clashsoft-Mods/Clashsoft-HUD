@@ -16,4 +16,9 @@ public class CSHUDCommonProxy
 	public void registerToolTipHandler(IToolTipHandler handler)
 	{
 	}
+
+	public boolean isClient()
+	{
+		return false;
+	}
 }

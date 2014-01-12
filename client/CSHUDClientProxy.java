@@ -46,4 +46,10 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 	{
 		HUDCurrentObject.registerToolTipHandler(handler);
 	}
+	
+	@Override
+	public boolean isClient()
+	{
+		return true;
+	}
 }
