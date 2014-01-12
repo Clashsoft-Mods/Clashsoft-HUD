@@ -46,6 +46,7 @@ public class CSHUDMod
 	public static int				currentObjWaterEntityColor		= 0x00FFFF;
 	public static int				currentObjMonsterEntityColor	= 0xFF0000;
 	public static int				currentObjOtherEntityColor		= 0xFFFFFF;
+	public static boolean			currentObjTileEntityData		= true;
 	
 	public static Alignment			pickupAlignment					= Alignment.TOP_RIGHT;
 	public static int				maxPickupTime					= 100;
@@ -97,6 +98,7 @@ public class CSHUDMod
 		currentObjMonsterEntityColor = CSConfig.getInt("currentobj", "Monster Entity Color", currentObjMonsterEntityColor);
 		currentObjWaterEntityColor = CSConfig.getInt("currentobj", "Water Entity Color", currentObjWaterEntityColor);
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
+		currentObjTileEntityData = CSConfig.getBool("currentobj", "Tile Entity Info", currentObjTileEntityData);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
 		maxPickupTime = CSConfig.getInt("itempickup", "Max Display Time", maxPickupTime);
@@ -165,11 +167,22 @@ public class CSHUDMod
 			lr.addStringLocalization("tooltip.state", "State");
 			lr.addStringLocalization("tooltip.mode", "Mode");
 			lr.addStringLocalization("tooltip.open", "Open");
+			lr.addStringLocalization("tooltip.deactivated", "Deactivated");
 			lr.addStringLocalization("tooltip.power", "Power");
 			lr.addStringLocalization("tooltip.delay", "Delay");
 			lr.addStringLocalization("tooltip.lightvalue", "Light Value");
 			
 			lr.addStringLocalization("tooltip.fuse", "Fuse");
+			lr.addStringLocalization("tooltip.fuel", "Fuel");
+			lr.addStringLocalization("tooltip.converting", "Converting");
+			
+			lr.addStringLocalization("tooltip.music.note", "Note");
+			lr.addStringLocalization("tooltip.music.type", "Type");
+			lr.addStringLocalization("tooltip.music.harp", "Harp");
+			lr.addStringLocalization("tooltip.music.bassdrum", "Bassdrum");
+			lr.addStringLocalization("tooltip.music.snare", "Snaredrum");
+			lr.addStringLocalization("tooltip.music.hat", "Hat");
+			lr.addStringLocalization("tooltip.music.bassattack", "Bass Attack");
 			
 			hasLoaded = true;
 		}
