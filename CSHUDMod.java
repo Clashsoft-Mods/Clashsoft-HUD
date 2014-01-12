@@ -23,7 +23,7 @@ public class CSHUDMod
 	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHUDClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHUDCommonProxy")
 	public static CSHUDCommonProxy	proxy;
 	
-	public static final int			REVISION						= 0;
+	public static final int			REVISION						= 1;
 	public static final String		VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
 	public static boolean			hasLoaded						= false;
