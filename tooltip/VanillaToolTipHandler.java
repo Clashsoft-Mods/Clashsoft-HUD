@@ -17,10 +17,7 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityNote;
-import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StringUtils;
@@ -157,20 +154,28 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				
 				if (te instanceof IInventory)
 				{
-					addInventoryLines(lines, (IInventory)te);
+					addInventoryLines(lines, (IInventory) te);
 				}
 				
 				if (te instanceof TileEntitySign)
 				{
-					addSignLines(lines, (TileEntitySign)te);
+					addSignLines(lines, (TileEntitySign) te);
 				}
 				else if (te instanceof TileEntityNote)
 				{
-					addNoteLines(lines, (TileEntityNote)te);
+					addNoteLines(lines, (TileEntityNote) te);
 				}
 				else if (te instanceof TileEntityFurnace)
 				{
-					addFurnaceLines(lines, (TileEntityFurnace)te);
+					addFurnaceLines(lines, (TileEntityFurnace) te);
+				}
+				else if (te instanceof TileEntitySkull)
+				{
+					addSkullLines(lines, (TileEntitySkull) te);
+				}
+				else if (te instanceof TileEntityCommandBlock)
+				{
+					addCommandBlockLines(lines, (TileEntityCommandBlock) te);
 				}
 			}
 		}
@@ -263,6 +268,35 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		if (cook > 0)
 		{
 			lines.add(I18n.getString("tooltip.furnace.cooktime") + ": " + StringUtils.ticksToElapsedTime(cook));
+		}
+	}
+	
+	public void addSkullLines(List<String> lines, TileEntitySkull skull)
+	{
+		String username = skull.getExtraType();
+		if (username != null && !username.isEmpty())
+		{
+			lines.add(I18n.getString("tooltip.head.owner") + ": " + username);
+		}
+	}
+	
+	public void addCommandBlockLines(List<String> lines, TileEntityCommandBlock command)
+	{
+		String c = command.getCommand();
+		String s = command.getCommandSenderName();
+		int i = command.getSignalStrength();
+		
+		if (c != null && !c.isEmpty())
+		{
+			lines.add(I18n.getString("tooltip.command") + ": " + c);
+		}
+		if (s != null && !s.isEmpty())
+		{
+			lines.add(I18n.getString("tooltip.command.sender") + ": " + s);
+		}
+		if (i > 0)
+		{
+			lines.add(I18n.getString("tooltip.command.successcount") + ": " + i);
 		}
 	}
 }

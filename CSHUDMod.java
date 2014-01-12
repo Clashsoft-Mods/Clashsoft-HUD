@@ -184,6 +184,17 @@ public class CSHUDMod
 			lr.addStringLocalization("tooltip.music.hat", "Hat");
 			lr.addStringLocalization("tooltip.music.bassattack", "Bass Attack");
 			
+			lr.addStringLocalization("tooltip.inventory.items", "Items");
+			
+			lr.addStringLocalization("tooltip.furnace.burntime", "Burn Time");
+			lr.addStringLocalization("tooltip.furnace.cooktime", "Cook Time");
+			
+			lr.addStringLocalization("tooltip.head.owner", "Owner");
+			
+			lr.addStringLocalization("tooltip.command", "Command");
+			lr.addStringLocalization("tooltip.command.sender", "Sender Name");
+			lr.addStringLocalization("tooltip.command.successcount", "Success Count");
+			
 			hasLoaded = true;
 		}
 	}
