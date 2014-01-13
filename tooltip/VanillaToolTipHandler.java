@@ -5,11 +5,13 @@ import java.util.List;
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.mods.cshud.CSHUDMod;
 import clashsoft.mods.cshud.api.IToolTipHandler;
+import clashsoft.mods.cshud.components.HUDCurrentObject;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.item.EntityTNTPrimed;
@@ -29,13 +31,24 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	public static String[]	NOTE_TYPES	= new String[] { "tooltip.music.harp", "tooltip.music.bassdrum", "tooltip.music.snare", "tooltip.music.hat", "tooltip.music.bassattack" };
 	
 	@Override
-	public void addInformation(List<String> lines, World world, MovingObjectPosition object, ItemStack stack)
+	public void addInformation(List<String> lines, HUDCurrentObject hud, ItemStack stack)
 	{
+		World world = hud.world;
+		MovingObjectPosition object = hud.object;
+		
 		boolean isEntity = object.typeOfHit == EnumMovingObjectType.ENTITY;
 		
 		if (isEntity)
 		{
 			Entity entity = object.entityHit;
+			
+			if (entity instanceof EntityLiving)
+			{	
+				if (((EntityLiving) entity).hasCustomNameTag())
+				{
+					lines.set(0, "\u00a7o" + lines.get(0));
+				}
+			}
 			
 			if (entity instanceof EntityLivingBase)
 			{
@@ -109,6 +122,10 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				boolean flag = (metadata & 8) != 0;
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
 			}
+			else if (block instanceof BlockPistonExtension)
+			{
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString("options.on"));
+			}
 			else if (block instanceof BlockTripWire)
 			{
 				boolean flag = (metadata & 1) != 0;
@@ -141,7 +158,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			{
 				if ((metadata & 8) != 0)
 				{
-					metadata = world.getBlockMetadata(x, y, z);
+					metadata = world.getBlockMetadata(x, y - 1, z);
 				}
 				boolean flag = (metadata & 4) != 0;
 				
@@ -150,36 +167,39 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			if (CSHUDMod.tooltipTileEntityData)
 			{
-				TileEntity te = world.getBlockTileEntity(x, y, z);
+				TileEntity te = hud.tileEntity;
 				
-				if (te instanceof IInventory)
+				if (te != null)
 				{
-					addInventoryLines(lines, (IInventory) te);
-				}
-				
-				if (te instanceof TileEntitySign)
-				{
-					addSignLines(lines, (TileEntitySign) te);
-				}
-				else if (te instanceof TileEntityNote)
-				{
-					addNoteLines(lines, (TileEntityNote) te);
-				}
-				else if (te instanceof TileEntityFurnace)
-				{
-					addFurnaceLines(lines, (TileEntityFurnace) te);
-				}
-				else if (te instanceof TileEntitySkull)
-				{
-					addSkullLines(lines, (TileEntitySkull) te);
-				}
-				else if (te instanceof TileEntityCommandBlock)
-				{
-					addCommandBlockLines(lines, (TileEntityCommandBlock) te);
-				}
-				else if (te instanceof TileEntityMobSpawner)
-				{
-					addSpawnerLines(lines, (TileEntityMobSpawner) te);
+					if (te instanceof IInventory)
+					{
+						addInventoryLines(lines, (IInventory) te);
+					}
+					
+					if (te instanceof TileEntitySign)
+					{
+						addSignLines(lines, (TileEntitySign) te);
+					}
+					else if (te instanceof TileEntityNote)
+					{
+						addNoteLines(lines, (TileEntityNote) te);
+					}
+					else if (te instanceof TileEntityFurnace)
+					{
+						addFurnaceLines(lines, (TileEntityFurnace) te);
+					}
+					else if (te instanceof TileEntitySkull)
+					{
+						addSkullLines(lines, (TileEntitySkull) te);
+					}
+					else if (te instanceof TileEntityCommandBlock)
+					{
+						addCommandBlockLines(lines, (TileEntityCommandBlock) te);
+					}
+					else if (te instanceof TileEntityMobSpawner)
+					{
+						addSpawnerLines(lines, (TileEntityMobSpawner) te);
+					}
 				}
 			}
 		}
@@ -243,6 +263,11 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public void addInventoryLines(List<String> lines, IInventory inventory)
 	{
+		if (inventory.isInvNameLocalized())
+		{
+			lines.set(0, "\u00a7o" + inventory.getInvName());
+		}
+		
 		int count = 0;
 		
 		for (int i = 0; i < inventory.getSizeInventory(); i++)
@@ -262,8 +287,8 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public void addFurnaceLines(List<String> lines, TileEntityFurnace furnace)
 	{
-		int burn = furnace.furnaceBurnTime * 60;
-		int cook = furnace.furnaceCookTime * 60;
+		int burn = furnace.furnaceBurnTime;
+		int cook = furnace.furnaceCookTime;
 		
 		if (burn > 0)
 		{

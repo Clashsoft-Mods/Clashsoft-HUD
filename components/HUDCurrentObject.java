@@ -8,6 +8,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import clashsoft.mods.cshud.api.IToolTipHandler;
+import clashsoft.mods.cshud.network.TileEntityData;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -16,8 +17,10 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
@@ -25,11 +28,17 @@ import net.minecraft.world.World;
 
 public class HUDCurrentObject extends HUDComponent
 {
-	private static final List<IToolTipHandler> handlers = new ArrayList();
+	public static final HUDCurrentObject	instance	= new HUDCurrentObject();
+	
+	public World							world		= null;
+	public MovingObjectPosition				object		= null;
+	public TileEntity						tileEntity	= null;
+	
+	private List<IToolTipHandler>			handlers	= new ArrayList();
 	
 	public static void registerToolTipHandler(IToolTipHandler handler)
 	{
-		handlers.add(handler);
+		instance.handlers.add(handler);
 	}
 	
 	@Override
@@ -45,14 +54,27 @@ public class HUDCurrentObject extends HUDComponent
 			return;
 		}
 		
+		this.world = this.mc.theWorld;
 		MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+		boolean requestTileEntityData = false;
 		if (mop == null)
 		{
+			if (this.object != null)
+			{
+				this.object = null;
+			}
 			return;
+		}
+		else
+		{
+			if (this.object == null || mop.blockX != this.object.blockX || mop.blockY != this.object.blockY || mop.blockZ != this.object.blockZ || mop.entityHit != this.object.entityHit)
+			{
+				this.object = mop;
+				requestTileEntityData = tooltipTileEntityData;
+			}
 		}
 		
 		Alignment align = currentObjAlignment;
-		World world = this.mc.theWorld;
 		boolean isEntity = mop.typeOfHit == EnumMovingObjectType.ENTITY;
 		List<String> lines = new ArrayList();
 		int width = 0;
@@ -100,11 +122,24 @@ public class HUDCurrentObject extends HUDComponent
 		{
 			int blockID = world.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
 			int metadata = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			Block block = Block.blocksList[blockID];
 			
-			stack = Block.blocksList[blockID].getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
+			stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 			if (stack == null)
 			{
 				stack = new ItemStack(blockID, 1, metadata);
+			}
+			
+			if (requestTileEntityData)
+			{
+				if (block.hasTileEntity(metadata))
+				{
+					this.requestTileEntityData();
+				}
+				else
+				{
+					this.setTileEntityData(null);
+				}
 			}
 			
 			String name = stack.getDisplayName();
@@ -116,7 +151,7 @@ public class HUDCurrentObject extends HUDComponent
 			color = currentObjBlockColor;
 		}
 		
-		this.addInformation(lines, world, mop, stack);
+		this.addInformation(lines, stack);
 		
 		// Calculate Positions and Dimensions
 		
@@ -160,7 +195,7 @@ public class HUDCurrentObject extends HUDComponent
 		for (int i = 1; i < lineCount; i++)
 		{
 			textY += font.FONT_HEIGHT;
-			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xA4A4A4);			
+			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xA4A4A4);
 		}
 	}
 	
@@ -181,11 +216,11 @@ public class HUDCurrentObject extends HUDComponent
 		return width;
 	}
 	
-	public void addInformation(List<String> lines, World world, MovingObjectPosition object, ItemStack block)
+	public void addInformation(List<String> lines, ItemStack block)
 	{
 		for (IToolTipHandler handler : handlers)
 		{
-			handler.addInformation(lines, world, object, block);
+			handler.addInformation(lines, this, block);
 		}
 	}
 	
@@ -225,10 +260,24 @@ public class HUDCurrentObject extends HUDComponent
 		GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
 		
 		RenderManager.instance.playerViewY = 180.0F;
-		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
+		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 0F);
 		
 		RenderHelper.disableStandardItemLighting();
 		
 		GL11.glPopMatrix();
+	}
+	
+	public void requestTileEntityData()
+	{
+		TileEntityData.getInstance().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
+	}
+	
+	public void setTileEntityData(TileEntity tileEntity)
+	{
+		this.tileEntity = tileEntity;
+		if (tileEntity != null)
+		{
+			tileEntity.setWorldObj(this.world);
+		}
 	}
 }

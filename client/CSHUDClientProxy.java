@@ -9,6 +9,7 @@ import clashsoft.mods.cshud.tooltip.VanillaToolTipHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CSHUDClientProxy extends CSHUDCommonProxy
@@ -26,7 +27,7 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 	
 	public void registerHUDComponents()
 	{
-		this.registerHUDComponent(new HUDCurrentObject());
+		this.registerHUDComponent(HUDCurrentObject.instance);
 		this.registerHUDComponent(new HUDPotionEffects());
 		this.registerHUDComponent(new HUDWorldInfo());
 		this.registerHUDComponent(HUDItemPickups.instance);
@@ -51,5 +52,11 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 	public boolean isClient()
 	{
 		return true;
+	}
+	
+	@Override
+	public void setTileEntity(TileEntity tileEntity)
+	{
+		HUDCurrentObject.instance.setTileEntityData(tileEntity);
 	}
 }

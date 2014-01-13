@@ -6,15 +6,18 @@ import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
 import clashsoft.mods.cshud.components.Alignment;
+import clashsoft.mods.cshud.network.TileEntityData;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "CSHUD", name = "Clashsoft's HUD Mod", version = CSHUDMod.VERSION)
+@NetworkMod(channels = { CSHUDMod.CHANNEL }, clientSideRequired = false, serverSideRequired = false, packetHandler = TileEntityData.class)
 public class CSHUDMod
 {
 	@Instance("CSHUD")
@@ -25,6 +28,7 @@ public class CSHUDMod
 	
 	public static final int			REVISION						= 1;
 	public static final String		VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
+	public static final String		CHANNEL							= "CSHUD";
 	
 	public static boolean			hasLoaded						= false;
 	
