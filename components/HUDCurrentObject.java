@@ -11,7 +11,6 @@ import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.network.TileEntityData;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -24,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class HUDCurrentObject extends HUDComponent
@@ -55,7 +55,7 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		
 		this.world = this.mc.theWorld;
-		MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
+		MovingObjectPosition mop = this.rayTrace(partialTickTime);
 		boolean requestTileEntityData = false;
 		if (mop == null)
 		{
@@ -260,11 +260,36 @@ public class HUDCurrentObject extends HUDComponent
 		GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
 		
 		RenderManager.instance.playerViewY = 180.0F;
-		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 0F);
+		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
 		
 		RenderHelper.disableStandardItemLighting();
 		
 		GL11.glPopMatrix();
+	}
+	
+	public MovingObjectPosition rayTrace(float partialTickTime)
+	{
+		if (currentObjLiquids)
+		{
+			double reach = currentObjCustomReach;
+			if (reach <= 1D)
+			{
+				reach = this.mc.playerController.getBlockReachDistance();
+			}
+			return rayTrace(this.mc.renderViewEntity, reach, partialTickTime);
+		}
+		else
+		{
+			return this.mc.objectMouseOver;
+		}
+	}
+	
+	public MovingObjectPosition rayTrace(EntityLivingBase living, double reach, float partialTickTime)
+	{
+		Vec3 position = living.getPosition(partialTickTime);
+        Vec3 look = living.getLook(partialTickTime);
+        Vec3 vec = position.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
+        return this.world.clip(position, vec, true);
 	}
 	
 	public void requestTileEntityData()

@@ -44,7 +44,9 @@ public class CSHUDMod
 	public static int				hoveringFrameAlpha				= 0x0000B0;
 	
 	public static Alignment			currentObjAlignment				= Alignment.TOP_CENTER;
+	public static boolean			currentObjLiquids				= false;
 	public static boolean			currentObjUseColorForText		= false;
+	public static double			currentObjCustomReach			= 0D;
 	public static int				currentObjBlockColor			= 0xFFFFFF;
 	public static int				currentObjAnimalEntityColor		= 0x00FF00;
 	public static int				currentObjWaterEntityColor		= 0x00FFFF;
@@ -98,6 +100,8 @@ public class CSHUDMod
 		hoveringFrameAlpha = CSConfig.getInt("hoveringframe", "Alpha", hoveringFrameAlpha);
 		
 		currentObjAlignment = Alignment.parseAlignment(CSConfig.getString("currentobj", "Alignment", currentObjAlignment));
+		currentObjLiquids = CSConfig.getBool("currentobj", "Liquids", currentObjLiquids);
+		currentObjCustomReach = CSConfig.getDouble("currentobj", "Custom Reach Distance", currentObjCustomReach);
 		currentObjUseColorForText = CSConfig.getBool("currentobj", "Use Frame Color for Text", currentObjUseColorForText);
 		currentObjBlockColor = CSConfig.getInt("currentobj", "Block Color", currentObjBlockColor);
 		currentObjAnimalEntityColor = CSConfig.getInt("currentobj", "Animal Entity Color", currentObjAnimalEntityColor);
