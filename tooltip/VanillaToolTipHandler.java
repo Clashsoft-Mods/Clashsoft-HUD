@@ -2,6 +2,8 @@ package clashsoft.mods.cshud.tooltip;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.mods.cshud.CSHUDMod;
 import clashsoft.mods.cshud.api.IToolTipHandler;
@@ -19,6 +21,9 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
@@ -43,7 +48,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			Entity entity = object.entityHit;
 			
 			if (entity instanceof EntityLiving)
-			{	
+			{
 				if (((EntityLiving) entity).hasCustomNameTag())
 				{
 					lines.set(0, "\u00a7o" + lines.get(0));
@@ -171,37 +176,89 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				
 				if (te != null)
 				{
-					if (te instanceof IInventory)
+					if (CSHUDMod.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 					{
-						addInventoryLines(lines, (IInventory) te);
+						addAdvancedTileEntityData(lines, te);
 					}
-					
-					if (te instanceof TileEntitySign)
+					else
 					{
-						addSignLines(lines, (TileEntitySign) te);
-					}
-					else if (te instanceof TileEntityNote)
-					{
-						addNoteLines(lines, (TileEntityNote) te);
-					}
-					else if (te instanceof TileEntityFurnace)
-					{
-						addFurnaceLines(lines, (TileEntityFurnace) te);
-					}
-					else if (te instanceof TileEntitySkull)
-					{
-						addSkullLines(lines, (TileEntitySkull) te);
-					}
-					else if (te instanceof TileEntityCommandBlock)
-					{
-						addCommandBlockLines(lines, (TileEntityCommandBlock) te);
-					}
-					else if (te instanceof TileEntityMobSpawner)
-					{
-						addSpawnerLines(lines, (TileEntityMobSpawner) te);
+						if (te instanceof IInventory)
+						{
+							addInventoryLines(lines, (IInventory) te);
+						}
+						
+						if (te instanceof TileEntitySign)
+						{
+							addSignLines(lines, (TileEntitySign) te);
+						}
+						else if (te instanceof TileEntityNote)
+						{
+							addNoteLines(lines, (TileEntityNote) te);
+						}
+						else if (te instanceof TileEntityFurnace)
+						{
+							addFurnaceLines(lines, (TileEntityFurnace) te);
+						}
+						else if (te instanceof TileEntitySkull)
+						{
+							addSkullLines(lines, (TileEntitySkull) te);
+						}
+						else if (te instanceof TileEntityCommandBlock)
+						{
+							addCommandBlockLines(lines, (TileEntityCommandBlock) te);
+						}
+						else if (te instanceof TileEntityMobSpawner)
+						{
+							addSpawnerLines(lines, (TileEntityMobSpawner) te);
+						}
 					}
 				}
 			}
+		}
+	}
+	
+	public void addAdvancedTileEntityData(List<String> lines, TileEntity te)
+	{
+		NBTTagCompound nbt = new NBTTagCompound();
+		te.writeToNBT(nbt);
+		
+		nbt.setName("Data");
+		addNBTLines(lines, "", nbt);
+	}
+	
+	public void addNBTLines(List<String> lines, String prefix, NBTBase tag)
+	{
+		String name = tag.getName();
+		
+		if (tag instanceof NBTTagCompound)
+		{
+			NBTTagCompound compound = (NBTTagCompound) tag;
+			lines.add(prefix + (name.isEmpty() ? "COMPOUND" : name));
+			lines.add(prefix + "{");
+			
+			for (Object o : compound.getTags())
+			{
+				addNBTLines(lines, prefix + " ", (NBTBase) o);
+			}
+			
+			lines.add(prefix + "}");
+		}
+		else if (tag instanceof NBTTagList)
+		{
+			NBTTagList list = (NBTTagList) tag;
+			lines.add(prefix + (name.isEmpty() ? "LIST" : name));
+			lines.add(prefix + "[");
+			
+			for (int i = 0; i < list.tagCount(); i++)
+			{
+				addNBTLines(lines, prefix + " ", list.tagAt(i));
+			}
+			
+			lines.add(prefix + "]");
+		}
+		else if (!"xyz".contains(name) && !"id".equals(name))
+		{
+			lines.add(prefix + name + ": " + tag.toString());
 		}
 	}
 	

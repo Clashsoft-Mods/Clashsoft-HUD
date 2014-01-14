@@ -54,6 +54,7 @@ public class CSHUDMod
 	public static int				currentObjOtherEntityColor		= 0xFFFFFF;
 	
 	public static boolean			tooltipTileEntityData			= true;
+	public static boolean			tooltipAdvancedTileEntityData	= false;
 	public static int				tooltipCommandThreshold			= 32;
 	
 	public static Alignment			pickupAlignment					= Alignment.TOP_RIGHT;
@@ -110,6 +111,7 @@ public class CSHUDMod
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
 		
 		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
+		tooltipAdvancedTileEntityData = CSConfig.getBool("tooltip", "Advanced Tile Entity Data", tooltipAdvancedTileEntityData);
 		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
