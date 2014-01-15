@@ -9,6 +9,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import clashsoft.cslib.minecraft.client.gui.GuiBuilder;
 import clashsoft.mods.cshud.api.IHUDComponent;
 
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,8 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	public static RenderItem	itemRenderer	= new RenderItem();
 	
 	public Minecraft			mc;
+	public GuiBuilder			guiBuilder		= new GuiBuilder(this);
+	
 	public int					width;
 	public int					height;
 	
@@ -128,36 +131,6 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	
 	public void drawHoveringFrame(int x, int y, int width, int height, int color)
 	{
-		this.drawHoveringFrame(x, y, width, height, color, hoveringFrameBackgroundColor, hoveringFrameAlpha);
-	}
-	
-	public void drawHoveringFrame(int x, int y, int width, int height, int color, int bg, int alpha)
-	{
-		if (width < 2 || height < 2)
-		{
-			return;
-		}
-		
-		color &= 0xFFFFFF;
-		bg &= 0xFFFFFF;
-		alpha = (alpha & 0xFF) << 24;
-		
-		int bgAlpha = bg | alpha;
-		int colorAlpha = color | alpha;
-		int colorGradient = (color & 0xFEFEFE) >> 1 | alpha;
-		
-		// Render gray rects
-		drawRect(x + 1, y, x + width - 1, y + 1, bgAlpha);
-		drawRect(x + 1, y + height - 1, x + width - 1, y + height, bgAlpha);
-		drawRect(x + 2, y + 2, x + width - 2, y + height - 2, bgAlpha);
-		drawRect(x, y + 1, x + 1, y + height - 1, bgAlpha);
-		drawRect(x + width - 1, y + 1, x + width, y + height - 1, bgAlpha);
-		
-		// Render colored rects
-		drawGradientRect(x + 1, y + 2, x + 2, y + height - 2, colorAlpha, colorGradient);
-		drawGradientRect(x + width - 2, y + 2, x + width - 1, y + height - 2, colorAlpha, colorGradient);
-		drawRect(x + 1, y + 1, x + width - 1, y + 2, colorAlpha);
-		drawRect(x + 1, y + height - 2, x + width - 1, y + height - 1, colorGradient);
-		
+		this.guiBuilder.drawHoveringFrame(x, y, width, height, color, hoveringFrameBackgroundColor, hoveringFrameAlpha);
 	}
 }

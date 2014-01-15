@@ -139,7 +139,7 @@ public class HUDItemPickups extends HUDComponent
 			color |= alpha << 24;
 		}
 		
-		this.drawHoveringFrame(x, y, width, pickupBoxHeight, pickupBoxColor, hoveringFrameBackgroundColor, alpha);
+		this.drawHoveringFrame(x, y, width, pickupBoxHeight, pickupBoxColor);
 		this.mc.fontRenderer.drawStringWithShadow(s, x + ((width - textWidth) / 2), y + 5, color);
 		
 		return width;
