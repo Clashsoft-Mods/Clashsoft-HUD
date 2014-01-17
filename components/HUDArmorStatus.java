@@ -78,7 +78,7 @@ public class HUDArmorStatus extends HUDComponent
 				{
 					this.mc.fontRenderer.drawStringWithShadow(damage + "/" + maxDamage, x + 17, y + 6, 0xA4A4A4);
 				}
-				this.drawHoveringFrame(x + 17, y, f1, 4, color);
+				this.drawHoveringFrame(x + 17, y, f1, 4, color, hoveringFrameBackgroundColor, 0x70);
 			}
 			
 			y += 20;
