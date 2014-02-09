@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 
 public class CSHUDPacketHandler extends CSPacketHandler
 {
-	public static final byte		REQUEST		= 0x1;
-	public static final byte		SEND		= 0x2;
+	public static final byte			REQUEST		= 0x1;
+	public static final byte			SEND		= 0x2;
 	
 	private static CSHUDPacketHandler	instance	= new CSHUDPacketHandler();
 	
@@ -122,7 +122,7 @@ public class CSHUDPacketHandler extends CSPacketHandler
 				}
 				else if (msg.action == REQUEST)
 				{
-					sendTEData(msg.world, msg.x, msg.y, msg.z);
+					CSHUDPacketHandler.this.sendTEData(msg.world, msg.x, msg.y, msg.z);
 				}
 			}
 		};

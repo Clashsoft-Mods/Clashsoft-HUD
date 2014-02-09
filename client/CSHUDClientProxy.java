@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CSHUDClientProxy extends CSHUDCommonProxy
-{	
+{
 	@Override
 	public void init()
 	{

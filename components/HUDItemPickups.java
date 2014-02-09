@@ -89,7 +89,8 @@ public class HUDItemPickups extends HUDComponent
 	
 	public void renderPickups(float partialTickTime)
 	{
-		// int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight - this.lastItemPickupTime : 0);
+		// int l = (this.lastItemPickupTime < pickupBoxHeight ? pickupBoxHeight -
+		// this.lastItemPickupTime : 0);
 		
 		Alignment align = pickupAlignment;
 		int x = 0;

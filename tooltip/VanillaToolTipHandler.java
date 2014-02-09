@@ -34,8 +34,25 @@ import net.minecraft.world.World;
 
 public class VanillaToolTipHandler implements IToolTipHandler
 {
-	public static String[]	NOTES		= new String[] { "F#", "G", "G#", "A", "B", "H", "C", "C#", "D", "D#", "E", "F" };
-	public static String[]	NOTE_TYPES	= new String[] { "tooltip.music.harp", "tooltip.music.bassdrum", "tooltip.music.snare", "tooltip.music.hat", "tooltip.music.bassattack" };
+	public static String[]	NOTES		= new String[] {
+			"F#",
+			"G",
+			"G#",
+			"A",
+			"B",
+			"H",
+			"C",
+			"C#",
+			"D",
+			"D#",
+			"E",
+			"F"						};
+	public static String[]	NOTE_TYPES	= new String[] {
+			"tooltip.music.harp",
+			"tooltip.music.bassdrum",
+			"tooltip.music.snare",
+			"tooltip.music.hat",
+			"tooltip.music.bassattack"	};
 	
 	@Override
 	public void addInformation(List<String> lines, HUDCurrentObject hud, ItemStack stack)
@@ -180,38 +197,38 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				{
 					if (CSHUDMod.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 					{
-						addAdvancedTileEntityData(lines, te);
+						this.addAdvancedTileEntityData(lines, te);
 					}
 					else
 					{
 						if (te instanceof IInventory)
 						{
-							addInventoryLines(lines, (IInventory) te);
+							this.addInventoryLines(lines, (IInventory) te);
 						}
 						
 						if (te instanceof TileEntitySign)
 						{
-							addSignLines(lines, (TileEntitySign) te);
+							this.addSignLines(lines, (TileEntitySign) te);
 						}
 						else if (te instanceof TileEntityNote)
 						{
-							addNoteLines(lines, (TileEntityNote) te);
+							this.addNoteLines(lines, (TileEntityNote) te);
 						}
 						else if (te instanceof TileEntityFurnace)
 						{
-							addFurnaceLines(lines, (TileEntityFurnace) te);
+							this.addFurnaceLines(lines, (TileEntityFurnace) te);
 						}
 						else if (te instanceof TileEntitySkull)
 						{
-							addSkullLines(lines, (TileEntitySkull) te);
+							this.addSkullLines(lines, (TileEntitySkull) te);
 						}
 						else if (te instanceof TileEntityCommandBlock)
 						{
-							addCommandBlockLines(lines, (TileEntityCommandBlock) te);
+							this.addCommandBlockLines(lines, (TileEntityCommandBlock) te);
 						}
 						else if (te instanceof TileEntityMobSpawner)
 						{
-							addSpawnerLines(lines, (TileEntityMobSpawner) te);
+							this.addSpawnerLines(lines, (TileEntityMobSpawner) te);
 						}
 					}
 				}
@@ -224,7 +241,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		NBTTagCompound nbt = new NBTTagCompound();
 		te.writeToNBT(nbt);
 		
-		addNBTLines(lines, "", nbt);
+		this.addNBTLines(lines, "", nbt);
 	}
 	
 	public void addNBTLines(List<String> lines, String prefix, NBTBase tag)
@@ -239,7 +256,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			for (Object o : compound.func_150296_c())
 			{
-				addNBTLines(lines, prefix + " ", (NBTBase) o);
+				this.addNBTLines(lines, prefix + " ", (NBTBase) o);
 			}
 			
 			lines.add(prefix + "}");
@@ -252,7 +269,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			for (int i = 0; i < list.tagCount(); i++)
 			{
-				addNBTLines(lines, prefix + " ", list.removeTag(i));
+				this.addNBTLines(lines, prefix + " ", list.removeTag(i));
 			}
 			
 			lines.add(prefix + "]");
@@ -278,8 +295,8 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public void addNoteLines(List<String> lines, TileEntityNote te)
 	{
-		int note = ((TileEntityNote) te).note % 12;
-		byte type = getNoteType(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+		int note = te.note % 12;
+		byte type = this.getNoteType(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
 		
 		if (type == -1)
 		{

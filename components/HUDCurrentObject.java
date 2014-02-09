@@ -121,8 +121,8 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		else
 		{
-			Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			int metadata = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+			int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 			
 			if (block == Blocks.air)
 			{
@@ -169,7 +169,7 @@ public class HUDCurrentObject extends HUDComponent
 			textHeight += 2;
 		}
 		
-		width = Math.max(width, width + getMaxWidth(lines, font));
+		width = Math.max(width, width + this.getMaxWidth(lines, font));
 		height = Math.max(height, textHeight + 16);
 		
 		int frameX = align.getX(width, this.width);
@@ -223,7 +223,7 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void addInformation(List<String> lines, ItemStack block)
 	{
-		for (IToolTipHandler handler : handlers)
+		for (IToolTipHandler handler : this.handlers)
 		{
 			handler.addInformation(lines, this, block);
 		}
@@ -281,7 +281,7 @@ public class HUDCurrentObject extends HUDComponent
 			{
 				reach = this.mc.playerController.getBlockReachDistance();
 			}
-			return rayTrace(this.mc.renderViewEntity, reach, partialTickTime);
+			return this.rayTrace(this.mc.renderViewEntity, reach, partialTickTime);
 		}
 		else
 		{
@@ -292,9 +292,9 @@ public class HUDCurrentObject extends HUDComponent
 	public MovingObjectPosition rayTrace(EntityLivingBase living, double reach, float partialTickTime)
 	{
 		Vec3 position = living.getPosition(partialTickTime);
-        Vec3 look = living.getLook(partialTickTime);
-        Vec3 vec = position.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
-        return this.world.rayTraceBlocks(position, vec, true);
+		Vec3 look = living.getLook(partialTickTime);
+		Vec3 vec = position.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
+		return this.world.rayTraceBlocks(position, vec, true);
 	}
 	
 	public String getStackName(ItemStack stack)

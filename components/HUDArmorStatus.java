@@ -16,7 +16,7 @@ public class HUDArmorStatus extends HUDComponent
 	@Override
 	public void render(float partialTickTime)
 	{
-		renderArmorStatus();
+		this.renderArmorStatus();
 	}
 	
 	public void renderArmorStatus()
@@ -26,7 +26,7 @@ public class HUDArmorStatus extends HUDComponent
 			return;
 		}
 		
-		ItemStack[] armorStacks = getArmorStacks(this.mc.thePlayer);
+		ItemStack[] armorStacks = this.getArmorStacks(this.mc.thePlayer);
 		if (armorStacks.length == 0)
 		{
 			return;
@@ -72,7 +72,7 @@ public class HUDArmorStatus extends HUDComponent
 				{
 					int y1 = y + 6;
 					int x1 = this.mc.fontRenderer.drawStringWithShadow("" + damage, x + 17, y1, color);
-					this.mc.fontRenderer.drawStringWithShadow("/" + maxDamage, x1, y1,  0xA4A4A4);
+					this.mc.fontRenderer.drawStringWithShadow("/" + maxDamage, x1, y1, 0xA4A4A4);
 				}
 				else
 				{

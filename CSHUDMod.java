@@ -165,7 +165,7 @@ public class CSHUDMod
 		if (!hasLoaded && proxy.isClient())
 		{
 			proxy.init();
-			hasLoaded = true;	
+			hasLoaded = true;
 		}
 	}
 }

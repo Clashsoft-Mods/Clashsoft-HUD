@@ -11,18 +11,18 @@ import clashsoft.mods.cshud.api.IHUDComponent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.Gui;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 
 public class GuiCSHUDIngame extends GuiIngameForge
 {
-	public static final GuiCSHUDIngame instance = new GuiCSHUDIngame(Minecraft.getMinecraft());
+	public static final GuiCSHUDIngame	instance	= new GuiCSHUDIngame(Minecraft.getMinecraft());
 	
-	public List<IHUDComponent>	components	= new ArrayList();
+	public List<IHUDComponent>			components	= new ArrayList();
 	
-	public final Minecraft		mc;
+	public final Minecraft				mc;
 	
 	public GuiCSHUDIngame(Minecraft mc)
 	{
@@ -63,7 +63,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 			}
 			
 			GL11.glColor4f(1F, 1F, 1F, 1F);
-			this.mc.renderEngine.bindTexture(GuiContainer.icons);
+			this.mc.renderEngine.bindTexture(Gui.icons);
 		}
 	}
 }
