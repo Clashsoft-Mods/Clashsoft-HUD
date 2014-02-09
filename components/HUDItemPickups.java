@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 public class HUDItemPickups extends HUDComponent
@@ -36,7 +37,7 @@ public class HUDItemPickups extends HUDComponent
 		this.renderPickups(partialTickTime);
 	}
 	
-	@ForgeSubscribe(priority = EventPriority.HIGH)
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onItemPickup(EntityItemPickupEvent event)
 	{
 		if (!showItemPickups)

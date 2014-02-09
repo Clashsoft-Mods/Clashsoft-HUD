@@ -6,8 +6,6 @@ import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
 import clashsoft.mods.cshud.components.*;
 import clashsoft.mods.cshud.tooltip.VanillaToolTipHandler;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,8 +15,7 @@ public class CSHUDClientProxy extends CSHUDCommonProxy
 	@Override
 	public void init()
 	{
-		TickRegistry.registerTickHandler(new CSHUDClientTickHandler(), Side.CLIENT);
-		
+		MinecraftForge.EVENT_BUS.register(CSHUDClientTickHandler.instance);
 		MinecraftForge.EVENT_BUS.register(GuiCSHUDIngame.instance);
 		MinecraftForge.EVENT_BUS.register(HUDItemPickups.instance);
 		

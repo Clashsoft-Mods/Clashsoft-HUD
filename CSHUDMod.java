@@ -6,29 +6,28 @@ import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
 import clashsoft.mods.cshud.components.Alignment;
-import clashsoft.mods.cshud.network.TileEntityData;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "CSHUD", name = "Clashsoft's HUD Mod", version = CSHUDMod.VERSION)
-@NetworkMod(channels = { CSHUDMod.CHANNEL }, clientSideRequired = false, serverSideRequired = false, packetHandler = TileEntityData.class)
+@Mod(modid = CSHUDMod.MODID, name = CSHUDMod.NAME, version = CSHUDMod.VERSION)
 public class CSHUDMod
 {
-	@Instance("CSHUD")
+	public static final String		MODID							= "cshud";
+	public static final String		NAME							= "Clashsoft's HUD Mod";
+	public static final int			REVISION						= 0;
+	public static final String		VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
+	
+	public static final String		CHANNEL							= "CSHUD";
+	
+	@Instance(MODID)
 	public static CSHUDMod			instance;
 	
 	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHUDClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHUDCommonProxy")
 	public static CSHUDCommonProxy	proxy;
-	
-	public static final int			REVISION						= 1;
-	public static final String		VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
-	public static final String		CHANNEL							= "CSHUD";
 	
 	public static boolean			hasLoaded						= false;
 	
@@ -87,7 +86,7 @@ public class CSHUDMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), "CSHUD");
+		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
 		
 		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
 		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
@@ -166,52 +165,7 @@ public class CSHUDMod
 		if (!hasLoaded && proxy.isClient())
 		{
 			proxy.init();
-			
-			LanguageRegistry lr = LanguageRegistry.instance();
-			
-			lr.addStringLocalization("entity.MinecartRideable.name", "Minecart");
-			lr.addStringLocalization("entity.MinecartFurnace.name", "Minecart with Furnace");
-			lr.addStringLocalization("entity.MinecartChest.name", "Minecart with Chest");
-			lr.addStringLocalization("entity.MinecartTNT.name", "Minecart with TNT");
-			lr.addStringLocalization("entity.MinecartHopper.name", "Minecart with Hopper");
-			lr.addStringLocalization("entity.ItemFrame.name", "Item Frame");
-			lr.addStringLocalization("entity.LeashKnot.name", "Leash Knot");
-			lr.addStringLocalization("entity.EnderCrystal.name", "Ender Crystal");
-			
-			lr.addStringLocalization("tooltip.state", "State");
-			lr.addStringLocalization("tooltip.mode", "Mode");
-			lr.addStringLocalization("tooltip.open", "Open");
-			lr.addStringLocalization("tooltip.deactivated", "Deactivated");
-			
-			lr.addStringLocalization("tooltip.power", "Power");
-			lr.addStringLocalization("tooltip.delay", "Delay");
-			lr.addStringLocalization("tooltip.lightvalue", "Light Value");
-			lr.addStringLocalization("tooltip.child", "Child");
-			lr.addStringLocalization("tooltip.fuse", "Fuse");
-			lr.addStringLocalization("tooltip.fuel", "Fuel");
-			lr.addStringLocalization("tooltip.converting", "Converting");
-			
-			lr.addStringLocalization("tooltip.music.note", "Note");
-			lr.addStringLocalization("tooltip.music.type", "Type");
-			lr.addStringLocalization("tooltip.music.harp", "Harp");
-			lr.addStringLocalization("tooltip.music.bassdrum", "Bassdrum");
-			lr.addStringLocalization("tooltip.music.snare", "Snaredrum");
-			lr.addStringLocalization("tooltip.music.hat", "Hat");
-			lr.addStringLocalization("tooltip.music.bassattack", "Bass Attack");
-			
-			lr.addStringLocalization("tooltip.inventory.items", "Items");
-			
-			lr.addStringLocalization("tooltip.furnace.burntime", "Burn Time");
-			lr.addStringLocalization("tooltip.furnace.cooktime", "Cook Time");
-			
-			lr.addStringLocalization("tooltip.head.owner", "Owner");
-			
-			lr.addStringLocalization("tooltip.command", "Command");
-			lr.addStringLocalization("tooltip.command.sender", "Sender Name");
-			
-			lr.addStringLocalization("tooltip.spawner.entity", "Entity");
-			
-			hasLoaded = true;
+			hasLoaded = true;	
 		}
 	}
 }

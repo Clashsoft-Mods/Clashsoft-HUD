@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.mods.cshud.CSHUDMod;
 import clashsoft.mods.cshud.api.IToolTipHandler;
@@ -11,7 +12,7 @@ import clashsoft.mods.cshud.components.HUDCurrentObject;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,14 +20,15 @@ import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 
@@ -41,7 +43,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		World world = hud.world;
 		MovingObjectPosition object = hud.object;
 		
-		boolean isEntity = object.typeOfHit == EnumMovingObjectType.ENTITY;
+		boolean isEntity = object.typeOfHit == MovingObjectType.ENTITY;
 		
 		if (isEntity)
 		{
@@ -97,7 +99,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			int y = object.blockY;
 			int z = object.blockZ;
 			
-			Block block = Block.blocksList[world.getBlockId(x, y, z)];
+			Block block = world.getBlock(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
 			
 			if (block instanceof BlockReed)
@@ -114,15 +116,15 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			}
 			else if (block instanceof BlockRedstoneTorch)
 			{
-				boolean flag = block == Block.torchRedstoneActive;
+				boolean flag = block == Blocks.redstone_torch;
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockRedstoneLight)
 			{
-				boolean flag = block == Block.redstoneLampActive;
+				boolean flag = block == Blocks.redstone_lamp;
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
 			}
-			else if (block instanceof BlockLever || block instanceof BlockTripWireSource || block instanceof BlockButton || block instanceof BlockPistonBase || block instanceof BlockRailPowered)
+			else if (block instanceof BlockLever || block instanceof BlockTripWireHook || block instanceof BlockButton || block instanceof BlockPistonBase || block instanceof BlockRailPowered)
 			{
 				boolean flag = (metadata & 8) != 0;
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
@@ -138,12 +140,12 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			}
 			else if (block instanceof BlockRedstoneRepeater)
 			{
-				boolean active = block == Block.redstoneRepeaterActive;
+				boolean active = block == Blocks.powered_repeater;
 				int delay = ((metadata >> 2) + 1);
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(active ? "options.on" : "options.off"));
 				lines.add(I18n.getString("tooltip.delay") + ": " + delay);
 			}
-			else if (block instanceof BlockComparator)
+			else if (block instanceof BlockRedstoneComparator)
 			{
 				boolean active = (metadata & 8) != 0;
 				boolean mode = (metadata & 4) != 0;
@@ -222,13 +224,12 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		NBTTagCompound nbt = new NBTTagCompound();
 		te.writeToNBT(nbt);
 		
-		nbt.setName("Data");
 		addNBTLines(lines, "", nbt);
 	}
 	
 	public void addNBTLines(List<String> lines, String prefix, NBTBase tag)
 	{
-		String name = tag.getName();
+		String name = ""; // tag.getName() ???
 		
 		if (tag instanceof NBTTagCompound)
 		{
@@ -236,7 +237,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			lines.add(prefix + (name.isEmpty() ? "COMPOUND" : name));
 			lines.add(prefix + "{");
 			
-			for (Object o : compound.getTags())
+			for (Object o : compound.func_150296_c())
 			{
 				addNBTLines(lines, prefix + " ", (NBTBase) o);
 			}
@@ -245,13 +246,13 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		}
 		else if (tag instanceof NBTTagList)
 		{
-			NBTTagList list = (NBTTagList) tag;
+			NBTTagList list = (NBTTagList) tag.copy();
 			lines.add(prefix + (name.isEmpty() ? "LIST" : name));
 			lines.add(prefix + "[");
 			
 			for (int i = 0; i < list.tagCount(); i++)
 			{
-				addNBTLines(lines, prefix + " ", list.tagAt(i));
+				addNBTLines(lines, prefix + " ", list.removeTag(i));
 			}
 			
 			lines.add(prefix + "]");
@@ -278,7 +279,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	public void addNoteLines(List<String> lines, TileEntityNote te)
 	{
 		int note = ((TileEntityNote) te).note % 12;
-		byte type = getNoteType(te.worldObj, te.xCoord, te.yCoord, te.zCoord);
+		byte type = getNoteType(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
 		
 		if (type == -1)
 		{
@@ -293,9 +294,9 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public byte getNoteType(World world, int x, int y, int z)
 	{
-		if (world.getBlockMaterial(x, y + 1, z) == Material.air)
+		if (world.getBlock(x, y + 1, z) == Blocks.air)
 		{
-			Material material = world.getBlockMaterial(x, y - 1, z);
+			Material material = world.getBlock(x, y - 1, z).getMaterial();
 			
 			if (material == Material.rock)
 			{
@@ -320,9 +321,9 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public void addInventoryLines(List<String> lines, IInventory inventory)
 	{
-		if (inventory.isInvNameLocalized())
+		if (inventory.hasCustomInventoryName())
 		{
-			lines.set(0, "\u00a7o" + inventory.getInvName());
+			lines.set(0, "\u00a7o" + inventory.getInventoryName());
 		}
 		
 		int count = 0;
@@ -359,45 +360,47 @@ public class VanillaToolTipHandler implements IToolTipHandler
 	
 	public void addSkullLines(List<String> lines, TileEntitySkull skull)
 	{
-		String username = skull.getExtraType();
+		String username = skull.func_145907_c();
 		if (username != null && !username.isEmpty())
 		{
 			lines.add(I18n.getString("tooltip.head.owner") + ": " + username);
 		}
 	}
 	
-	public void addCommandBlockLines(List<String> lines, TileEntityCommandBlock command)
+	public void addCommandBlockLines(List<String> lines, TileEntityCommandBlock commandBlock)
 	{
-		String c = command.getCommand();
-		String s = command.getCommandSenderName();
-		int i = command.getSignalStrength();
+		CommandBlockLogic logic = commandBlock.func_145993_a();
 		
-		if (c != null && !c.isEmpty())
+		String command = logic.func_145753_i();
+		String commandSender = logic.getCommandSenderName();
+		int successCount = logic.func_145760_g();
+		
+		if (command != null && !command.isEmpty())
 		{
-			if (c.length() >= CSHUDMod.tooltipCommandThreshold)
+			if (command.length() >= CSHUDMod.tooltipCommandThreshold)
 			{
-				int j = c.indexOf(' ');
+				int j = command.indexOf(' ');
 				if (j != -1)
 				{
-					c = c.substring(0, j) + " [...]";
+					command = command.substring(0, j) + " [...]";
 				}
 				else
 				{
-					c = c.substring(0, CSHUDMod.tooltipCommandThreshold) + "[...]";
+					command = command.substring(0, CSHUDMod.tooltipCommandThreshold) + "[...]";
 				}
 			}
 			
-			lines.add(I18n.getString("tooltip.command") + ": " + c);
+			lines.add(I18n.getString("tooltip.command") + ": " + command);
 		}
-		if (s != null && !s.isEmpty())
+		if (commandSender != null && !commandSender.isEmpty())
 		{
-			lines.add(I18n.getString("tooltip.command.sender") + ": " + s);
+			lines.add(I18n.getString("tooltip.command.sender") + ": " + commandSender);
 		}
 	}
 	
 	public void addSpawnerLines(List<String> lines, TileEntityMobSpawner spawner)
 	{
-		String s = spawner.getSpawnerLogic().getEntityNameToSpawn();
+		String s = spawner.func_145881_a().getEntityNameToSpawn();
 		lines.add(I18n.getString("tooltip.spawner.entity") + ": " + I18n.getString("entity." + s + ".name"));
 	}
 }

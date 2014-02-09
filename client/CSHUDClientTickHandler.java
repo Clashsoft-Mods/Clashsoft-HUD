@@ -1,33 +1,20 @@
 package clashsoft.mods.cshud.client;
 
-import java.util.EnumSet;
-
 import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
-public class CSHUDClientTickHandler implements ITickHandler
+public class CSHUDClientTickHandler
 {
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		GuiCSHUDIngame.instance.updateTick();
-	}
+	public static final CSHUDClientTickHandler instance = new CSHUDClientTickHandler();
 	
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	@SubscribeEvent
+	public void tickStart(ClientTickEvent event)
 	{
-	}
-	
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.CLIENT);
-	}
-	
-	@Override
-	public String getLabel()
-	{
-		return "CSHUD Client Tick Handler";
+		if (event.phase == Phase.START)
+		{
+			GuiCSHUDIngame.instance.updateTick();
+		}
 	}
 }

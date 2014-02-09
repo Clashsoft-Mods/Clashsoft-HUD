@@ -15,11 +15,13 @@ public class Alignment
 	
 	public static Alignment		NONE				= new Alignment(0, 0)
 													{
+														@Override
 														public int getX(int width, int screenWidth)
 														{
 															return -screenWidth;
 														}
 														
+														@Override
 														public int getY(int height, int screenHeight)
 														{
 															return -screenHeight;

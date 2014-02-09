@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.resources.I18n;
+import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.util.CSString;
+
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
-
-import clashsoft.cslib.util.CSString;
 
 public class HUDPotionEffects extends HUDComponent
 {

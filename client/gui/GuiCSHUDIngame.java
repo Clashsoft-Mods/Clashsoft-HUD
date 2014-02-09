@@ -8,13 +8,13 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import clashsoft.mods.cshud.api.IHUDComponent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.event.ForgeSubscribe;
 
 public class GuiCSHUDIngame extends GuiIngameForge
 {
@@ -45,7 +45,7 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		}
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onRenderGameOverlay(RenderGameOverlayEvent.Post event)
 	{
 		if (event.type == ElementType.HOTBAR)

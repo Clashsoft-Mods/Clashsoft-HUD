@@ -8,7 +8,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import clashsoft.mods.cshud.api.IToolTipHandler;
-import clashsoft.mods.cshud.network.TileEntityData;
+import clashsoft.mods.cshud.network.CSHUDPacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -18,11 +18,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -75,7 +76,7 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		
 		Alignment align = currentObjAlignment;
-		boolean isEntity = mop.typeOfHit == EnumMovingObjectType.ENTITY;
+		boolean isEntity = mop.typeOfHit == MovingObjectType.ENTITY;
 		List<String> lines = new ArrayList();
 		int width = 0;
 		int height = 0;
@@ -87,7 +88,7 @@ public class HUDCurrentObject extends HUDComponent
 		{
 			Entity entity = mop.entityHit;
 			
-			String name = entity.getEntityName();
+			String name = entity.getCommandSenderName();
 			int entityWidth;
 			int entityHeight;
 			
@@ -120,14 +121,18 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		else
 		{
-			int blockID = world.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
+			Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 			int metadata = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-			Block block = Block.blocksList[blockID];
+			
+			if (block == Blocks.air)
+			{
+				return;
+			}
 			
 			stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 			if (stack == null)
 			{
-				stack = new ItemStack(blockID, 1, metadata);
+				stack = new ItemStack(block, 1, metadata);
 			}
 			
 			if (requestTileEntityData)
@@ -142,7 +147,7 @@ public class HUDCurrentObject extends HUDComponent
 				}
 			}
 			
-			String name = stack.getDisplayName();
+			String name = this.getStackName(stack);
 			lines.add(name);
 			width = 32;
 			height = 24;
@@ -289,12 +294,28 @@ public class HUDCurrentObject extends HUDComponent
 		Vec3 position = living.getPosition(partialTickTime);
         Vec3 look = living.getLook(partialTickTime);
         Vec3 vec = position.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
-        return this.world.clip(position, vec, true);
+        return this.world.rayTraceBlocks(position, vec, true);
+	}
+	
+	public String getStackName(ItemStack stack)
+	{
+		if (stack != null)
+		{
+			try
+			{
+				return stack.getDisplayName();
+			}
+			catch (Exception ex)
+			{
+				return "ERROR";
+			}
+		}
+		return "NULL";
 	}
 	
 	public void requestTileEntityData()
 	{
-		TileEntityData.getInstance().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
+		CSHUDPacketHandler.getInstance().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
 	}
 	
 	public void setTileEntityData(TileEntity tileEntity)

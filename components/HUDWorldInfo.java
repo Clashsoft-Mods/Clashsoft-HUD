@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -89,8 +90,12 @@ public class HUDWorldInfo extends HUDComponent
 			
 			if (!weatherShowSnowAsRain)
 			{
-				BiomeGenBase biome = world.getBiomeGenForCoords((int) this.mc.thePlayer.posX, (int) this.mc.thePlayer.posZ);
-				snow = biome.getFloatTemperature() <= 0.15F;
+				EntityPlayer player = this.mc.thePlayer;
+				int x = (int) player.posX;
+				int y = (int) player.posY;
+				int z = (int) player.posZ;
+				BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
+				snow = biome.getFloatTemperature(x, y, z) <= 0.15F;
 			}
 			
 			this.mc.renderEngine.bindTexture(snow ? snowTexture : rainTexture);
