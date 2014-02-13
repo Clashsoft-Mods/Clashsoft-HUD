@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.network.CSHUDPacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -267,9 +269,13 @@ public class HUDCurrentObject extends HUDComponent
 		RenderManager.instance.playerViewY = 180.0F;
 		RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTickTime);
 		
-		RenderHelper.disableStandardItemLighting();
-		
 		GL11.glPopMatrix();
+		
+		RenderHelper.disableStandardItemLighting();
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
 	
 	public MovingObjectPosition rayTrace(float partialTickTime)

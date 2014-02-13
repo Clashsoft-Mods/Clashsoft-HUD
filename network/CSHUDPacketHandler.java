@@ -16,7 +16,7 @@ public class CSHUDPacketHandler extends CSPacketHandler
 	public static final byte			REQUEST		= 0x1;
 	public static final byte			SEND		= 0x2;
 	
-	private static CSHUDPacketHandler	instance	= new CSHUDPacketHandler();
+	private static final CSHUDPacketHandler	instance	= new CSHUDPacketHandler();
 	
 	public static CSHUDPacketHandler getInstance()
 	{

@@ -6,6 +6,7 @@ import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.common.CSHUDCommonProxy;
 import clashsoft.mods.cshud.components.Alignment;
+import clashsoft.mods.cshud.network.CSHUDPacketHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -158,6 +159,7 @@ public class CSHUDMod
 	public void load(FMLInitializationEvent event)
 	{
 		load();
+		CSHUDPacketHandler.getInstance();
 	}
 	
 	private static void load()
