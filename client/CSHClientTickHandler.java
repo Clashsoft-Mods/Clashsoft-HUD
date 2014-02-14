@@ -5,9 +5,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
-public class CSHUDClientTickHandler
+public class CSHClientTickHandler
 {
-	public static final CSHUDClientTickHandler	instance	= new CSHUDClientTickHandler();
+	public static final CSHClientTickHandler	instance	= new CSHClientTickHandler();
 	
 	@SubscribeEvent
 	public void tickStart(ClientTickEvent event)

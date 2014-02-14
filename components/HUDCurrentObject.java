@@ -1,6 +1,6 @@
 package clashsoft.mods.cshud.components;
 
-import static clashsoft.mods.cshud.CSHUDMod.*;
+import static clashsoft.mods.cshud.CSHUD.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.IToolTipHandler;
-import clashsoft.mods.cshud.network.CSHUDPacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -321,7 +321,7 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void requestTileEntityData()
 	{
-		CSHUDPacketHandler.getInstance().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
+		CSHUD.netHandler.requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
 	}
 	
 	public void setTileEntityData(TileEntity tileEntity)

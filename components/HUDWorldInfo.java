@@ -1,6 +1,6 @@
 package clashsoft.mods.cshud.components;
 
-import static clashsoft.mods.cshud.CSHUDMod.*;
+import static clashsoft.mods.cshud.CSHUD.*;
 
 import java.util.Random;
 

@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.reflect.CSReflection;
-import clashsoft.mods.cshud.CSHUDMod;
+import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 
@@ -189,13 +189,13 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				lines.add(I18n.getString("tooltip.open") + ": " + I18n.getString(flag ? "gui.yes" : "gui.no"));
 			}
 			
-			if (CSHUDMod.tooltipTileEntityData)
+			if (CSHUD.tooltipTileEntityData)
 			{
 				TileEntity te = hud.tileEntity;
 				
 				if (te != null)
 				{
-					if (CSHUDMod.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+					if (CSHUD.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 					{
 						this.addAdvancedTileEntityData(lines, te);
 					}
@@ -394,7 +394,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		
 		if (command != null && !command.isEmpty())
 		{
-			if (command.length() >= CSHUDMod.tooltipCommandThreshold)
+			if (command.length() >= CSHUD.tooltipCommandThreshold)
 			{
 				int j = command.indexOf(' ');
 				if (j != -1)
@@ -403,7 +403,7 @@ public class VanillaToolTipHandler implements IToolTipHandler
 				}
 				else
 				{
-					command = command.substring(0, CSHUDMod.tooltipCommandThreshold) + "[...]";
+					command = command.substring(0, CSHUD.tooltipCommandThreshold) + "[...]";
 				}
 			}
 			

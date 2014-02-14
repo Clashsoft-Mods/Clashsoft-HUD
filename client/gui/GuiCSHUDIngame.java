@@ -1,6 +1,6 @@
 package clashsoft.mods.cshud.client.gui;
 
-import static clashsoft.mods.cshud.CSHUDMod.alwaysShow;
+import static clashsoft.mods.cshud.CSHUD.alwaysShow;
 
 import java.util.ArrayList;
 import java.util.List;

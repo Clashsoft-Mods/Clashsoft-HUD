@@ -3,19 +3,19 @@ package clashsoft.mods.cshud.client;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.IToolTipHandler;
 import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
-import clashsoft.mods.cshud.common.CSHUDCommonProxy;
+import clashsoft.mods.cshud.common.CSHProxy;
 import clashsoft.mods.cshud.components.*;
 import clashsoft.mods.cshud.tooltip.VanillaToolTipHandler;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class CSHUDClientProxy extends CSHUDCommonProxy
+public class CSHClientProxy extends CSHProxy
 {
 	@Override
 	public void init()
 	{
-		MinecraftForge.EVENT_BUS.register(CSHUDClientTickHandler.instance);
+		MinecraftForge.EVENT_BUS.register(CSHClientTickHandler.instance);
 		MinecraftForge.EVENT_BUS.register(GuiCSHUDIngame.instance);
 		MinecraftForge.EVENT_BUS.register(HUDItemPickups.instance);
 		

@@ -1,8 +1,8 @@
 package clashsoft.mods.cshud.components;
 
-import static clashsoft.mods.cshud.CSHUDMod.hoveringFrameAlpha;
-import static clashsoft.mods.cshud.CSHUDMod.hoveringFrameBackgroundColor;
-import static clashsoft.mods.cshud.CSHUDMod.hoveringFrameDefaultColor;
+import static clashsoft.mods.cshud.CSHUD.hoveringFrameAlpha;
+import static clashsoft.mods.cshud.CSHUD.hoveringFrameBackgroundColor;
+import static clashsoft.mods.cshud.CSHUD.hoveringFrameDefaultColor;
 
 import java.util.List;
 

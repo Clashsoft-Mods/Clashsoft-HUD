@@ -5,7 +5,7 @@ import clashsoft.mods.cshud.api.IToolTipHandler;
 
 import net.minecraft.tileentity.TileEntity;
 
-public class CSHUDCommonProxy
+public class CSHProxy
 {
 	public void init()
 	{
