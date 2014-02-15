@@ -150,17 +150,17 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 		int colorGradient = (color & 0xFEFEFE) >> 1 | alpha;
 		
 		// Render gray rects
-		drawRect(x + 1, y, x + width - 1, y + 1, bgAlpha);
-		drawRect(x + 1, y + height - 1, x + width - 1, y + height, bgAlpha);
-		drawRect(x + 2, y + 2, x + width - 2, y + height - 2, bgAlpha);
-		drawRect(x, y + 1, x + 1, y + height - 1, bgAlpha);
-		drawRect(x + width - 1, y + 1, x + width, y + height - 1, bgAlpha);
+		this.drawGradientRect(x + 1, y, x + width - 1, y + 1, bgAlpha, bgAlpha);
+		this.drawGradientRect(x + 1, y + height - 1, x + width - 1, y + height, bgAlpha, bgAlpha);
+		this.drawGradientRect(x + 2, y + 2, x + width - 2, y + height - 2, bgAlpha, bgAlpha);
+		this.drawGradientRect(x, y + 1, x + 1, y + height - 1, bgAlpha, bgAlpha);
+		this.drawGradientRect(x + width - 1, y + 1, x + width, y + height - 1, bgAlpha, bgAlpha);
 		
 		// Render colored rects
 		this.drawGradientRect(x + 1, y + 2, x + 2, y + height - 2, colorAlpha, colorGradient);
 		this.drawGradientRect(x + width - 2, y + 2, x + width - 1, y + height - 2, colorAlpha, colorGradient);
-		drawRect(x + 1, y + 1, x + width - 1, y + 2, colorAlpha);
-		drawRect(x + 1, y + height - 2, x + width - 1, y + height - 1, colorGradient);
+		this.drawGradientRect(x + 1, y + 1, x + width - 1, y + 2, colorAlpha, colorAlpha);
+		this.drawGradientRect(x + 1, y + height - 2, x + width - 1, y + height - 1, colorGradient, colorAlpha);
 		
 	}
 }

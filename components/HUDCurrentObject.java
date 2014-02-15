@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL12;
 
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.IToolTipHandler;
+import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -79,6 +80,8 @@ public class HUDCurrentObject extends HUDComponent
 		
 		Alignment align = currentObjAlignment;
 		boolean isEntity = mop.typeOfHit == MovingObjectType.ENTITY;
+		boolean isHanging = false;
+		boolean isLiving = false;
 		List<String> lines = new ArrayList();
 		int width = 0;
 		int height = 0;
@@ -96,6 +99,7 @@ public class HUDCurrentObject extends HUDComponent
 			
 			if (entity instanceof EntityHanging)
 			{
+				isHanging = true;
 				EntityHanging entityhanging = (EntityHanging) mop.entityHit;
 				entityWidth = entityhanging.getWidthPixels() + 12;
 				entityHeight = entityhanging.getHeightPixels();
@@ -115,11 +119,17 @@ public class HUDCurrentObject extends HUDComponent
 				}
 			}
 			
-			lines.add(name);
 			width = entityWidth;
 			height = entityHeight + 8;
 			textX = entityWidth - 4;
 			color = this.getEntityColor(entity);
+			
+			lines.add(name);
+			if (entity instanceof EntityLivingBase)
+			{
+				isLiving = true;
+				lines.add(null);
+			}
 		}
 		else
 		{
@@ -171,7 +181,7 @@ public class HUDCurrentObject extends HUDComponent
 			textHeight += 2;
 		}
 		
-		width = Math.max(width, width + this.getMaxWidth(lines, font));
+		width = Math.max(width, width + this.getMaxWidth(mop, lines, font));
 		height = Math.max(height, textHeight + 16);
 		
 		int frameX = align.getX(width, this.width);
@@ -180,13 +190,38 @@ public class HUDCurrentObject extends HUDComponent
 		int textY = (height - textHeight) / 2;
 		
 		// Do Actual Rendering
-		
+
 		this.drawHoveringFrame(frameX, frameY, width, height, color);
+		
 		if (isEntity)
 		{
-			int entityY = frameY + (mop.entityHit instanceof EntityHanging ? height / 2 : height - 4);
-			
+			int entityY = frameY + (isHanging ? height / 2 : height - 4);
 			this.renderEntity(mop.entityHit, frameX + (textX / 2), frameY + entityY, 16, partialTickTime);
+			
+			if (isLiving)
+			{
+				EntityLivingBase living = ((EntityLivingBase) mop.entityHit);
+				float health = living.getHealth() / 2F;
+				float maxHealth = living.getMaxHealth() / 2F;
+				this.mc.renderEngine.bindTexture(GuiCSHUDIngame.icons);
+				
+				int x1 = frameX + textX;
+				int y1 = frameY + textY + 8;
+				
+				for (int i = 0; i < maxHealth; i++)
+				{
+					float f = health - i;
+					int x = x1 + i * 9;
+					int y = y1;
+					
+					this.drawTexturedModalRect(x, y1, 16, 0, 9, 9);
+					if (f >= 0.5F)
+					{
+						int u = f < 1F ? 61 : 52;
+						this.drawTexturedModalRect(x, y1, u, 0, 9, 9);
+					}
+				}
+			}
 		}
 		else
 		{
@@ -196,17 +231,25 @@ public class HUDCurrentObject extends HUDComponent
 			this.drawItem(stack, x2, y2);
 		}
 		
-		font.drawStringWithShadow(lines.get(0), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xFFFFFF);
-		textY += 2;
+		int x1 = frameX + textX;
+		int y1 = frameY + textY;
+		
+		font.drawStringWithShadow(lines.get(0), x1, y1, currentObjUseColorForText ? color : 0xFFFFFF);
+		textY++;
+		textY++;
 		
 		for (int i = 1; i < lineCount; i++)
 		{
-			textY += font.FONT_HEIGHT;
-			font.drawStringWithShadow(lines.get(i), frameX + textX, frameY + textY, currentObjUseColorForText ? color : 0xA4A4A4);
+			y1 += font.FONT_HEIGHT;
+			String line = lines.get(i);
+			if (line != null)
+			{
+				font.drawStringWithShadow(line, x1, y1, currentObjUseColorForText ? color : 0xA4A4A4);
+			}
 		}
 	}
 	
-	public int getMaxWidth(List<String> lines, FontRenderer font)
+	public int getMaxWidth(MovingObjectPosition mop, List<String> lines, FontRenderer font)
 	{
 		int width = 0;
 		
@@ -214,6 +257,15 @@ public class HUDCurrentObject extends HUDComponent
 		{
 			int w = font.getStringWidth(line);
 			
+			if (w > width)
+			{
+				width = w;
+			}
+		}
+		
+		if (mop.entityHit instanceof EntityLivingBase)
+		{
+			int w = (int) (((EntityLivingBase) mop.entityHit).getMaxHealth() * 4.5F);
 			if (w > width)
 			{
 				width = w;
