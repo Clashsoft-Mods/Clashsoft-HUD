@@ -160,7 +160,6 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 		this.drawGradientRect(x + 1, y + 2, x + 2, y + height - 2, colorAlpha, colorGradient);
 		this.drawGradientRect(x + width - 2, y + 2, x + width - 1, y + height - 2, colorAlpha, colorGradient);
 		this.drawGradientRect(x + 1, y + 1, x + width - 1, y + 2, colorAlpha, colorAlpha);
-		this.drawGradientRect(x + 1, y + height - 2, x + width - 1, y + height - 1, colorGradient, colorAlpha);
-		
+		this.drawGradientRect(x + 1, y + height - 2, x + width - 1, y + height - 1, colorGradient, colorGradient);
 	}
 }
