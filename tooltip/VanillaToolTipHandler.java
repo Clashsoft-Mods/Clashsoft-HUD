@@ -14,6 +14,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecartFurnace;
@@ -65,6 +66,12 @@ public class VanillaToolTipHandler implements IToolTipHandler
 		if (isEntity)
 		{
 			Entity entity = object.entityHit;
+			
+			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+			{
+				lines.add(I18n.getString("tooltip.entity.type") + ": " + EntityList.getEntityString(entity));
+				lines.add(I18n.getString("tooltip.entity.id") + ": " + EntityList.getEntityID(entity));
+			}
 			
 			if (entity instanceof EntityLiving)
 			{
@@ -118,6 +125,15 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			Block block = world.getBlock(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
+			TileEntity te = hud.tileEntity;
+			
+			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+			{
+				lines.add(I18n.getString("tooltip.item.unlocalized_name") + ": " + stack.getUnlocalizedName());
+				lines.add(I18n.getString("tooltip.block.type") + ": " + Block.blockRegistry.getNameForObject(block));
+				lines.add(I18n.getString("tooltip.block.id") + ": " + Block.getIdFromBlock(block));
+				lines.add(I18n.getString("tooltip.metadata") + ": " + metadata);
+			}
 			
 			if (block instanceof BlockReed)
 			{
@@ -191,8 +207,6 @@ public class VanillaToolTipHandler implements IToolTipHandler
 			
 			if (CSHUD.tooltipTileEntityData)
 			{
-				TileEntity te = hud.tileEntity;
-				
 				if (te != null)
 				{
 					if (CSHUD.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
