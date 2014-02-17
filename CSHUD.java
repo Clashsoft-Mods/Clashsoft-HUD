@@ -3,7 +3,7 @@ package clashsoft.mods.cshud;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
-import clashsoft.mods.cshud.api.IToolTipHandler;
+import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.common.CSHProxy;
 import clashsoft.mods.cshud.components.Alignment;
 import clashsoft.mods.cshud.network.CSHNetHandler;
@@ -152,7 +152,7 @@ public class CSHUD
 		proxy.registerHUDComponent(component);
 	}
 	
-	public static void registerToolTipHandler(IToolTipHandler handler)
+	public static void registerToolTipHandler(ITooltipHandler handler)
 	{
 		load();
 		proxy.registerToolTipHandler(handler);

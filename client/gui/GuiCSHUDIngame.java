@@ -9,6 +9,8 @@ import org.lwjgl.opengl.GL11;
 
 import clashsoft.mods.cshud.api.IHUDComponent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -42,6 +44,15 @@ public class GuiCSHUDIngame extends GuiIngameForge
 		for (IHUDComponent component : this.components)
 		{
 			component.update();
+		}
+	}
+	
+	@SubscribeEvent
+	public void onTick(ClientTickEvent event)
+	{
+		if (event.phase == Phase.START)
+		{
+			this.updateTick();
 		}
 	}
 	

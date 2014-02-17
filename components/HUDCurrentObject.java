@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import clashsoft.mods.cshud.CSHUD;
-import clashsoft.mods.cshud.api.IToolTipHandler;
+import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
 
 import net.minecraft.block.Block;
@@ -38,9 +38,9 @@ public class HUDCurrentObject extends HUDComponent
 	public MovingObjectPosition				object		= null;
 	public TileEntity						tileEntity	= null;
 	
-	private List<IToolTipHandler>			handlers	= new ArrayList();
+	private List<ITooltipHandler>			handlers	= new ArrayList();
 	
-	public static void registerToolTipHandler(IToolTipHandler handler)
+	public static void registerToolTipHandler(ITooltipHandler handler)
 	{
 		instance.handlers.add(handler);
 	}
@@ -277,7 +277,7 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void addInformation(List<String> lines, ItemStack block)
 	{
-		for (IToolTipHandler handler : this.handlers)
+		for (ITooltipHandler handler : this.handlers)
 		{
 			handler.addInformation(lines, this, block);
 		}
