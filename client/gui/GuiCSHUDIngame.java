@@ -22,9 +22,9 @@ public class GuiCSHUDIngame extends GuiIngameForge
 {
 	public static final GuiCSHUDIngame	instance	= new GuiCSHUDIngame(Minecraft.getMinecraft());
 	
-	public List<IHUDComponent>			components	= new ArrayList();
+	private final List<IHUDComponent>	components	= new ArrayList();
 	
-	public final Minecraft				mc;
+	private final Minecraft				mc;
 	
 	public GuiCSHUDIngame(Minecraft mc)
 	{
