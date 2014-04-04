@@ -44,7 +44,7 @@ public class CSHUD
 	
 	public static int			hoveringFrameDefaultColor		= 0x5000FF;
 	public static int			hoveringFrameBackgroundColor	= 0x10000F;
-	public static int			hoveringFrameAlpha				= 0x0000B0;
+	public static int			hoveringFrameAlpha				= 0x0000D0;
 	
 	public static Alignment		currentObjAlignment				= Alignment.TOP_CENTER;
 	public static boolean		currentObjLiquids				= false;
@@ -78,7 +78,7 @@ public class CSHUD
 	public static Alignment		weatherAlignment				= Alignment.BOTTOM_LEFT;
 	public static boolean		weatherUseColorForText			= false;
 	public static boolean		weatherRandomizeDownfall		= false;
-	public static boolean		weatherShowSnowAsRain			= false;
+	public static boolean		weatherRenderSnowAsRain			= false;
 	public static int			weatherDayColor					= 0xFFFF00;
 	public static int			weatherNightColor				= 0x0000FF;
 	
@@ -133,7 +133,7 @@ public class CSHUD
 		
 		weatherAlignment = Alignment.parseAlignment(CSConfig.getString("weather", "Alignment", weatherAlignment));
 		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
-		weatherShowSnowAsRain = CSConfig.getBool("weather", "Show Snow As Rain", weatherShowSnowAsRain);
+		weatherRenderSnowAsRain = CSConfig.getBool("weather", "Render Snow As Rain", weatherRenderSnowAsRain);
 		weatherRandomizeDownfall = CSConfig.getBool("weather", "Randomize Downfall Animation", weatherRandomizeDownfall);
 		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
 		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);

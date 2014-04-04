@@ -44,20 +44,21 @@ public class HUDWorldInfo extends HUDComponent
 		boolean isThundering = world.isThundering();
 		int color = isDay ? weatherDayColor : weatherNightColor;
 		
-		int frameX = align.getX(80, this.width);
+		String worldName = this.getWorldName();
+		String timeS = StringUtils.ticksToElapsedTime(time);
+		int width = Math.max(this.mc.fontRenderer.getStringWidth(worldName), this.mc.fontRenderer.getStringWidth(timeS)) + 32;
+		
+		int frameX = align.getX(width, this.width);
 		int frameY = align.getY(32, this.height);
 		
-		this.drawHoveringFrame(frameX, frameY, 80, 32, color);
-		this.mc.fontRenderer.drawStringWithShadow(this.getWorldName(), frameX + 29, frameY + 6, 0xFFFFFF);
+		this.drawHoveringFrame(frameX, frameY, width, 32, color);
 		
-		this.mc.fontRenderer.drawStringWithShadow(StringUtils.ticksToElapsedTime(time), frameX + 29, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(worldName, frameX + 29, frameY + 6, 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(timeS, frameX + 29, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
-		
 		GL11.glPushMatrix();
-		
 		GL11.glTranslatef(frameX, frameY, 0F);
-		
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_COLOR);
 		
@@ -88,7 +89,7 @@ public class HUDWorldInfo extends HUDComponent
 		{
 			boolean snow = false;
 			
-			if (!weatherShowSnowAsRain)
+			if (!weatherRenderSnowAsRain)
 			{
 				EntityPlayer player = this.mc.thePlayer;
 				int x = (int) player.posX;
