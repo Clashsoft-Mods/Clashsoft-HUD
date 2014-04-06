@@ -1,12 +1,14 @@
 package clashsoft.mods.cshud;
 
+import clashsoft.cslib.minecraft.CSLib;
+import clashsoft.cslib.minecraft.ClashsoftMod;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.common.CSHProxy;
 import clashsoft.mods.cshud.components.Alignment;
-import clashsoft.mods.cshud.network.CSHNetHandler;
+import clashsoft.mods.cshud.network.CSHUDNetHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -15,25 +17,20 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = CSHUD.MODID, name = CSHUD.NAME, version = CSHUD.VERSION)
-public class CSHUD
+@Mod(modid = CSHUD.MODID, name = CSHUD.NAME, version = CSHUD.VERSION, dependencies = CSHUD.DEPENDENCIES)
+public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 {
 	public static final String	MODID							= "cshud";
+	public static final String	ACRONYM							= "cshud";
 	public static final String	NAME							= "Clashsoft's HUD Mod";
-	public static final int		REVISION						= 0;
-	public static final String	VERSION							= CSUpdate.CURRENT_VERSION + "-" + REVISION;
-	
-	public static final String	CHANNEL							= "CSHUD";
+	public static final String	VERSION							= CSUpdate.CURRENT_VERSION + "-1.0.0";
+	public static final String	DEPENDENCIES					= CSLib.DEPENDENCY;
 	
 	@Instance(MODID)
 	public static CSHUD			instance;
 	
 	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHProxy")
 	public static CSHProxy		proxy;
-	
-	public static CSHNetHandler	netHandler						= new CSHNetHandler();
-	
-	public static boolean		hasLoaded						= false;
 	
 	public static boolean		alwaysShow						= false;
 	public static boolean		showCurrentObject				= true;
@@ -87,11 +84,17 @@ public class CSHUD
 	public static boolean		armorStatusUseColorForText		= false;
 	public static int			armorStatusBoxColor				= 0xFFFFFF;
 	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
+	public CSHUD()
 	{
-		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
-		
+		super(MODID, NAME, ACRONYM, VERSION);
+		this.hasConfig = true;
+		this.netHandlerClass = CSHUDNetHandler.class;
+		this.url = "https://github.com/Clashsoft/Clashsoft-HUD/wiki/";
+	}
+	
+	@Override
+	public void readConfig()
+	{
 		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
 		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
 		showPotionEffectDisplay = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffectDisplay);
@@ -142,41 +145,37 @@ public class CSHUD
 		armorStatusRenderCurrentItem = CSConfig.getBool("armorstatus", "Render Current Item", armorStatusRenderCurrentItem);
 		armorStatusUseColorForText = CSConfig.getBool("armorstatus", "Use Damage Color for Text", armorStatusUseColorForText);
 		armorStatusBoxColor = CSConfig.getInt("armorstatus", "Box Color", armorStatusBoxColor);
-		
-		CSConfig.saveConfig();
+	}
+	
+	@Override
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		super.preInit(event);
+	}
+	
+	@Override
+	@EventHandler
+	public void init(FMLInitializationEvent event)
+	{
+		super.init(event);
+		proxy.init();
+	}
+	
+	@Override
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		super.postInit(event);
 	}
 	
 	public static void registerHUDComponent(IHUDComponent component)
 	{
-		load();
 		proxy.registerHUDComponent(component);
 	}
 	
 	public static void registerToolTipHandler(ITooltipHandler handler)
 	{
-		load();
 		proxy.registerToolTipHandler(handler);
-	}
-	
-	@EventHandler
-	public void load(FMLInitializationEvent event)
-	{
-		load();
-		netHandler.init();
-	}
-	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		netHandler.postInit();
-	}
-	
-	private static void load()
-	{
-		if (!hasLoaded && proxy.isClient())
-		{
-			proxy.init();
-			hasLoaded = true;
-		}
 	}
 }

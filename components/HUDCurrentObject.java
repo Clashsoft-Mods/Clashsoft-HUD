@@ -373,7 +373,7 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void requestTileEntityData()
 	{
-		CSHUD.netHandler.requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
+		CSHUD.instance.netHandler.requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
 	}
 	
 	public void setTileEntityData(TileEntity tileEntity)

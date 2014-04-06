@@ -8,12 +8,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class CSHNetHandler extends CSNetHandler
+public class CSHUDNetHandler extends CSNetHandler
 {
 	public static final byte			REQUEST		= 0x1;
 	public static final byte			SEND		= 0x2;
 	
-	public CSHNetHandler()
+	public CSHUDNetHandler()
 	{
 		super("CSHUD");
 		

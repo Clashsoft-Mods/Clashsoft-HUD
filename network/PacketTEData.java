@@ -4,6 +4,7 @@ import clashsoft.cslib.minecraft.network.CSPacket;
 import clashsoft.mods.cshud.CSHUD;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +27,7 @@ public class PacketTEData extends CSPacket
 	
 	public PacketTEData(World world, int x, int y, int z)
 	{
-		this(CSHNetHandler.REQUEST, world, x, y, z, null);
+		this(CSHUDNetHandler.REQUEST, world, x, y, z, null);
 	}
 	
 	public PacketTEData(byte action, World world, int x, int y, int z)
@@ -36,7 +37,7 @@ public class PacketTEData extends CSPacket
 	
 	public PacketTEData(World world, int x, int y, int z, NBTTagCompound data)
 	{
-		this(CSHNetHandler.SEND, world, x, y, z, data);
+		this(CSHUDNetHandler.SEND, world, x, y, z, data);
 	}
 	
 	public PacketTEData(byte action, World world, int x, int y, int z, NBTTagCompound data)
@@ -58,7 +59,7 @@ public class PacketTEData extends CSPacket
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
 		
-		if (this.action == CSHNetHandler.SEND)
+		if (this.action == CSHUDNetHandler.SEND)
 		{
 			buf.writeNBTTagCompoundToBuffer(this.data);
 		}
@@ -73,7 +74,7 @@ public class PacketTEData extends CSPacket
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		
-		if (this.action == CSHNetHandler.SEND)
+		if (this.action == CSHUDNetHandler.SEND)
 		{
 			this.data = buf.readNBTTagCompoundFromBuffer();
 		}
@@ -87,8 +88,8 @@ public class PacketTEData extends CSPacket
 	}
 
 	@Override
-	public void handleServer(EntityPlayer player)
+	public void handleServer(EntityPlayerMP player)
 	{
-		CSHUD.netHandler.sendTEData(world, x, y, z, player);
+		CSHUD.instance.netHandler.sendTEData(world, x, y, z, player);
 	}
 }
