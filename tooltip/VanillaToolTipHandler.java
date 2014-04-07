@@ -60,9 +60,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		World world = hud.world;
 		MovingObjectPosition object = hud.object;
 		
-		boolean isEntity = object.typeOfHit == MovingObjectType.ENTITY;
-		
-		if (isEntity)
+		if (object.typeOfHit == MovingObjectType.ENTITY)
 		{
 			Entity entity = object.entityHit;
 			
@@ -110,7 +108,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				}
 			}
 		}
-		else
+		else if (stack != null)
 		{
 			int x = object.blockX;
 			int y = object.blockY;
