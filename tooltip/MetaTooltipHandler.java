@@ -7,6 +7,7 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 import cpw.mods.fml.common.ModContainer;
@@ -24,7 +25,7 @@ import net.minecraft.world.World;
 
 public class MetaTooltipHandler implements ITooltipHandler
 {
-	protected static Map<String, String> modOwners = new HashMap();
+	protected static Map<String, String>	modOwners	= new HashMap();
 	
 	@Override
 	public void addInformation(List<String> lines, HUDCurrentObject hud, ItemStack stack)
@@ -42,7 +43,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 				lines.add(I18n.getString("tooltip.entity.id") + ": " + EntityList.getEntityID(entity));
 			}
 		}
-		else
+		else if (stack != null)
 		{
 			int x = object.blockX;
 			int y = object.blockY;
@@ -51,7 +52,10 @@ public class MetaTooltipHandler implements ITooltipHandler
 			Block block = world.getBlock(x, y, z);
 			String name = Block.blockRegistry.getNameForObject(block);
 			
-			lines.add(getBlockOwner(name));
+			if (CSHUD.tooltipModName)
+			{
+				lines.add(getBlockOwner(name));
+			}
 			
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
@@ -68,15 +72,15 @@ public class MetaTooltipHandler implements ITooltipHandler
 	}
 	
 	public static String getBlockOwner(String name)
-	{	
+	{
 		String owner = modOwners.get(name);
 		if (owner != null)
 		{
 			return owner;
 		}
 		ModContainer mc = GameData.findModOwner(name);
-		owner = mc == null ? "\u00a79\u00a7oMinecraft" : "\u00a79\u00a7o" + mc.getName();
+		owner = mc == null ? "Minecraft" : mc.getName();
 		modOwners.put(name, owner);
-		return owner;
+		return "\u00a79\u00a7o" + owner;
 	}
 }

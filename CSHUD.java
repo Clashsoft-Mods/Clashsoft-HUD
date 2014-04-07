@@ -53,6 +53,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			currentObjMonsterEntityColor	= 0xFF0000;
 	public static int			currentObjOtherEntityColor		= 0xFFFFFF;
 	
+	public static boolean		tooltipModName					= false;
 	public static boolean		tooltipTileEntityData			= true;
 	public static boolean		tooltipAdvancedTileEntityData	= false;
 	public static int			tooltipCommandThreshold			= 32;
@@ -116,6 +117,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		currentObjWaterEntityColor = CSConfig.getInt("currentobj", "Water Entity Color", currentObjWaterEntityColor);
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
 		
+		tooltipModName = CSConfig.getBool("tooltip", "Mod Name", tooltipModName);
 		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
 		tooltipAdvancedTileEntityData = CSConfig.getBool("tooltip", "Advanced Tile Entity Data", tooltipAdvancedTileEntityData);
 		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);
