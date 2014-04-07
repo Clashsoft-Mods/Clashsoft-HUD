@@ -6,7 +6,7 @@ import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
-import clashsoft.mods.cshud.common.CSHProxy;
+import clashsoft.mods.cshud.common.CSHUDProxy;
 import clashsoft.mods.cshud.components.Alignment;
 import clashsoft.mods.cshud.network.CSHUDNetHandler;
 import cpw.mods.fml.common.Mod;
@@ -29,8 +29,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	@Instance(MODID)
 	public static CSHUD			instance;
 	
-	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHProxy")
-	public static CSHProxy		proxy;
+	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHUDClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHUDProxy")
+	public static CSHUDProxy	proxy;
 	
 	public static boolean		alwaysShow						= false;
 	public static boolean		showCurrentObject				= true;
@@ -86,7 +86,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	
 	public CSHUD()
 	{
-		super(MODID, NAME, ACRONYM, VERSION);
+		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
 		this.netHandlerClass = CSHUDNetHandler.class;
 		this.url = "https://github.com/Clashsoft/Clashsoft-HUD/wiki/";
@@ -159,7 +159,6 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public void init(FMLInitializationEvent event)
 	{
 		super.init(event);
-		proxy.init();
 	}
 	
 	@Override
