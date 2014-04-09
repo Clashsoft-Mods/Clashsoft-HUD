@@ -127,15 +127,7 @@ public class HUDCurrentObject extends HUDComponent
 			EntityLivingBase living = (EntityLivingBase) entity;
 			health = living.getHealth() / 2F;
 			maxHealth = living.getMaxHealth() / 2F;
-			if (maxHealth <= 20F)
-			{
-				lines.add("[HEALTH]");
-			}
-			else
-			{
-				lines.add(String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth));
-				health = -1F; // Do not render hearts
-			}
+			lines.add("[HEALTH]");
 		}
 		
 		this.addInformation(lines, null);
@@ -183,9 +175,17 @@ public class HUDCurrentObject extends HUDComponent
 			String line = lines.get(i);
 			if (line != null)
 			{
-				if (health != -1F && "[HEALTH]".equals(line))
+				if ("[HEALTH]".equals(line))
 				{
-					this.renderHealth(x1, y1, health, maxHealth);
+					if (maxHealth <= 20F)
+					{
+						this.renderHealth(x1, y1, health, maxHealth);
+					}
+					else
+					{
+						String s = String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth);
+						font.drawStringWithShadow(s, x1, y1, textColor);
+					}
 				}
 				else
 				{
