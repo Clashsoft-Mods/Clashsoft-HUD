@@ -7,6 +7,7 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
@@ -15,6 +16,7 @@ import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.common.registry.GameData;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
@@ -45,9 +47,16 @@ public class MetaTooltipHandler implements ITooltipHandler
 		}
 		else if (stack != null)
 		{
+			float f = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
+			
 			int x = object.blockX;
 			int y = object.blockY;
 			int z = object.blockZ;
+			
+			if (f > 0F)
+			{
+				lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), f * 100F));
+			}
 			
 			Block block = world.getBlock(x, y, z);
 			String name = Block.blockRegistry.getNameForObject(block);
