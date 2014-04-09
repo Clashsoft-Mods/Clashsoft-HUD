@@ -45,7 +45,7 @@ public class HUDWorldInfo extends HUDComponent
 		int color = isDay ? weatherDayColor : weatherNightColor;
 		
 		String worldName = this.getWorldName();
-		String timeS = StringUtils.ticksToElapsedTime(time);
+		String timeS = StringUtils.ticksToElapsedTime((time + 9600) % 24000);
 		int width = Math.max(this.mc.fontRenderer.getStringWidth(worldName), this.mc.fontRenderer.getStringWidth(timeS)) + 32;
 		
 		int frameX = align.getX(width, this.width);
