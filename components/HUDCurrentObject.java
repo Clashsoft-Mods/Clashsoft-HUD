@@ -129,7 +129,7 @@ public class HUDCurrentObject extends HUDComponent
 			maxHealth = living.getMaxHealth() / 2F;
 			if (maxHealth <= 20F)
 			{
-				lines.add(null);
+				lines.add("[HEALTH]");
 			}
 			else
 			{
@@ -158,11 +158,11 @@ public class HUDCurrentObject extends HUDComponent
 		int color = this.getEntityColor(entity);
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = entityWidth + textWidth + 4;
-		int height = Math.max(entityHeight, textHeight + 16);
+		int height = Math.max(entityHeight, textHeight) + 8;
 		int frameX = align.getX(width, this.width);
 		int frameY = align.getY(height, this.height);
 		int textX = entityWidth;
-		int textY = (height - textHeight) / 2;
+		int textY = (height - textHeight) / 2 + 2;
 		int x1 = frameX + textX;
 		int y1 = frameY + textY;
 		int entityX = frameX + (textX / 2);
@@ -174,11 +174,6 @@ public class HUDCurrentObject extends HUDComponent
 		
 		this.renderEntity(mop.entityHit, entityX, entityY, 16, partialTickTime);
 		
-		if (health != -1F)
-		{
-			this.renderHealth(x1, y1 + 10, health, maxHealth);
-		}
-		
 		font.drawStringWithShadow(lines.get(0), x1, y1, currentObjUseColorForText ? color : 0xFFFFFF);
 		textY += 2;
 		
@@ -188,7 +183,14 @@ public class HUDCurrentObject extends HUDComponent
 			String line = lines.get(i);
 			if (line != null)
 			{
-				font.drawStringWithShadow(line, x1, y1, textColor);
+				if (health != -1F && "[HEALTH]".equals(line))
+				{
+					this.renderHealth(x1, y1, health, maxHealth);
+				}
+				else
+				{
+					font.drawStringWithShadow(line, x1, y1, textColor);
+				}
 			}
 		}
 	}
@@ -333,7 +335,7 @@ public class HUDCurrentObject extends HUDComponent
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		
 		GL11.glTranslatef(x, y, 50.0F);
-		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(180F, 0F, 0F, 1F);
 		GL11.glScalef(scale, scale, scale);
 		
 		RenderHelper.enableGUIStandardItemLighting();
