@@ -12,6 +12,7 @@ import clashsoft.mods.cshud.components.HUDCurrentObject;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -110,6 +111,8 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 		else if (stack != null)
 		{
+			float f = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
+			
 			int x = object.blockX;
 			int y = object.blockY;
 			int z = object.blockZ;
@@ -118,6 +121,11 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntity te = hud.tileEntity;
 			
+			if (f > 0F)
+			{
+				lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), f * 100F));
+			}
+				
 			if (block instanceof BlockReed)
 			{
 				lines.add(I18n.getString("tooltip.state") + ": " + metadata);
