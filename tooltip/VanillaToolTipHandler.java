@@ -387,20 +387,16 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		
 		String command = logic.func_145753_i();
 		String commandSender = logic.getCommandSenderName();
-		int successCount = logic.func_145760_g();
+		String lastOutput = logic.func_145749_h().getFormattedText();
 		
 		if (command != null && !command.isEmpty())
 		{
 			if (command.length() >= CSHUD.tooltipCommandThreshold)
 			{
-				int j = command.indexOf(' ');
+				int j = command.lastIndexOf(' ', CSHUD.tooltipCommandThreshold);
 				if (j != -1)
 				{
 					command = command.substring(0, j) + " [...]";
-				}
-				else
-				{
-					command = command.substring(0, CSHUD.tooltipCommandThreshold) + "[...]";
 				}
 			}
 			
@@ -409,6 +405,10 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		if (commandSender != null && !commandSender.isEmpty())
 		{
 			lines.add(I18n.getString("tooltip.command.sender") + ": " + commandSender);
+		}
+		if (lastOutput != null && !lastOutput.isEmpty())
+		{
+			lines.add(I18n.getString("tooltip.command.lastoutput") + ": " + lastOutput);
 		}
 	}
 	
