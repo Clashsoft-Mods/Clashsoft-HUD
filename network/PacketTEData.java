@@ -79,17 +79,17 @@ public class PacketTEData extends CSPacket
 			this.data = buf.readNBTTagCompoundFromBuffer();
 		}
 	}
-
+	
 	@Override
 	public void handleClient(EntityPlayer player)
 	{
-		TileEntity te = TileEntity.createAndLoadEntity(data);
+		TileEntity te = TileEntity.createAndLoadEntity(this.data);
 		CSHUD.proxy.setTileEntity(te);
 	}
-
+	
 	@Override
 	public void handleServer(EntityPlayerMP player)
 	{
-		CSHUD.instance.netHandler.sendTEData(world, x, y, z, player);
+		CSHUD.instance.netHandler.sendTEData(this.world, this.x, this.y, this.z, player);
 	}
 }

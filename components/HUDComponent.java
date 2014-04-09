@@ -54,10 +54,12 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	{
 		if (stack != null)
 		{
+			
 			RenderHelper.enableGUIStandardItemLighting();
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
 			RenderHelper.disableStandardItemLighting();
+			
 		}
 	}
 	

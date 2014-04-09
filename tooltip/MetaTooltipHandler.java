@@ -78,6 +78,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 		{
 			return owner;
 		}
+		@SuppressWarnings("deprecation")
 		ModContainer mc = GameData.findModOwner(name);
 		owner = mc == null ? "Minecraft" : mc.getName();
 		modOwners.put(name, owner);

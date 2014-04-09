@@ -10,8 +10,8 @@ import net.minecraft.world.World;
 
 public class CSHUDNetHandler extends CSNetHandler
 {
-	public static final byte			REQUEST		= 0x1;
-	public static final byte			SEND		= 0x2;
+	public static final byte	REQUEST	= 0x1;
+	public static final byte	SEND	= 0x2;
 	
 	public CSHUDNetHandler()
 	{
