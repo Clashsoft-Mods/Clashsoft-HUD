@@ -52,14 +52,12 @@ public abstract class HUDComponent extends Gui implements IHUDComponent
 	
 	public void drawItem(ItemStack stack, int x, int y)
 	{
-		if (stack != null)
+		if (stack != null && stack.getItem() != null)
 		{
-			
 			RenderHelper.enableGUIStandardItemLighting();
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
 			RenderHelper.disableStandardItemLighting();
-			
 		}
 	}
 	
