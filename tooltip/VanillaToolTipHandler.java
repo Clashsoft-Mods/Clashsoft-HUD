@@ -185,7 +185,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				}
 				boolean flag = (metadata & 4) != 0;
 				
-				lines.add(I18n.getString("tooltip.open") + ": " + I18n.getString(flag ? "gui.yes" : "gui.no"));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "tooltip.open" : "tooltip.closed"));
 			}
 			
 			if (CSHUD.tooltipTileEntityData)
