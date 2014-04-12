@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
+import net.minecraft.util.Facing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.StringUtils;
@@ -117,7 +118,6 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			
 			Block block = world.getBlock(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
-			TileEntity te = hud.tileEntity;
 				
 			if (block instanceof BlockReed)
 			{
@@ -133,40 +133,51 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			}
 			else if (block instanceof BlockRedstoneTorch)
 			{
-				boolean flag = block == Blocks.redstone_torch;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
+				boolean on = block == Blocks.redstone_torch;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockRedstoneLight)
 			{
-				boolean flag = block == Blocks.redstone_lamp;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
+				boolean on = block == Blocks.redstone_lamp;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 			}
-			else if (block instanceof BlockLever || block instanceof BlockTripWireHook || block instanceof BlockButton || block instanceof BlockPistonBase || block instanceof BlockRailPowered)
+			else if (block instanceof BlockLever || block instanceof BlockTripWireHook || block instanceof BlockButton || block instanceof BlockRailPowered)
 			{
-				boolean flag = (metadata & 8) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
+				boolean on = (metadata & 8) != 0;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+			}
+			else if (block instanceof BlockPistonBase)
+			{
+				boolean on = (metadata & 8) != 0;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
 			}
 			else if (block instanceof BlockPistonExtension)
 			{
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString("options.on"));
+				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
+			}
+			else if (block instanceof BlockDispenser)
+			{
+				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
 			}
 			else if (block instanceof BlockTripWire)
 			{
-				boolean flag = (metadata & 1) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
+				boolean on = (metadata & 1) != 0;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockRedstoneRepeater)
 			{
-				boolean active = block == Blocks.powered_repeater;
+				boolean on = block == Blocks.powered_repeater;
 				int delay = ((metadata >> 2) + 1);
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(active ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 				lines.add(I18n.getString("tooltip.delay") + ": " + delay);
 			}
 			else if (block instanceof BlockRedstoneComparator)
 			{
-				boolean active = (metadata & 8) != 0;
+				boolean on = (metadata & 8) != 0;
 				boolean mode = (metadata & 4) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(active ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 				lines.add(I18n.getString("tooltip.mode") + ": " + (mode ? "-" : "&"));
 			}
 			else if (block instanceof BlockDaylightDetector)
@@ -175,8 +186,8 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			}
 			else if (block instanceof BlockBasePressurePlate)
 			{
-				boolean flag = metadata == 1;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "options.on" : "options.off"));
+				boolean on = metadata == 1;
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockDoor || block instanceof BlockTrapDoor || block instanceof BlockFenceGate)
 			{
@@ -184,13 +195,14 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				{
 					metadata = world.getBlockMetadata(x, y - 1, z);
 				}
-				boolean flag = (metadata & 4) != 0;
+				boolean open = (metadata & 4) != 0;
 				
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(flag ? "tooltip.open" : "tooltip.closed"));
+				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(open ? "tooltip.open" : "tooltip.closed"));
 			}
 			
 			if (CSHUD.tooltipTileEntityData)
 			{
+				TileEntity te = hud.tileEntity;
 				if (te != null)
 				{
 					if (CSHUD.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
