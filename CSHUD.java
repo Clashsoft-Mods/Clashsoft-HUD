@@ -23,7 +23,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static final String	MODID							= "cshud";
 	public static final String	ACRONYM							= "cshud";
 	public static final String	NAME							= "Clashsoft's HUD Mod";
-	public static final String	VERSION							= CSUpdate.CURRENT_VERSION + "-1.0.0";
+	public static final String	VERSION							= CSUpdate.CURRENT_VERSION + "-1.0.0-pre";
 	public static final String	DEPENDENCIES					= CSLib.DEPENDENCY;
 	
 	@Instance(MODID)
