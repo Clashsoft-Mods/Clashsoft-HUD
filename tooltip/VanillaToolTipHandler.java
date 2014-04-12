@@ -1,6 +1,7 @@
 package clashsoft.mods.cshud.tooltip;
 
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 
@@ -238,22 +239,21 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		NBTTagCompound nbt = new NBTTagCompound();
 		te.writeToNBT(nbt);
 		
-		this.addNBTLines(lines, "", nbt);
+		this.addNBTLines(lines, "", nbt, "");
 	}
 	
-	public void addNBTLines(List<String> lines, String prefix, NBTBase tag)
+	public void addNBTLines(List<String> lines, String prefix, NBTBase tag, String name)
 	{
-		String name = ""; // tag.getName() ???
-		
 		if (tag instanceof NBTTagCompound)
 		{
 			NBTTagCompound compound = (NBTTagCompound) tag;
+			Set<String> keys = compound.func_150296_c();
 			lines.add(prefix + (name.isEmpty() ? "COMPOUND" : name));
 			lines.add(prefix + "{");
 			
-			for (Object o : compound.func_150296_c())
+			for (String key : keys)
 			{
-				this.addNBTLines(lines, prefix + " ", (NBTBase) o);
+				this.addNBTLines(lines, prefix + " ", compound.getTag(key), key);
 			}
 			
 			lines.add(prefix + "}");
@@ -266,7 +266,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			
 			for (int i = 0; i < list.tagCount(); i++)
 			{
-				this.addNBTLines(lines, prefix + " ", list.removeTag(i));
+				this.addNBTLines(lines, prefix + " ", list.removeTag(i), Integer.toString(i));
 			}
 			
 			lines.add(prefix + "]");
