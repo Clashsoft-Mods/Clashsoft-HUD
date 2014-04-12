@@ -22,6 +22,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -127,7 +129,16 @@ public class HUDCurrentObject extends HUDComponent
 			EntityLivingBase living = (EntityLivingBase) entity;
 			health = living.getHealth() / 2F;
 			maxHealth = living.getMaxHealth() / 2F;
-			lines.add("[HEALTH]");
+			
+			if (maxHealth <= 10F)
+			{
+				lines.add("[HEALTH]");
+			}
+			else
+			{
+				lines.add(String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth));
+				health = -1F;
+			}
 		}
 		
 		this.addInformation(lines, null);
@@ -154,7 +165,7 @@ public class HUDCurrentObject extends HUDComponent
 		int frameX = align.getX(width, this.width);
 		int frameY = align.getY(height, this.height);
 		int textX = entityWidth;
-		int textY = (height - textHeight) / 2 + 2;
+		int textY = (height - textHeight) / 2;
 		int x1 = frameX + textX;
 		int y1 = frameY + textY;
 		int entityX = frameX + (textX / 2);
@@ -177,15 +188,7 @@ public class HUDCurrentObject extends HUDComponent
 			{
 				if ("[HEALTH]".equals(line))
 				{
-					if (maxHealth <= 20F)
-					{
-						this.renderHealth(x1, y1, health, maxHealth);
-					}
-					else
-					{
-						String s = String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth);
-						font.drawStringWithShadow(s, x1, y1, textColor);
-					}
+					this.renderHealth(x1, y1, health, maxHealth);
 				}
 				else
 				{
@@ -199,6 +202,7 @@ public class HUDCurrentObject extends HUDComponent
 	{
 		List<String> lines = new ArrayList();
 		ItemStack stack = null;
+		String name = null;
 		
 		Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 		int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
@@ -206,8 +210,26 @@ public class HUDCurrentObject extends HUDComponent
 		stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 		if (stack == null)
 		{
-			stack = new ItemStack(block, 1, metadata);
+			if (block == Blocks.lit_redstone_ore)
+			{
+				stack = new ItemStack(Blocks.redstone_ore, 1, metadata);
+			}
+			else if (block == Blocks.end_portal)
+			{
+				stack = new ItemStack(Items.ender_eye, 1, metadata);
+				name = I18n.getString("tile.endPortal.name");
+			}
+			else
+			{
+				stack = new ItemStack(block, 1, metadata);
+			}
 		}
+		
+		if (name == null)
+		{
+			name = this.getStackName(stack);
+		}
+		lines.add(name);
 		
 		if (requestTileEntityData)
 		{
@@ -220,9 +242,6 @@ public class HUDCurrentObject extends HUDComponent
 				this.setTileEntityData(null);
 			}
 		}
-		
-		String name = this.getStackName(stack);
-		lines.add(name);
 		
 		this.addInformation(lines, stack);
 		
