@@ -78,11 +78,11 @@ public class HUDCurrentObject extends HUDComponent
 		
 		if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
-			renderEntity(CSHUD.currentObjAlignment, partialTickTime, mop);
+			this.renderEntity(CSHUD.currentObjAlignment, partialTickTime, mop);
 		}
 		else if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			renderBlock(CSHUD.currentObjAlignment, partialTickTime, mop, requestTileEntityData);
+			this.renderBlock(CSHUD.currentObjAlignment, partialTickTime, mop, requestTileEntityData);
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class HUDCurrentObject extends HUDComponent
 			AxisAlignedBB aabb = entity.getBoundingBox();
 			if (aabb != null)
 			{
-				entityWidth = (int) (Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ));
+				entityWidth = (int) Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ);
 				entityHeight = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
 			}
 			else
@@ -147,7 +147,7 @@ public class HUDCurrentObject extends HUDComponent
 		
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = lines.size();
-		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : (lineCount * font.FONT_HEIGHT + 2);
+		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		int textWidth = this.getMaxWidth(mop, lines, font);
 		if (health != -1F)
 		{
@@ -168,7 +168,7 @@ public class HUDCurrentObject extends HUDComponent
 		int textY = (height - textHeight) / 2;
 		int x1 = frameX + textX;
 		int y1 = frameY + textY;
-		int entityX = frameX + (textX / 2);
+		int entityX = frameX + textX / 2;
 		int entityY = frameY + (isHanging ? height / 2 : height - 4);
 		
 		// Do Actual Rendering
@@ -250,7 +250,7 @@ public class HUDCurrentObject extends HUDComponent
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = lines.size();
 		int textWidth = this.getMaxWidth(mop, lines, font);
-		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : (lineCount * font.FONT_HEIGHT + 2);
+		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		
 		// Compute dimensions
 		
@@ -263,7 +263,7 @@ public class HUDCurrentObject extends HUDComponent
 		int textX = frameX + 24;
 		int textY = frameY + (height - textHeight) / 2;
 		int stackX = frameX + 4;
-		int stackY = frameY + (height / 2) - 8;
+		int stackY = frameY + height / 2 - 8;
 		
 		// Do Actual Rendering
 		

@@ -72,14 +72,14 @@ public class Alignment
 	{
 		switch (this.horizontal)
 		{
-			case HORIZONTAL_LEFT:
-				return 0;
-			case HORIZONTAL_CENTER:
-				return (screenWidth - width) / 2;
-			case HORIZONTAL_RIGHT:
-				return screenWidth - width;
-			default:
-				return 0;
+		case HORIZONTAL_LEFT:
+			return 0;
+		case HORIZONTAL_CENTER:
+			return (screenWidth - width) / 2;
+		case HORIZONTAL_RIGHT:
+			return screenWidth - width;
+		default:
+			return 0;
 		}
 	}
 	
@@ -87,14 +87,14 @@ public class Alignment
 	{
 		switch (this.vertical)
 		{
-			case VERTICAL_TOP:
-				return 0;
-			case VERTICAL_CENTER:
-				return (screenHeight - height) / 2;
-			case VERTICAL_BOTTOM:
-				return screenHeight - height;
-			default:
-				return 0;
+		case VERTICAL_TOP:
+			return 0;
+		case VERTICAL_CENTER:
+			return (screenHeight - height) / 2;
+		case VERTICAL_BOTTOM:
+			return screenHeight - height;
+		default:
+			return 0;
 		}
 	}
 	

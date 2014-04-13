@@ -36,25 +36,8 @@ import net.minecraft.world.World;
 
 public class VanillaTooltipHandler implements ITooltipHandler
 {
-	public static String[]	NOTES		= new String[] {
-			"F#",
-			"G",
-			"G#",
-			"A",
-			"B",
-			"H",
-			"C",
-			"C#",
-			"D",
-			"D#",
-			"E",
-			"F"						};
-	public static String[]	NOTE_TYPES	= new String[] {
-			"tooltip.music.harp",
-			"tooltip.music.bassdrum",
-			"tooltip.music.snare",
-			"tooltip.music.hat",
-			"tooltip.music.bassattack"	};
+	public static String[]	NOTES		= new String[] { "F#", "G", "G#", "A", "B", "H", "C", "C#", "D", "D#", "E", "F" };
+	public static String[]	NOTE_TYPES	= new String[] { "tooltip.music.harp", "tooltip.music.bassdrum", "tooltip.music.snare", "tooltip.music.hat", "tooltip.music.bassattack" };
 	
 	@Override
 	public void addInformation(List<String> lines, HUDCurrentObject hud, ItemStack stack)
@@ -89,7 +72,8 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			}
 			else if (entity instanceof EntityMinecartFurnace)
 			{
-				// Reflection is actually faster than getting the value with the NBT
+				// Reflection is actually faster than getting the value with the
+				// NBT
 				int fuel = CSReflection.getValue((EntityMinecartFurnace) entity, 0);
 				
 				lines.add(I18n.getString("tooltip.fuel") + ": " + StringUtils.ticksToElapsedTime(fuel));
@@ -118,7 +102,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			
 			Block block = world.getBlock(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
-				
+			
 			if (block instanceof BlockReed)
 			{
 				lines.add(I18n.getString("tooltip.state") + ": " + metadata);
@@ -169,7 +153,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			else if (block instanceof BlockRedstoneRepeater)
 			{
 				boolean on = block == Blocks.powered_repeater;
-				int delay = ((metadata >> 2) + 1);
+				int delay = (metadata >> 2) + 1;
 				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
 				lines.add(I18n.getString("tooltip.delay") + ": " + delay);
 			}
@@ -292,9 +276,9 @@ public class VanillaTooltipHandler implements ITooltipHandler
 	public void addSignLines(List<String> lines, TileEntitySign sign)
 	{
 		String[] text = sign.signText;
-		for (int i = 0; i < text.length; i++)
+		for (String element : text)
 		{
-			String s = text[i];
+			String s = element;
 			if (s != null && !s.isEmpty())
 			{
 				lines.add(s);

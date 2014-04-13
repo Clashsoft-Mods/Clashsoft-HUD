@@ -111,7 +111,7 @@ public class HUDWorldInfo extends HUDComponent
 				off = 256 - (this.updateCounter & 255);
 				if (!snow)
 				{
-					off = (off * 8 + (this.updateCounter & 7)) & 255;
+					off = off * 8 + (this.updateCounter & 7) & 255;
 				}
 			}
 			

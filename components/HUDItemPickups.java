@@ -131,15 +131,15 @@ public class HUDItemPickups extends HUDComponent
 		
 		if (itemPickup.time > maxPickupTime)
 		{
-			float f1 = (itemPickup.time - maxPickupTime);
+			float f1 = itemPickup.time - maxPickupTime;
 			
-			float f = 1F - (f1 / 20F);
+			float f = 1F - f1 / 20F;
 			alpha = Math.min((int) (f * 255F), alpha);
 			color |= alpha << 24;
 		}
 		
 		this.drawHoveringFrame(x, y, width, pickupBoxHeight, pickupBoxColor, hoveringFrameBackgroundColor, alpha);
-		this.mc.fontRenderer.drawStringWithShadow(s, x + ((width - textWidth) / 2), y + 5, color);
+		this.mc.fontRenderer.drawStringWithShadow(s, x + (width - textWidth) / 2, y + 5, color);
 		
 		return width;
 	}
