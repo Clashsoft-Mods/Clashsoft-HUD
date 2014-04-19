@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import clashsoft.cslib.minecraft.lang.I18n;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.EnumChatFormatting;
@@ -132,7 +134,7 @@ public class HUDWorldInfo extends HUDComponent
 		}
 		else
 		{
-			return EnumChatFormatting.ITALIC + "Server World";
+			return EnumChatFormatting.ITALIC + I18n.getString("worldname.server");
 		}
 	}
 }
