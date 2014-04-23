@@ -20,9 +20,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,6 +37,7 @@ import net.minecraft.world.World;
 
 public class VanillaTooltipHandler implements ITooltipHandler
 {
+	public static final String	COLON = ": \u00a7f";
 	public static String[]	NOTES		= new String[] { "F#", "G", "G#", "A", "B", "H", "C", "C#", "D", "D#", "E", "F" };
 	public static String[]	NOTE_TYPES	= new String[] { "tooltip.music.harp", "tooltip.music.bassdrum", "tooltip.music.snare", "tooltip.music.hat", "tooltip.music.bassattack" };
 	
@@ -68,7 +70,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			if (entity instanceof EntityTNTPrimed)
 			{
 				int fuse = ((EntityTNTPrimed) entity).fuse * 60;
-				lines.add(I18n.getString("tooltip.fuse") + ": " + StringUtils.ticksToElapsedTime(fuse));
+				lines.add(I18n.getString("tooltip.fuse") + COLON + StringUtils.ticksToElapsedTime(fuse));
 			}
 			else if (entity instanceof EntityMinecartFurnace)
 			{
@@ -76,22 +78,19 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				// NBT
 				int fuel = CSReflection.getValue((EntityMinecartFurnace) entity, 0);
 				
-				lines.add(I18n.getString("tooltip.fuel") + ": " + StringUtils.ticksToElapsedTime(fuel));
+				lines.add(I18n.getString("tooltip.fuel") + COLON + StringUtils.ticksToElapsedTime(fuel));
 			}
 			else if (entity instanceof EntityCreeper)
 			{
 				int fuse = (30 - ((Integer) CSReflection.getValue((EntityCreeper) entity, 1)).intValue()) * 60;
-				lines.add(I18n.getString("tooltip.fuse") + ": " + StringUtils.ticksToElapsedTime(fuse));
+				lines.add(I18n.getString("tooltip.fuse") + COLON + StringUtils.ticksToElapsedTime(fuse));
 			}
-			else if (entity instanceof EntityZombie)
+			else if (entity instanceof EntitySheep)
 			{
-				EntityZombie zombie = (EntityZombie) entity;
-				
-				if (zombie.isConverting())
-				{
-					int time = CSReflection.getValue(zombie, 3);
-					lines.add(I18n.getString("tooltip.converting") + ": " + StringUtils.ticksToElapsedTime(time));
-				}
+				EntitySheep sheep = (EntitySheep) entity;
+				int color = sheep.getFleeceColor();
+				int color1 = ItemDye.field_150922_c[color];
+				lines.add(String.format("%s: \u00a7f#%x", I18n.getString("tooltip.color"), color1));
 			}
 		}
 		else if (stack != null)
@@ -105,73 +104,73 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			
 			if (block instanceof BlockReed)
 			{
-				lines.add(I18n.getString("tooltip.state") + ": " + metadata);
+				lines.add(I18n.getString("tooltip.state") + COLON + metadata);
 			}
 			else if (block instanceof BlockSapling)
 			{
-				lines.add(I18n.getString("tooltip.state") + ": " + (metadata >> 3));
+				lines.add(I18n.getString("tooltip.state") + COLON + (metadata >> 3));
 			}
 			else if (block instanceof BlockRedstoneWire)
 			{
-				lines.add(I18n.getString("tooltip.power") + ": " + (metadata == 0 ? I18n.getString("options.off") : metadata));
+				lines.add(I18n.getString("tooltip.power") + COLON + (metadata == 0 ? I18n.getString("options.off") : metadata));
 			}
 			else if (block instanceof BlockRedstoneTorch)
 			{
 				boolean on = block == Blocks.redstone_torch;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockRedstoneLight)
 			{
 				boolean on = block == Blocks.redstone_lamp;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockLever || block instanceof BlockTripWireHook || block instanceof BlockButton || block instanceof BlockRailPowered)
 			{
 				boolean on = (metadata & 8) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockPistonBase)
 			{
 				boolean on = (metadata & 8) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
-				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.facing") + COLON + Facing.facings[metadata % 6]);
 			}
 			else if (block instanceof BlockPistonExtension)
 			{
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString("options.on"));
-				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString("options.on"));
+				lines.add(I18n.getString("tooltip.facing") + COLON + Facing.facings[metadata % 6]);
 			}
 			else if (block instanceof BlockDispenser)
 			{
-				lines.add(I18n.getString("tooltip.facing") + ": " + Facing.facings[metadata % 6]);
+				lines.add(I18n.getString("tooltip.facing") + COLON + Facing.facings[metadata % 6]);
 			}
 			else if (block instanceof BlockTripWire)
 			{
 				boolean on = (metadata & 1) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockRedstoneRepeater)
 			{
 				boolean on = block == Blocks.powered_repeater;
 				int delay = (metadata >> 2) + 1;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
-				lines.add(I18n.getString("tooltip.delay") + ": " + delay);
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.delay") + COLON + delay);
 			}
 			else if (block instanceof BlockRedstoneComparator)
 			{
 				boolean on = (metadata & 8) != 0;
 				boolean mode = (metadata & 4) != 0;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
-				lines.add(I18n.getString("tooltip.mode") + ": " + (mode ? "-" : "&"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.mode") + COLON + (mode ? "-" : "&"));
 			}
 			else if (block instanceof BlockDaylightDetector)
 			{
-				lines.add(I18n.getString("tooltip.lightvalue") + ": " + metadata);
+				lines.add(I18n.getString("tooltip.lightvalue") + COLON + metadata);
 			}
 			else if (block instanceof BlockBasePressurePlate)
 			{
 				boolean on = metadata == 1;
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(on ? "options.on" : "options.off"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(on ? "options.on" : "options.off"));
 			}
 			else if (block instanceof BlockDoor || block instanceof BlockTrapDoor || block instanceof BlockFenceGate)
 			{
@@ -181,7 +180,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				}
 				boolean open = (metadata & 4) != 0;
 				
-				lines.add(I18n.getString("tooltip.state") + ": " + I18n.getString(open ? "tooltip.open" : "tooltip.closed"));
+				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(open ? "tooltip.open" : "tooltip.closed"));
 			}
 			
 			if (CSHUD.tooltipTileEntityData)
@@ -297,8 +296,8 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 		else
 		{
-			lines.add(I18n.getString("tooltip.music.note") + ": " + I18n.getString(NOTES[note]));
-			lines.add(I18n.getString("tooltip.music.type") + ": " + I18n.getString(NOTE_TYPES[type]));
+			lines.add(I18n.getString("tooltip.music.note") + COLON + I18n.getString(NOTES[note]));
+			lines.add(I18n.getString("tooltip.music.type") + COLON + I18n.getString(NOTE_TYPES[type]));
 		}
 	}
 	
@@ -349,7 +348,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		
 		if (count > 0)
 		{
-			lines.add(I18n.getString("tooltip.inventory.items") + ": " + count);
+			lines.add(I18n.getString("tooltip.inventory.items") + COLON + count);
 		}
 	}
 	
@@ -360,11 +359,11 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		
 		if (burn > 0)
 		{
-			lines.add(I18n.getString("tooltip.furnace.burntime") + ": " + StringUtils.ticksToElapsedTime(burn));
+			lines.add(I18n.getString("tooltip.furnace.burntime") + COLON + StringUtils.ticksToElapsedTime(burn));
 		}
 		if (cook > 0)
 		{
-			lines.add(I18n.getString("tooltip.furnace.cooktime") + ": " + StringUtils.ticksToElapsedTime(cook));
+			lines.add(I18n.getString("tooltip.furnace.cooktime") + COLON + StringUtils.ticksToElapsedTime(cook));
 		}
 	}
 	
@@ -373,7 +372,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		String username = skull.func_145907_c();
 		if (username != null && !username.isEmpty())
 		{
-			lines.add(I18n.getString("tooltip.head.owner") + ": " + username);
+			lines.add(I18n.getString("tooltip.head.owner") + COLON + username);
 		}
 	}
 	
@@ -396,21 +395,21 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				}
 			}
 			
-			lines.add(I18n.getString("tooltip.command") + ": " + command);
+			lines.add(I18n.getString("tooltip.command") + COLON + command);
 		}
 		if (commandSender != null && !commandSender.isEmpty())
 		{
-			lines.add(I18n.getString("tooltip.command.sender") + ": " + commandSender);
+			lines.add(I18n.getString("tooltip.command.sender") + COLON + commandSender);
 		}
 		if (lastOutput != null && !lastOutput.isEmpty())
 		{
-			lines.add(I18n.getString("tooltip.command.lastoutput") + ": " + lastOutput);
+			lines.add(I18n.getString("tooltip.command.lastoutput") + COLON + lastOutput);
 		}
 	}
 	
 	public void addSpawnerLines(List<String> lines, TileEntityMobSpawner spawner)
 	{
 		String s = spawner.func_145881_a().getEntityNameToSpawn();
-		lines.add(I18n.getString("tooltip.spawner.entity") + ": " + I18n.getString("entity." + s + ".name"));
+		lines.add(I18n.getString("tooltip.spawner.entity") + COLON + I18n.getString("entity." + s + ".name"));
 	}
 }

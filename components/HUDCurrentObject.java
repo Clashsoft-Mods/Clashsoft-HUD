@@ -165,7 +165,7 @@ public class HUDCurrentObject extends HUDComponent
 		int frameX = align.getX(width, this.width);
 		int frameY = align.getY(height, this.height);
 		int textX = entityWidth;
-		int textY = (height - textHeight) / 2;
+		int textY = (height - textHeight) / 2 + 2;
 		int x1 = frameX + textX;
 		int y1 = frameY + textY;
 		int entityX = frameX + textX / 2;
