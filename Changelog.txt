@@ -1,0 +1,13 @@
+1.7.2-1.0.0
+
+! Update to 1.7.2
++ Added entity health tooltip
+* Fixed MANY bugs
+
+1.6.4-1
+
++ Added ArmorStatus
++ Added CurrentObject
++ Added ItemPickup
++ Added PotionEffect
++ Added WorldInfo
