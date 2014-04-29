@@ -8,5 +8,6 @@ import net.minecraft.item.ItemStack;
 
 public interface ITooltipHandler
 {
+	public static final String	COLON = ": \u00a7f";
 	public void addInformation(List<String> lines, HUDCurrentObject hud, ItemStack stack);
 }

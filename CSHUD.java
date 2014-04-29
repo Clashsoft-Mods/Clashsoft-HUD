@@ -32,6 +32,14 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHUDClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHUDProxy")
 	public static CSHUDProxy	proxy;
 	
+	static
+	{
+		if (proxy == null)
+		{
+			proxy = createProxy("clashsoft.mods.cshud.client.CSHUDClientProxy", "clashsoft.mods.cshud.common.CSHUDProxy");
+		}
+	}
+	
 	public static boolean		alwaysShow						= false;
 	public static boolean		showCurrentObject				= true;
 	public static boolean		showPotionEffectDisplay			= true;

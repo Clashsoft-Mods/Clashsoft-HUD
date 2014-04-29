@@ -41,8 +41,8 @@ public class MetaTooltipHandler implements ITooltipHandler
 			{
 				Entity entity = object.entityHit;
 				
-				lines.add(I18n.getString("tooltip.entity.type") + ": " + EntityList.getEntityString(entity));
-				lines.add(I18n.getString("tooltip.entity.id") + ": " + EntityList.getEntityID(entity));
+				lines.add(I18n.getString("tooltip.entity.type") + COLON + EntityList.getEntityString(entity));
+				lines.add(I18n.getString("tooltip.entity.id") + COLON + EntityList.getEntityID(entity));
 			}
 		}
 		else if (stack != null)
@@ -72,10 +72,10 @@ public class MetaTooltipHandler implements ITooltipHandler
 				TileEntity te = hud.tileEntity;
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(block.getClass().getSimpleName());
 				
-				lines.add(I18n.getString("tooltip.block.unlocalized_name") + ": " + stack.getUnlocalizedName());
-				lines.add(String.format("%s: %s (#%d)", I18n.getString("tooltip.block.id"), name, Block.getIdFromBlock(block)));
-				lines.add(I18n.getString("tooltip.block.type") + ": " + className);
-				lines.add(I18n.getString("tooltip.metadata") + ": " + metadata);
+				lines.add(I18n.getString("tooltip.block.unlocalized_name") + COLON + stack.getUnlocalizedName());
+				lines.add(String.format("%s: \u00a7f%s (#%d)", I18n.getString("tooltip.block.id"), name, Block.getIdFromBlock(block)));
+				lines.add(I18n.getString("tooltip.block.type") + COLON + className);
+				lines.add(I18n.getString("tooltip.metadata") + COLON + metadata);
 			}
 		}
 	}

@@ -29,15 +29,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
-import net.minecraft.util.Facing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 
 public class VanillaTooltipHandler implements ITooltipHandler
 {
-	public static final String	COLON = ": \u00a7f";
 	public static String[]	NOTES		= new String[] { "F#", "G", "G#", "A", "B", "H", "C", "C#", "D", "D#", "E", "F" };
 	public static String[]	NOTE_TYPES	= new String[] { "tooltip.music.harp", "tooltip.music.bassdrum", "tooltip.music.snare", "tooltip.music.hat", "tooltip.music.bassattack" };
 	
@@ -382,7 +379,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		
 		String command = logic.func_145753_i();
 		String commandSender = logic.getCommandSenderName();
-		String lastOutput = logic.func_145749_h().getFormattedText();
+		IChatComponent lastOutput = logic.func_145749_h();
 		
 		if (command != null && !command.isEmpty())
 		{
@@ -401,9 +398,9 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		{
 			lines.add(I18n.getString("tooltip.command.sender") + COLON + commandSender);
 		}
-		if (lastOutput != null && !lastOutput.isEmpty())
+		if (lastOutput != null)
 		{
-			lines.add(I18n.getString("tooltip.command.lastoutput") + COLON + lastOutput);
+			lines.add(I18n.getString("tooltip.command.lastoutput") + COLON + lastOutput.getFormattedText());
 		}
 	}
 	
