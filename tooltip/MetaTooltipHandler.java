@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -69,7 +68,6 @@ public class MetaTooltipHandler implements ITooltipHandler
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
 				int metadata = world.getBlockMetadata(x, y, z);
-				TileEntity te = hud.tileEntity;
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(block.getClass().getSimpleName());
 				
 				lines.add(I18n.getString("tooltip.block.unlocalized_name") + COLON + stack.getUnlocalizedName());

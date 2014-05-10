@@ -43,20 +43,23 @@ public class HUDWorldInfo extends HUDComponent
 		int time = (int) world.getWorldTime() % 24000;
 		boolean isDay = time < 12500;
 		boolean isRaining = world.isRaining();
-		boolean isThundering = world.isThundering();
+		int dim = world.provider.dimensionId;
 		int color = isDay ? weatherDayColor : weatherNightColor;
 		
 		String worldName = this.getWorldName();
+		if (dim != 0)
+			worldName += " \u00a78[" + world.provider.dimensionId + "]";
 		String timeS = StringUtils.ticksToElapsedTime((time + 9600) % 24000);
-		int width = Math.max(this.mc.fontRenderer.getStringWidth(worldName), this.mc.fontRenderer.getStringWidth(timeS)) + 32;
+		
+		int width = Math.max(this.mc.fontRenderer.getStringWidth(worldName), this.mc.fontRenderer.getStringWidth(timeS)) + 36;
 		
 		int frameX = align.getX(width, this.width);
 		int frameY = align.getY(32, this.height);
 		
 		this.drawHoveringFrame(frameX, frameY, width, 32, color);
 		
-		this.mc.fontRenderer.drawStringWithShadow(worldName, frameX + 29, frameY + 6, 0xFFFFFF);
-		this.mc.fontRenderer.drawStringWithShadow(timeS, frameX + 29, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(worldName, frameX + 32, frameY + 6, 0xFFFFFF);
+		this.mc.fontRenderer.drawStringWithShadow(timeS, frameX + 32, frameY + 18, weatherUseColorForText ? color : 0xFFFFFF);
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		GL11.glPushMatrix();
