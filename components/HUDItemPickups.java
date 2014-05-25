@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import clashsoft.mods.cshud.CSHUD;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -94,7 +95,7 @@ public class HUDItemPickups extends HUDComponent
 		int y = 0;
 		int count = this.itemPickups.size();
 		int y1 = pickupBoxHeight;
-		y = align.getY(count * y1, this.height);
+		y = align.getY(count * y1, this.height, CSHUD.armorStatusBoxOffsetY);
 		
 		for (int i = 0;; i++)
 		{
@@ -102,7 +103,7 @@ public class HUDItemPickups extends HUDComponent
 			{
 				ItemPickup itemPickup = this.itemPickups.get(i);
 				
-				x = align.getX(this.drawItemPickup(0, 0, 0F, itemPickup, true), this.width);
+				x = align.getX(this.drawItemPickup(0, 0, 0F, itemPickup, true), this.width, CSHUD.pickupBoxOffsetX);
 				this.drawItemPickup(x, y, partialTickTime, itemPickup, false);
 				y += y1;
 			}

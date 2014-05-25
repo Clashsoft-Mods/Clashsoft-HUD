@@ -7,6 +7,7 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.mods.cshud.CSHUD;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -53,8 +54,8 @@ public class HUDWorldInfo extends HUDComponent
 		
 		int width = Math.max(this.mc.fontRenderer.getStringWidth(worldName), this.mc.fontRenderer.getStringWidth(timeS)) + 36;
 		
-		int frameX = align.getX(width, this.width);
-		int frameY = align.getY(32, this.height);
+		int frameX = align.getX(width, this.width, CSHUD.weatherBoxOffsetX);
+		int frameY = align.getY(32, this.height, CSHUD.weatherBoxOffsetY);
 		
 		this.drawHoveringFrame(frameX, frameY, width, 32, color);
 		

@@ -60,6 +60,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			currentObjWaterEntityColor		= 0x00FFFF;
 	public static int			currentObjMonsterEntityColor	= 0xFF0000;
 	public static int			currentObjOtherEntityColor		= 0xFFFFFF;
+	public static int			currentObjBoxOffsetX			= 4;
+	public static int			currentObjBoxOffsetY			= 4;
 	
 	public static boolean		tooltipModName					= false;
 	public static boolean		tooltipTileEntityData			= true;
@@ -71,6 +73,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			pickupBoxHeight					= 17;
 	public static int			pickupBoxColor					= 0xA4A4A4;
 	public static int			pickupTextColor					= 0xFFFFFF;
+	public static int			pickupBoxOffsetX				= 4;
+	public static int			pickupBoxOffsetY				= 4;
 	
 	public static Alignment		potionAlignment					= Alignment.TOP_LEFT;
 	public static boolean		potionUseColorForText			= true;
@@ -80,6 +84,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			potionBadEffectColor			= 0xFF0000;
 	public static int			potionAmbientEffectColor		= 0x0081FF;
 	public static int			potionNoEffectColor				= 0xFFFFFF;
+	public static int			potionBoxOffsetX				= 4;
+	public static int			potionBoxOffsetY				= 4;
 	
 	public static Alignment		weatherAlignment				= Alignment.BOTTOM_LEFT;
 	public static boolean		weatherUseColorForText			= false;
@@ -87,11 +93,15 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static boolean		weatherRenderSnowAsRain			= false;
 	public static int			weatherDayColor					= 0xFFFF00;
 	public static int			weatherNightColor				= 0x0000FF;
+	public static int			weatherBoxOffsetX				= 4;
+	public static int			weatherBoxOffsetY				= 4;
 	
 	public static Alignment		armorStatusAlignment			= Alignment.BOTTOM_RIGHT;
 	public static boolean		armorStatusRenderCurrentItem	= true;
 	public static boolean		armorStatusUseColorForText		= false;
 	public static int			armorStatusBoxColor				= 0xFFFFFF;
+	public static int			armorStatusBoxOffsetX			= 4;
+	public static int			armorStatusBoxOffsetY			= 4;
 	
 	public CSHUD()
 	{
@@ -124,6 +134,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		currentObjMonsterEntityColor = CSConfig.getInt("currentobj", "Monster Entity Color", currentObjMonsterEntityColor);
 		currentObjWaterEntityColor = CSConfig.getInt("currentobj", "Water Entity Color", currentObjWaterEntityColor);
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
+		currentObjBoxOffsetX = CSConfig.getInt("currentobj", "Box Offset X", currentObjBoxOffsetX);
+		currentObjBoxOffsetY = CSConfig.getInt("currentobj", "Box Offset Y", currentObjBoxOffsetY);
 		
 		tooltipModName = CSConfig.getBool("tooltip", "Mod Name", tooltipModName);
 		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
@@ -135,6 +147,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		pickupBoxHeight = CSConfig.getInt("itempickup", "Box Height", pickupBoxHeight);
 		pickupBoxColor = CSConfig.getInt("itempickup", "Box Color", pickupBoxColor);
 		pickupTextColor = CSConfig.getInt("itempickup", "Text Color", pickupTextColor);
+		pickupBoxOffsetX = CSConfig.getInt("itempickup", "Box Offset X", pickupBoxOffsetX);
+		pickupBoxOffsetY = CSConfig.getInt("itempickup", "Box Offset Y", pickupBoxOffsetY);
 		
 		potionAlignment = Alignment.parseAlignment(CSConfig.getString("buff", "Alignment", potionAlignment));
 		potionUseColorForText = CSConfig.getBool("buff", "Use Frame Color for Text", potionUseColorForText);
@@ -143,6 +157,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		potionBadEffectColor = CSConfig.getInt("buff", "Bad Effect Color", potionBadEffectColor);
 		potionAmbientEffectColor = CSConfig.getInt("buff", "Ambient Effect Color", potionAmbientEffectColor);
 		potionNoEffectColor = CSConfig.getInt("buff", "No Effect Color", potionNoEffectColor);
+		potionBoxOffsetX = CSConfig.getInt("buff", "Box Offset X", potionBoxOffsetX);
+		potionBoxOffsetY = CSConfig.getInt("buff", "Box Offset Y", potionBoxOffsetY);
 		
 		weatherAlignment = Alignment.parseAlignment(CSConfig.getString("weather", "Alignment", weatherAlignment));
 		weatherUseColorForText = CSConfig.getBool("weather", "Use Frame Color for Text", weatherUseColorForText);
@@ -150,11 +166,15 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		weatherRandomizeDownfall = CSConfig.getBool("weather", "Randomize Downfall Animation", weatherRandomizeDownfall);
 		weatherDayColor = CSConfig.getInt("weather", "Day Color", weatherDayColor);
 		weatherNightColor = CSConfig.getInt("weather", "Night Color", weatherNightColor);
+		weatherBoxOffsetX = CSConfig.getInt("weather", "Box Offset X", weatherBoxOffsetX);
+		weatherBoxOffsetY = CSConfig.getInt("weather", "Box Offset Y", weatherBoxOffsetY);
 		
 		armorStatusAlignment = Alignment.parseAlignment(CSConfig.getString("armorstatus", "Alignment", armorStatusAlignment));
 		armorStatusRenderCurrentItem = CSConfig.getBool("armorstatus", "Render Current Item", armorStatusRenderCurrentItem);
 		armorStatusUseColorForText = CSConfig.getBool("armorstatus", "Use Damage Color for Text", armorStatusUseColorForText);
 		armorStatusBoxColor = CSConfig.getInt("armorstatus", "Box Color", armorStatusBoxColor);
+		armorStatusBoxOffsetX = CSConfig.getInt("armorstatus", "Box Offset X", pickupBoxOffsetX);
+		armorStatusBoxOffsetY = CSConfig.getInt("armorstatus", "Box Offset Y", pickupBoxOffsetY);
 	}
 	
 	@Override

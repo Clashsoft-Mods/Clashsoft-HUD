@@ -162,8 +162,8 @@ public class HUDCurrentObject extends HUDComponent
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = entityWidth + textWidth + 4;
 		int height = Math.max(entityHeight, textHeight) + 8;
-		int frameX = align.getX(width, this.width);
-		int frameY = align.getY(height, this.height);
+		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
+		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
 		int textX = entityWidth;
 		int textY = (height - textHeight) / 2 + 2;
 		int x1 = frameX + textX;
@@ -258,8 +258,8 @@ public class HUDCurrentObject extends HUDComponent
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = textWidth + 28;
 		int height = textHeight + 16;
-		int frameX = align.getX(width, this.width);
-		int frameY = align.getY(height, this.height);
+		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
+		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
 		int textX = frameX + 24;
 		int textY = frameY + (height - textHeight) / 2;
 		int stackX = frameX + 4;

@@ -16,13 +16,13 @@ public class Alignment
 	public static Alignment		NONE				= new Alignment(0, 0)
 													{
 														@Override
-														public int getX(int width, int screenWidth)
+														public int getX(int width, int screenWidth, int off)
 														{
 															return -screenWidth;
 														}
 														
 														@Override
-														public int getY(int height, int screenHeight)
+														public int getY(int height, int screenHeight, int off)
 														{
 															return -screenHeight;
 														}
@@ -68,31 +68,31 @@ public class Alignment
 		return this.horizontal == 1;
 	}
 	
-	public int getX(int width, int screenWidth)
+	public int getX(int width, int screenWidth, int off)
 	{
 		switch (this.horizontal)
 		{
 		case HORIZONTAL_LEFT:
-			return 0;
+			return off;
 		case HORIZONTAL_CENTER:
 			return (screenWidth - width) / 2;
 		case HORIZONTAL_RIGHT:
-			return screenWidth - width;
+			return screenWidth - width - off;
 		default:
 			return 0;
 		}
 	}
 	
-	public int getY(int height, int screenHeight)
+	public int getY(int height, int screenHeight, int off)
 	{
 		switch (this.vertical)
 		{
 		case VERTICAL_TOP:
-			return 0;
+			return off;
 		case VERTICAL_CENTER:
 			return (screenHeight - height) / 2;
 		case VERTICAL_BOTTOM:
-			return screenHeight - height;
+			return screenHeight - height - off;
 		default:
 			return 0;
 		}

@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.util.CSString;
+import clashsoft.mods.cshud.CSHUD;
 
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -56,8 +57,8 @@ public class HUDPotionEffects extends HUDComponent
 		
 		if (align.isHorizontallyCentered() && renderIcon)
 		{
-			x = align.getX(count * 28, this.width);
-			y = align.getY(28, this.height);
+			x = align.getX(count * 28, this.width, CSHUD.potionBoxOffsetX);
+			y = align.getY(28, this.height, CSHUD.potionBoxOffsetY);
 			
 			for (PotionEffect potionEffect : potionEffects)
 			{
@@ -67,11 +68,11 @@ public class HUDPotionEffects extends HUDComponent
 		else
 		{
 			int y1 = renderIcon ? 28 : potionEffectBoxHeight;
-			y = align.getY(count * y1, this.height);
+			y = align.getY(count * y1, this.height, CSHUD.potionBoxOffsetX);
 			
 			for (PotionEffect potionEffect : potionEffects)
 			{
-				x = align.getX(this.drawPotionEffect(0, 0, potionEffect, true), this.width);
+				x = align.getX(this.drawPotionEffect(0, 0, potionEffect, true), this.width, CSHUD.potionBoxOffsetY);
 				this.drawPotionEffect(x, y, potionEffect, false);
 				y += y1;
 			}

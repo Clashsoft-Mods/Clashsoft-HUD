@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.cslib.util.CSArrays;
+import clashsoft.mods.cshud.CSHUD;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,8 +46,8 @@ public class HUDArmorStatus extends HUDComponent
 			}
 		}
 		
-		int x = align.getX(width, this.width);
-		int y = align.getY(height, this.height);
+		int x = align.getX(width, this.width, CSHUD.armorStatusBoxOffsetX);
+		int y = align.getY(height, this.height, CSHUD.armorStatusBoxOffsetY);
 		
 		this.drawHoveringFrame(x, y, width, height, armorStatusBoxColor);
 		
