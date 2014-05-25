@@ -39,9 +39,11 @@ public class MetaTooltipHandler implements ITooltipHandler
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
 				Entity entity = object.entityHit;
+				String className = FMLDeobfuscatingRemapper.INSTANCE.map(entity.getClass().getSimpleName());
 				
-				lines.add(I18n.getString("tooltip.entity.type") + COLON + EntityList.getEntityString(entity));
-				lines.add(I18n.getString("tooltip.entity.id") + COLON + EntityList.getEntityID(entity));
+				lines.add(I18n.getString("tooltip.entity.position") + COLON + String.format("%.2f %.2f %.2f", entity.posX, entity.posY, entity.posZ));
+				lines.add(I18n.getString("tooltip.entity.id") + COLON + EntityList.getEntityString(entity) + " (#" + EntityList.getEntityID(entity) + ")");
+				lines.add(I18n.getString("tooltip.entity.type") + COLON + className);
 			}
 		}
 		else if (stack != null)
@@ -70,10 +72,10 @@ public class MetaTooltipHandler implements ITooltipHandler
 				int metadata = world.getBlockMetadata(x, y, z);
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(block.getClass().getSimpleName());
 				
+				lines.add(I18n.getString("tooltip.block.position") + COLON + String.format("%d %d %d", x, y, z));
 				lines.add(I18n.getString("tooltip.block.unlocalized_name") + COLON + stack.getUnlocalizedName());
-				lines.add(String.format("%s: \u00a7f%s (#%d)", I18n.getString("tooltip.block.id"), name, Block.getIdFromBlock(block)));
+				lines.add(I18n.getString("tooltip.block.id") + COLON + name + " (#" + Block.getIdFromBlock(block) + "/" + metadata + ")");
 				lines.add(I18n.getString("tooltip.block.type") + COLON + className);
-				lines.add(I18n.getString("tooltip.metadata") + COLON + metadata);
 			}
 		}
 	}
