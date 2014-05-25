@@ -1,7 +1,7 @@
 package clashsoft.mods.cshud;
 
-import clashsoft.cslib.minecraft.CSLib;
-import clashsoft.cslib.minecraft.ClashsoftMod;
+import clashsoft.cslib.minecraft.init.CSLib;
+import clashsoft.cslib.minecraft.init.ClashsoftMod;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
