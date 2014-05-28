@@ -64,6 +64,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			currentObjBoxOffsetY			= 4;
 	
 	public static boolean		tooltipModName					= false;
+	public static boolean tooltipBreakProgress = true;
+	public static boolean tooltipDrops = true;
 	public static boolean		tooltipTileEntityData			= true;
 	public static boolean		tooltipAdvancedTileEntityData	= false;
 	public static int			tooltipCommandThreshold			= 32;
@@ -138,6 +140,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		currentObjBoxOffsetY = CSConfig.getInt("currentobj", "Box Offset Y", currentObjBoxOffsetY);
 		
 		tooltipModName = CSConfig.getBool("tooltip", "Mod Name", tooltipModName);
+		tooltipBreakProgress = CSConfig.getBool("tooltip", "Break Progress", tooltipBreakProgress);
+		tooltipDrops = CSConfig.getBool("tooltip", "Drops", tooltipDrops);
 		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
 		tooltipAdvancedTileEntityData = CSConfig.getBool("tooltip", "Advanced Tile Entity Data", tooltipAdvancedTileEntityData);
 		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);

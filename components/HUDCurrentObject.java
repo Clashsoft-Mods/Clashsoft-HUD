@@ -36,9 +36,10 @@ public class HUDCurrentObject extends HUDComponent
 {
 	public static final HUDCurrentObject	instance	= new HUDCurrentObject();
 	
-	public World							world		= null;
-	public MovingObjectPosition				object		= null;
-	public TileEntity						tileEntity	= null;
+	public World							world;
+	public MovingObjectPosition				object;
+	public boolean							objectChanged;
+	public TileEntity						tileEntity;
 	
 	private List<ITooltipHandler>			handlers	= new ArrayList();
 	
@@ -64,6 +65,11 @@ public class HUDCurrentObject extends HUDComponent
 			if (this.object != null)
 			{
 				this.object = null;
+				this.objectChanged = true;
+			}
+			else
+			{
+				this.objectChanged = false;
 			}
 			return;
 		}
@@ -72,7 +78,12 @@ public class HUDCurrentObject extends HUDComponent
 			if (this.object == null || mop.blockX != this.object.blockX || mop.blockY != this.object.blockY || mop.blockZ != this.object.blockZ || mop.entityHit != this.object.entityHit)
 			{
 				this.object = mop;
+				this.objectChanged = true;
 				requestTileEntityData = tooltipTileEntityData;
+			}
+			else
+			{
+				this.objectChanged = false;
 			}
 		}
 		

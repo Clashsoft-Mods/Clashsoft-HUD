@@ -8,6 +8,8 @@ import org.lwjgl.input.Keyboard;
 
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.reflect.CSReflection;
+import clashsoft.cslib.util.MaxRandom;
+import clashsoft.cslib.util.MinRandom;
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
@@ -19,6 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -48,34 +51,66 @@ public class MetaTooltipHandler implements ITooltipHandler
 		}
 		else if (stack != null)
 		{
-			float f = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
-			
 			int x = object.blockX;
 			int y = object.blockY;
 			int z = object.blockZ;
 			
-			if (f > 0F)
-			{
-				lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), f * 100F));
-			}
-			
 			Block block = world.getBlock(x, y, z);
+			int metadata = world.getBlockMetadata(x, y, z);
 			String name = Block.blockRegistry.getNameForObject(block);
 			
-			if (CSHUD.tooltipModName)
+			if (CSHUD.tooltipBreakProgress)
 			{
-				lines.add(getBlockOwner(name));
+				float breakProgress = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
+				
+				if (breakProgress > 0F)
+				{
+					lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), breakProgress * 100F));
+				}
+			}
+			
+			if (CSHUD.tooltipDrops)
+			{
+				Item item = block.getItemDropped(metadata, MaxRandom.instance, -1);
+				if (item != null && item != stack.getItem())
+				{
+					ItemStack drop = new ItemStack(item, 1, block.damageDropped(metadata));
+					int minDrops = block.quantityDropped(metadata, -1, MinRandom.instance);
+					int maxDrops = block.quantityDropped(metadata, -1, MaxRandom.instance);
+					
+					if (minDrops > maxDrops)
+					{
+						int i = minDrops;
+						minDrops = maxDrops;
+						maxDrops = i;
+					}
+					
+					StringBuilder builder = new StringBuilder(I18n.getString("tooltip.block.drops"));
+					builder.append(COLON);
+					
+					if (minDrops != maxDrops)
+						builder.append(minDrops).append("-").append(maxDrops).append(" x ");
+					else if (minDrops != 1)
+						builder.append(minDrops).append(" x ");
+					
+					builder.append(drop.getDisplayName());
+					lines.add(builder.toString());
+				}
 			}
 			
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
-				int metadata = world.getBlockMetadata(x, y, z);
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(block.getClass().getSimpleName());
 				
 				lines.add(I18n.getString("tooltip.block.position") + COLON + String.format("%d %d %d", x, y, z));
 				lines.add(I18n.getString("tooltip.block.unlocalized_name") + COLON + stack.getUnlocalizedName());
 				lines.add(I18n.getString("tooltip.block.id") + COLON + name + " (#" + Block.getIdFromBlock(block) + "/" + metadata + ")");
 				lines.add(I18n.getString("tooltip.block.type") + COLON + className);
+			}
+			
+			if (CSHUD.tooltipModName)
+			{
+				lines.add(getBlockOwner(name));
 			}
 		}
 	}
