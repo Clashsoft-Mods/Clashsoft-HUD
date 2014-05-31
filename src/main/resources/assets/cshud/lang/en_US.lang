@@ -1,0 +1,62 @@
+tile.endPortal.name=End Portal
+
+worldname.server=Server
+
+entity.MinecartRideable.name=Minecart
+entity.MinecartFurnace.name=Minecart with Furnace
+entity.MinecartChest.name=Minecart with Chest
+entity.MinecartTNT.name=Minecart with TNT
+entity.MinecartHopper.name=Minecart with Hopper
+entity.ItemFrame.name=Item Frame
+entity.LeashKnot.name=Leash Knot
+entity.EnderCrystal.name=Ender Crystal
+
+tooltip.entity.position=Position
+tooltip.entity.type=Type
+tooltip.entity.id=ID
+
+tooltip.block.position=Position
+tooltip.block.drops=Drops
+tooltip.block.drops.silk_touch=Harvestable with Silk Touch
+tooltip.block.unlocalized_name=Unlocalized Name
+tooltip.block.type=Type
+tooltip.block.id=ID
+tooltip.metadata=Metadata
+
+tooltip.color=Color
+tooltip.state=State
+tooltip.mode=Mode
+tooltip.open=Open
+tooltip.closed=Closed
+tooltip.deactivated=Deactivated
+
+tooltip.breakprogress=Break Progress
+tooltip.power=Power
+tooltip.delay=Delay
+tooltip.lightvalue=Light Value
+tooltip.child=Child
+tooltip.fuse=Fuse
+tooltip.fuel=Fuel
+tooltip.converting=Converting
+tooltip.health=Health
+
+tooltip.music.note=Note
+tooltip.music.type=Type
+tooltip.music.harp=Harp
+tooltip.music.bassdrum=Bassdrum
+tooltip.music.snare=Snaredrum
+tooltip.music.hat=Hat
+tooltip.music.bassattack=Bass Attack
+
+tooltip.inventory.items=Items
+
+tooltip.furnace.burntime=Burn Time
+tooltip.furnace.cooktime=Cook Time
+
+tooltip.head.owner=Owner
+
+tooltip.command=Command
+tooltip.command.sender=Sender Name
+tooltip.command.lastoutput=Last Output
+
+tooltip.spawner.entity=Entity

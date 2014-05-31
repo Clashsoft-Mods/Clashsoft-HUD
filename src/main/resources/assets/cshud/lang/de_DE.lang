@@ -1,0 +1,61 @@
+tile.endPortal.name=Enderportal
+
+worldname.server=Server
+
+entity.MinecartRideable.name=Lore
+entity.MinecartFurnace.name=Angetriebene Lore
+entity.MinecartChest.name=Truhenlore
+entity.MinecartTNT.name=TNT Lore
+entity.MinecartHopper.name=Trichterlore
+entity.ItemFrame.name=Rahmen
+entity.LeashKnot.name=Seil Knoten
+entity.EnderCrystal.name=Ender Kristall
+
+tooltip.entity.position=Position
+tooltip.entity.type=Typ
+tooltip.entity.id=ID
+
+tooltip.block.position=Position
+tooltip.block.drops=Drops
+tooltip.block.unlocalized_name=Unlocalized Name
+tooltip.block.type=Typ
+tooltip.block.id=ID
+tooltip.metadata=Metadata
+
+tooltip.color=Farbe
+tooltip.state=Status
+tooltip.mode=Modus
+tooltip.open=Offen
+tooltip.closed=Geschlossen
+tooltip.deactivated=Deaktiviert
+
+tooltip.breakprogress=Abbau Fortschritt
+tooltip.power=Stromstärke
+tooltip.delay=Verzögerung
+tooltip.lightvalue=Lichtwert
+tooltip.child=Kind
+tooltip.fuse=Zünder
+tooltip.fuel=Treibstoff
+tooltip.converting=Konvertierend
+tooltip.health=Gesundheit
+
+tooltip.music.note=Note
+tooltip.music.type=Typ
+tooltip.music.harp=Harfe
+tooltip.music.bassdrum=Bassdrum
+tooltip.music.snare=Snaredrum
+tooltip.music.hat=Hat
+tooltip.music.bassattack=Bass Attack
+
+tooltip.inventory.items=Items
+
+tooltip.furnace.burntime=Brennzeit
+tooltip.furnace.cooktime=Schmelzzeit
+
+tooltip.head.owner=Besitzer
+
+tooltip.command=Kommando
+tooltip.command.sender=Sender Name
+tooltip.command.lastoutput=Letzte Ausgabe
+
+tooltip.spawner.entity=Entity
