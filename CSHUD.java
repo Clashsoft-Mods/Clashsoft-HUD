@@ -1,9 +1,9 @@
 package clashsoft.mods.cshud;
 
+import clashsoft.cslib.config.CSConfig;
 import clashsoft.cslib.minecraft.init.CSLib;
 import clashsoft.cslib.minecraft.init.ClashsoftMod;
 import clashsoft.cslib.minecraft.update.CSUpdate;
-import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.common.CSHUDProxy;

@@ -7,9 +7,9 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.random.MaxRandom;
+import clashsoft.cslib.random.MinRandom;
 import clashsoft.cslib.reflect.CSReflection;
-import clashsoft.cslib.util.MaxRandom;
-import clashsoft.cslib.util.MinRandom;
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
@@ -19,8 +19,10 @@ import cpw.mods.fml.common.registry.GameData;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -36,6 +38,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 	{
 		MovingObjectPosition object = hud.object;
 		World world = hud.world;
+		EntityPlayer player = hud.mc.thePlayer;
 		
 		if (object.typeOfHit == MovingObjectType.ENTITY)
 		{
@@ -74,27 +77,36 @@ public class MetaTooltipHandler implements ITooltipHandler
 				Item item = block.getItemDropped(metadata, MaxRandom.instance, -1);
 				if (item != null && item != stack.getItem())
 				{
-					ItemStack drop = new ItemStack(item, 1, block.damageDropped(metadata));
-					int minDrops = block.quantityDropped(metadata, -1, MinRandom.instance);
-					int maxDrops = block.quantityDropped(metadata, -1, MaxRandom.instance);
-					
-					if (minDrops > maxDrops)
+					if (block.canSilkHarvest(world, player, x, y, z, metadata) && EnchantmentHelper.getSilkTouchModifier(player))
 					{
-						int i = minDrops;
-						minDrops = maxDrops;
-						maxDrops = i;
+						lines.add(I18n.getString("tooltip.block.drops.silk_touch"));
 					}
-					
-					StringBuilder builder = new StringBuilder(I18n.getString("tooltip.block.drops"));
-					builder.append(COLON);
-					
-					if (minDrops != maxDrops)
-						builder.append(minDrops).append("-").append(maxDrops).append(" x ");
-					else if (minDrops != 1)
-						builder.append(minDrops).append(" x ");
-					
-					builder.append(drop.getDisplayName());
-					lines.add(builder.toString());
+					else
+					{
+						int fortune = EnchantmentHelper.getFortuneModifier(hud.mc.thePlayer);
+						ItemStack drop = new ItemStack(item, 1, block.damageDropped(metadata));
+						int minDrops = block.quantityDropped(metadata, fortune, MinRandom.instance);
+						int maxDrops = block.quantityDropped(metadata, fortune, MaxRandom.instance);
+						
+						if (minDrops > maxDrops)
+						{
+							int i = minDrops;
+							minDrops = maxDrops;
+							maxDrops = i;
+						}
+						
+						StringBuilder builder = new StringBuilder(I18n.getString("tooltip.block.drops"));
+						builder.append(COLON);
+						
+						if (minDrops != maxDrops)
+							builder.append(minDrops).append("-").append(maxDrops).append(" x ");
+						else if (minDrops != 1)
+							builder.append(minDrops).append(" x ");
+						
+						builder.append(drop.getDisplayName());
+						
+						lines.add(builder.toString());
+					}
 				}
 			}
 			
