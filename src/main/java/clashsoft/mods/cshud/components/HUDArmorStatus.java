@@ -15,18 +15,14 @@ import net.minecraft.item.ItemStack;
 public class HUDArmorStatus extends HUDComponent
 {
 	@Override
-	public void render(float partialTickTime)
+	public boolean enable()
 	{
-		this.renderArmorStatus();
+		return CSHUD.showArmorStatus;
 	}
 	
-	public void renderArmorStatus()
+	@Override
+	public void render(float partialTickTime)
 	{
-		if (!showArmorStatus)
-		{
-			return;
-		}
-		
 		ItemStack[] armorStacks = this.getArmorStacks(this.mc.thePlayer);
 		if (armorStacks.length == 0)
 		{

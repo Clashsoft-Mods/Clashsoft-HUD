@@ -32,7 +32,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	
 	public static boolean		alwaysShow						= false;
 	public static boolean		showCurrentObject				= true;
-	public static boolean		showPotionEffectDisplay			= true;
+	public static boolean		showPotionEffects				= true;
 	public static boolean		showItemPickups					= true;
 	public static boolean		showWorldInfo					= true;
 	public static boolean		showArmorStatus					= true;
@@ -56,8 +56,9 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static boolean		tooltipModName					= false;
 	public static boolean		tooltipBreakProgress			= true;
 	public static boolean		tooltipDrops					= true;
-	public static boolean		tooltipTileEntityData			= true;
-	public static boolean		tooltipAdvancedTileEntityData	= false;
+	public static boolean		tooltipTEData					= true;
+	public static boolean		tooltipTEDataTick				= true;
+	public static boolean		tooltipTEDataAdvanced			= false;
 	public static int			tooltipCommandThreshold			= 32;
 	
 	public static Alignment		pickupAlignment					= Alignment.TOP_RIGHT;
@@ -108,7 +109,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	{
 		alwaysShow = CSConfig.getBool("general", "Always Show HUD", alwaysShow);
 		showCurrentObject = CSConfig.getBool("general", "Show Current Object Display", showCurrentObject);
-		showPotionEffectDisplay = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffectDisplay);
+		showPotionEffects = CSConfig.getBool("general", "Show Potion Effect Display", showPotionEffects);
 		showItemPickups = CSConfig.getBool("general", "Show Pickup Display", showItemPickups);
 		showWorldInfo = CSConfig.getBool("general", "Show World Info", showWorldInfo);
 		showArmorStatus = CSConfig.getBool("general", "Show Armor Status", showArmorStatus);
@@ -130,10 +131,12 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		currentObjBoxOffsetY = CSConfig.getInt("currentobj", "Box Offset Y", currentObjBoxOffsetY);
 		
 		tooltipModName = CSConfig.getBool("tooltip", "Mod Name", tooltipModName);
+		
 		tooltipBreakProgress = CSConfig.getBool("tooltip", "Break Progress", tooltipBreakProgress);
 		tooltipDrops = CSConfig.getBool("tooltip", "Drops", tooltipDrops);
-		tooltipTileEntityData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTileEntityData);
-		tooltipAdvancedTileEntityData = CSConfig.getBool("tooltip", "Advanced Tile Entity Data", tooltipAdvancedTileEntityData);
+		tooltipTEData = CSConfig.getBool("tooltip", "Tile Entity Info", tooltipTEData);
+		tooltipTEDataTick = CSConfig.getBool("tooltip", "Update Tile Entities each Tick", tooltipTEDataTick);
+		tooltipTEDataAdvanced = CSConfig.getBool("tooltip", "Advanced Tile Entity Data", tooltipTEDataAdvanced);
 		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));

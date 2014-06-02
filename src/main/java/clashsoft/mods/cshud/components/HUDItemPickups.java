@@ -33,18 +33,16 @@ public class HUDItemPickups extends HUDComponent
 	public List<ItemPickup>				itemPickups			= new ArrayList();
 	
 	@Override
-	public void render(float partialTickTime)
+	public boolean enable()
 	{
-		this.renderPickups(partialTickTime);
+		return CSHUD.showItemPickups;
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onItemPickup(EntityItemPickupEvent event)
 	{
-		if (!showItemPickups)
-		{
+		if (!CSHUD.showItemPickups)
 			return;
-		}
 		
 		ItemStack stack = event.item.getEntityItem();
 		if (stack != null && stack.stackSize > 0)
@@ -87,8 +85,9 @@ public class HUDItemPickups extends HUDComponent
 			}
 		}
 	}
-	
-	public void renderPickups(float partialTickTime)
+
+	@Override
+	public void render(float partialTickTime)
 	{
 		Alignment align = pickupAlignment;
 		int x = 0;

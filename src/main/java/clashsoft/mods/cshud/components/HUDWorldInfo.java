@@ -27,18 +27,14 @@ public class HUDWorldInfo extends HUDComponent
 	public Random							rand		= new Random();
 	
 	@Override
-	public void render(float partialTickTime)
+	public boolean enable()
 	{
-		this.renderWorldInfo();
+		return CSHUD.showWorldInfo;
 	}
 	
-	public void renderWorldInfo()
+	@Override
+	public void render(float partialTickTime)
 	{
-		if (!showWorldInfo)
-		{
-			return;
-		}
-		
 		Alignment align = weatherAlignment;
 		World world = this.mc.theWorld;
 		int time = (int) world.getWorldTime() % 24000;

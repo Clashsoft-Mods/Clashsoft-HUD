@@ -43,7 +43,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 	{
 		for (IHUDComponent component : this.components)
 		{
-			component.update();
+			if (component.enable())
+				component.update();
 		}
 	}
 	
@@ -69,7 +70,8 @@ public class GuiCSHUDIngame extends GuiIngameForge
 				
 				for (IHUDComponent component : this.components)
 				{
-					component.render(width, height, partialTicks);
+					if (component.enable())
+						component.render(width, height, partialTicks);
 				}
 			}
 			

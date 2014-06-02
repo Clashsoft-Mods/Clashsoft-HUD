@@ -25,18 +25,14 @@ public class HUDPotionEffects extends HUDComponent
 	public static boolean					renderAmplifier		= (potionEffectDisplayMode & 4) != 0;
 	
 	@Override
-	public void render(float partialTickTime)
+	public boolean enable()
 	{
-		this.renderActivePotionEffects();
+		return CSHUD.showPotionEffects;
 	}
 	
-	public void renderActivePotionEffects()
+	@Override
+	public void render(float partialTickTime)
 	{
-		if (!showPotionEffectDisplay)
-		{
-			return;
-		}
-		
 		Collection<PotionEffect> activeEffects = this.mc.thePlayer.getActivePotionEffects();
 		if (!activeEffects.isEmpty())
 		{

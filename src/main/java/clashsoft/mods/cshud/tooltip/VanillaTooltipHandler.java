@@ -180,12 +180,12 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				lines.add(I18n.getString("tooltip.state") + COLON + I18n.getString(open ? "tooltip.open" : "tooltip.closed"));
 			}
 			
-			if (CSHUD.tooltipTileEntityData)
+			if (CSHUD.tooltipTEData)
 			{
 				TileEntity te = hud.tileEntity;
 				if (te != null)
 				{
-					if (CSHUD.tooltipAdvancedTileEntityData && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+					if (CSHUD.tooltipTEDataAdvanced && Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 					{
 						this.addAdvancedTileEntityData(lines, te);
 					}
