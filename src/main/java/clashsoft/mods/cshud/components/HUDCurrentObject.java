@@ -34,32 +34,44 @@ import net.minecraft.world.World;
 
 public class HUDCurrentObject extends HUDComponent
 {
-	public static final HUDCurrentObject	instance	= new HUDCurrentObject();
+	public static final HUDCurrentObject		instance	= new HUDCurrentObject();
 	
-	public World							world;
-	public MovingObjectPosition				object;
-	public boolean							objectChanged;
-	public TileEntity						tileEntity;
+	private static final List<ITooltipHandler>	handlers	= new ArrayList();
 	
-	private List<ITooltipHandler>			handlers	= new ArrayList();
+	public World								world;
+	public MovingObjectPosition					object;
+	public boolean								objectChanged;
+	
+	public TileEntity							tileEntity;
+	
+	private boolean								isHanging;
+	private int									entityWidth;
+	private int									entityHeight;
+	private float								health;
+	private float								maxHealth;
+	
+	public ItemStack							stack;
+	public List<String>							lines		= new ArrayList();
 	
 	public static void registerToolTipHandler(ITooltipHandler handler)
 	{
-		instance.handlers.add(handler);
+		handlers.add(handler);
 	}
 	
 	@Override
-	public void render(float partialTickTime)
+	public boolean enable()
 	{
-		if (!showCurrentObject)
-		{
-			return;
-		}
-		
+		return CSHUD.showCurrentObject;
+	}
+	
+	@Override
+	public void update()
+	{
 		this.world = this.mc.theWorld;
-		MovingObjectPosition mop = this.rayTrace(partialTickTime);
 		
+		MovingObjectPosition mop = this.rayTrace(0F);
 		boolean requestTileEntityData = false;
+		
 		if (mop == null)
 		{
 			if (this.object != null)
@@ -75,11 +87,14 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		else
 		{
+			if (tooltipTEDataTick)
+				requestTileEntityData = tooltipTEData;
+			
 			if (this.object == null || mop.blockX != this.object.blockX || mop.blockY != this.object.blockY || mop.blockZ != this.object.blockZ || mop.entityHit != this.object.entityHit)
 			{
 				this.object = mop;
 				this.objectChanged = true;
-				requestTileEntityData = tooltipTileEntityData;
+				requestTileEntityData = tooltipTEData;
 			}
 			else
 			{
@@ -87,82 +102,149 @@ public class HUDCurrentObject extends HUDComponent
 			}
 		}
 		
-		if (mop.typeOfHit == MovingObjectType.ENTITY)
+		this.lines.clear();
+		
+		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
-			this.renderEntity(CSHUD.currentObjAlignment, partialTickTime, mop);
+			String name = null;
+			
+			Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+			int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			
+			ItemStack stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
+			if (stack == null)
+			{
+				if (block == Blocks.lit_redstone_ore)
+				{
+					stack = new ItemStack(Blocks.redstone_ore, 1, metadata);
+				}
+				else if (block == Blocks.end_portal)
+				{
+					stack = new ItemStack(Items.ender_eye, 1, metadata);
+					name = I18n.getString("tile.endPortal.name");
+				}
+				else
+				{
+					stack = new ItemStack(block, 1, metadata);
+				}
+			}
+			
+			if (name == null)
+			{
+				name = getStackName(stack);
+			}
+			this.lines.add(name);
+			
+			if (requestTileEntityData)
+			{
+				if (block.hasTileEntity(metadata))
+				{
+					this.requestTileEntityData();
+				}
+				else
+				{
+					this.setTileEntityData(null);
+				}
+			}
+			
+			this.addInformation(this.lines, stack);
+			
+			this.stack = stack;
 		}
-		else if (mop.typeOfHit == MovingObjectType.BLOCK)
+		else if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
-			this.renderBlock(CSHUD.currentObjAlignment, partialTickTime, mop, requestTileEntityData);
+			Entity entity = mop.entityHit;
+			
+			String name = entity.getCommandSenderName();
+			int entityWidth;
+			int entityHeight;
+			float health = 0F;
+			float maxHealth = 0F;
+			
+			// Compute dimensions for entity
+			
+			if (entity instanceof EntityHanging)
+			{
+				this.isHanging = true;
+				EntityHanging entityhanging = (EntityHanging) mop.entityHit;
+				entityWidth = entityhanging.getWidthPixels() + 12;
+				entityHeight = entityhanging.getHeightPixels() + 8;
+			}
+			else
+			{
+				AxisAlignedBB aabb = entity.getBoundingBox();
+				if (aabb != null)
+				{
+					entityWidth = (int) Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ);
+					entityHeight = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
+				}
+				else
+				{
+					entityHeight = (int) (Math.max(entity.height, entity.getEyeHeight() + 0.5F) * 16);
+					entityWidth = entityHeight + 8;
+				}
+			}
+			
+			// Compute textual information
+			
+			this.lines.add(name);
+			if (entity instanceof EntityLivingBase)
+			{
+				EntityLivingBase living = (EntityLivingBase) entity;
+				health = living.getHealth() / 2F;
+				maxHealth = living.getMaxHealth() / 2F;
+				
+				if (maxHealth <= 10F)
+				{
+					this.lines.add("[HEALTH]");
+				}
+				else
+				{
+					this.lines.add(String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth));
+					health = -1F;
+				}
+			}
+			
+			this.addInformation(this.lines, null);
+			
+			this.entityWidth = entityWidth;
+			this.entityHeight = entityHeight;
+			this.health = health;
+			this.maxHealth = maxHealth;
+		}
+	}
+	
+	@Override
+	public void render(float partialTickTime)
+	{
+		MovingObjectPosition mop = this.object;
+		
+		if (mop != null && !this.lines.isEmpty())
+		{
+			if (mop.typeOfHit == MovingObjectType.ENTITY)
+			{
+				this.renderEntity(CSHUD.currentObjAlignment, partialTickTime, mop);
+			}
+			else if (mop.typeOfHit == MovingObjectType.BLOCK)
+			{
+				this.renderBlock(CSHUD.currentObjAlignment, partialTickTime, mop);
+			}
 		}
 	}
 	
 	public void renderEntity(Alignment align, float partialTickTime, MovingObjectPosition mop)
 	{
-		boolean isHanging = false;
-		float health = -1F;
-		float maxHealth = -1F;
-		List<String> lines = new ArrayList();
 		Entity entity = mop.entityHit;
-		String name = entity.getCommandSenderName();
-		int entityWidth;
-		int entityHeight;
-		
-		// Compute dimensions for entity
-		
-		if (entity instanceof EntityHanging)
-		{
-			isHanging = true;
-			EntityHanging entityhanging = (EntityHanging) mop.entityHit;
-			entityWidth = entityhanging.getWidthPixels() + 12;
-			entityHeight = entityhanging.getHeightPixels() + 8;
-		}
-		else
-		{
-			AxisAlignedBB aabb = entity.getBoundingBox();
-			if (aabb != null)
-			{
-				entityWidth = (int) Math.max(aabb.maxX - aabb.minX, aabb.maxZ - aabb.minZ);
-				entityHeight = (int) (Math.max(aabb.maxY - aabb.minY, entity.getEyeHeight()) * 16);
-			}
-			else
-			{
-				entityHeight = (int) (Math.max(entity.height, entity.getEyeHeight() + 0.5F) * 16);
-				entityWidth = entityHeight + 8;
-			}
-		}
-		
-		// Compute textual information
-		
-		lines.add(name);
-		if (entity instanceof EntityLivingBase)
-		{
-			EntityLivingBase living = (EntityLivingBase) entity;
-			health = living.getHealth() / 2F;
-			maxHealth = living.getMaxHealth() / 2F;
-			
-			if (maxHealth <= 10F)
-			{
-				lines.add("[HEALTH]");
-			}
-			else
-			{
-				lines.add(String.format("%s: %.2f / %.2f", I18n.getString("tooltip.health"), health, maxHealth));
-				health = -1F;
-			}
-		}
-		
-		this.addInformation(lines, null);
 		
 		// Calculate Positions and Dimensions
 		
 		FontRenderer font = this.mc.fontRenderer;
-		int lineCount = lines.size();
+		int lineCount = this.lines.size();
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		int textWidth = this.getMaxWidth(mop, lines, font);
-		if (health != -1F)
+		if (this.health != -1F)
 		{
-			int w = (int) (maxHealth * 9F);
+			int w = (int) (this.maxHealth * 9F);
 			if (w > textWidth)
 			{
 				textWidth = w;
@@ -171,16 +253,16 @@ public class HUDCurrentObject extends HUDComponent
 		
 		int color = this.getEntityColor(entity);
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
-		int width = entityWidth + textWidth + 4;
+		int width = this.entityWidth + textWidth + 4;
 		int height = Math.max(entityHeight, textHeight) + 8;
 		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
 		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
-		int textX = entityWidth;
+		int textX = this.entityWidth;
 		int textY = (height - textHeight) / 2 + 2;
 		int x1 = frameX + textX;
 		int y1 = frameY + textY;
 		int entityX = frameX + textX / 2;
-		int entityY = frameY + (isHanging ? height / 2 : height - 4);
+		int entityY = frameY + (this.isHanging ? height / 2 : height - 4);
 		
 		// Do Actual Rendering
 		
@@ -188,7 +270,7 @@ public class HUDCurrentObject extends HUDComponent
 		
 		this.renderEntity(mop.entityHit, entityX, entityY, 16, partialTickTime);
 		
-		font.drawStringWithShadow(lines.get(0), x1, y1, currentObjUseColorForText ? color : 0xFFFFFF);
+		font.drawStringWithShadow(this.lines.get(0), x1, y1, currentObjUseColorForText ? color : 0xFFFFFF);
 		textY += 2;
 		
 		for (int i = 1; i < lineCount; i++)
@@ -209,57 +291,12 @@ public class HUDCurrentObject extends HUDComponent
 		}
 	}
 	
-	public void renderBlock(Alignment align, float partialTickTime, MovingObjectPosition mop, boolean requestTileEntityData)
+	public void renderBlock(Alignment align, float partialTickTime, MovingObjectPosition mop)
 	{
-		List<String> lines = new ArrayList();
-		ItemStack stack = null;
-		String name = null;
-		
-		Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-		int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-		
-		stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
-		if (stack == null)
-		{
-			if (block == Blocks.lit_redstone_ore)
-			{
-				stack = new ItemStack(Blocks.redstone_ore, 1, metadata);
-			}
-			else if (block == Blocks.end_portal)
-			{
-				stack = new ItemStack(Items.ender_eye, 1, metadata);
-				name = I18n.getString("tile.endPortal.name");
-			}
-			else
-			{
-				stack = new ItemStack(block, 1, metadata);
-			}
-		}
-		
-		if (name == null)
-		{
-			name = this.getStackName(stack);
-		}
-		lines.add(name);
-		
-		if (requestTileEntityData)
-		{
-			if (block.hasTileEntity(metadata))
-			{
-				this.requestTileEntityData();
-			}
-			else
-			{
-				this.setTileEntityData(null);
-			}
-		}
-		
-		this.addInformation(lines, stack);
-		
 		// Compute font
 		
 		FontRenderer font = this.mc.fontRenderer;
-		int lineCount = lines.size();
+		int lineCount = this.lines.size();
 		int textWidth = this.getMaxWidth(mop, lines, font);
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		
@@ -279,14 +316,14 @@ public class HUDCurrentObject extends HUDComponent
 		// Do Actual Rendering
 		
 		this.drawHoveringFrame(frameX, frameY, width, height, color);
-		this.drawItem(stack, stackX, stackY);
-		font.drawStringWithShadow(lines.get(0), textX, textY, currentObjUseColorForText ? color : 0xFFFFFF);
+		this.drawItem(this.stack, stackX, stackY);
+		font.drawStringWithShadow(this.lines.get(0), textX, textY, currentObjUseColorForText ? color : 0xFFFFFF);
 		textY += 2;
 		
 		for (int i = 1; i < lineCount; i++)
 		{
 			textY += font.FONT_HEIGHT;
-			String line = lines.get(i);
+			String line = this.lines.get(i);
 			if (line != null)
 			{
 				font.drawStringWithShadow(line, textX, textY, textColor);
@@ -331,7 +368,7 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void addInformation(List<String> lines, ItemStack block)
 	{
-		for (ITooltipHandler handler : this.handlers)
+		for (ITooltipHandler handler : handlers)
 		{
 			handler.addInformation(lines, this, block);
 		}
@@ -409,7 +446,7 @@ public class HUDCurrentObject extends HUDComponent
 		return this.world.rayTraceBlocks(position, vec, true);
 	}
 	
-	public String getStackName(ItemStack stack)
+	public static String getStackName(ItemStack stack)
 	{
 		if (stack != null)
 		{
