@@ -4,7 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
-import clashsoft.mods.cshud.client.gui.GuiCSHUDIngame;
+import clashsoft.mods.cshud.client.gui.GuiIngameOverlay;
 import clashsoft.mods.cshud.common.CSHUDProxy;
 import clashsoft.mods.cshud.components.*;
 import clashsoft.mods.cshud.tooltip.MetaTooltipHandler;
@@ -19,8 +19,8 @@ public class CSHUDClientProxy extends CSHUDProxy
 	public void init(FMLInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(HUDItemPickups.instance);
-		MinecraftForge.EVENT_BUS.register(GuiCSHUDIngame.instance);
-		FMLCommonHandler.instance().bus().register(GuiCSHUDIngame.instance);
+		MinecraftForge.EVENT_BUS.register(GuiIngameOverlay.instance);
+		FMLCommonHandler.instance().bus().register(GuiIngameOverlay.instance);
 		
 		this.registerHUDComponent(HUDCurrentObject.instance);
 		this.registerHUDComponent(new HUDPotionEffects());
@@ -35,7 +35,7 @@ public class CSHUDClientProxy extends CSHUDProxy
 	@Override
 	public void registerHUDComponent(IHUDComponent component)
 	{
-		GuiCSHUDIngame.instance.registerHUDComponent(component);
+		GuiIngameOverlay.instance.registerHUDComponent(component);
 	}
 	
 	@Override

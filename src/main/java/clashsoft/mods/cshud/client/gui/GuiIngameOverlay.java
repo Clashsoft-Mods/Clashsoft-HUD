@@ -18,15 +18,15 @@ import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 
-public class GuiCSHUDIngame extends GuiIngameForge
+public class GuiIngameOverlay extends GuiIngameForge
 {
-	public static final GuiCSHUDIngame	instance	= new GuiCSHUDIngame(Minecraft.getMinecraft());
+	public static final GuiIngameOverlay	instance	= new GuiIngameOverlay(Minecraft.getMinecraft());
 	
-	private final List<IHUDComponent>	components	= new ArrayList();
+	private final List<IHUDComponent>		components	= new ArrayList();
 	
-	private final Minecraft				mc;
+	private final Minecraft					mc;
 	
-	public GuiCSHUDIngame(Minecraft mc)
+	public GuiIngameOverlay(Minecraft mc)
 	{
 		super(mc);
 		this.mc = mc;
