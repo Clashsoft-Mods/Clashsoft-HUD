@@ -12,7 +12,6 @@ import clashsoft.mods.cshud.network.CSHUDNetHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -29,16 +28,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	@Instance(MODID)
 	public static CSHUD			instance;
 	
-	@SidedProxy(clientSide = "clashsoft.mods.cshud.client.CSHUDClientProxy", serverSide = "clashsoft.mods.cshud.common.CSHUDProxy")
-	public static CSHUDProxy	proxy;
-	
-	static
-	{
-		if (proxy == null)
-		{
-			proxy = createProxy("clashsoft.mods.cshud.client.CSHUDClientProxy", "clashsoft.mods.cshud.common.CSHUDProxy");
-		}
-	}
+	public static CSHUDProxy	proxy							= createProxy("clashsoft.mods.cshud.client.CSHUDClientProxy", "clashsoft.mods.cshud.common.CSHUDProxy");
 	
 	public static boolean		alwaysShow						= false;
 	public static boolean		showCurrentObject				= true;
@@ -64,8 +54,8 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			currentObjBoxOffsetY			= 4;
 	
 	public static boolean		tooltipModName					= false;
-	public static boolean tooltipBreakProgress = true;
-	public static boolean tooltipDrops = true;
+	public static boolean		tooltipBreakProgress			= true;
+	public static boolean		tooltipDrops					= true;
 	public static boolean		tooltipTileEntityData			= true;
 	public static boolean		tooltipAdvancedTileEntityData	= false;
 	public static int			tooltipCommandThreshold			= 32;
