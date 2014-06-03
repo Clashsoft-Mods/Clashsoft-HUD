@@ -16,7 +16,9 @@ tooltip.entity.type=Typ
 tooltip.entity.id=ID
 
 tooltip.block.position=Position
+tooltip.block.not_harvestable=Nicht abbaubar!
 tooltip.block.drops=Drops
+tooltip.block.drops.silk_touch=Abbaubar mit Silk Touch
 tooltip.block.unlocalized_name=Unlocalized Name
 tooltip.block.type=Typ
 tooltip.block.id=ID

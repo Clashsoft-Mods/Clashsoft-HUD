@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class MetaTooltipHandler implements ITooltipHandler
 {
@@ -39,6 +40,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 		MovingObjectPosition object = hud.object;
 		World world = hud.world;
 		EntityPlayer player = hud.mc.thePlayer;
+		boolean survival = !player.capabilities.isCreativeMode;
 		
 		if (object.typeOfHit == MovingObjectType.ENTITY)
 		{
@@ -62,50 +64,57 @@ public class MetaTooltipHandler implements ITooltipHandler
 			int metadata = world.getBlockMetadata(x, y, z);
 			String name = Block.blockRegistry.getNameForObject(block);
 			
-			if (CSHUD.tooltipBreakProgress)
+			if (survival)
 			{
-				float breakProgress = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
-				
-				if (breakProgress > 0F)
+				if (!ForgeHooks.canHarvestBlock(block, player, metadata))
 				{
-					lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), breakProgress * 100F));
+					lines.add("\u00a7c\u00a7o" + I18n.getString("tooltip.block.not_harvestable"));
 				}
-			}
-			
-			if (CSHUD.tooltipDrops)
-			{
-				Item item = block.getItemDropped(metadata, MaxRandom.instance, -1);
-				if (item != null && item != stack.getItem())
+				else if (CSHUD.tooltipDrops)
 				{
-					if (block.canSilkHarvest(world, player, x, y, z, metadata) && EnchantmentHelper.getSilkTouchModifier(player))
+					Item item = block.getItemDropped(metadata, MaxRandom.instance, -1);
+					if (item != null && item != stack.getItem())
 					{
-						lines.add(I18n.getString("tooltip.block.drops.silk_touch"));
-					}
-					else
-					{
-						int fortune = EnchantmentHelper.getFortuneModifier(hud.mc.thePlayer);
-						ItemStack drop = new ItemStack(item, 1, block.damageDropped(metadata));
-						int minDrops = block.quantityDropped(metadata, fortune, MinRandom.instance);
-						int maxDrops = block.quantityDropped(metadata, fortune, MaxRandom.instance);
-						
-						if (minDrops > maxDrops)
+						if (block.canSilkHarvest(world, player, x, y, z, metadata) && EnchantmentHelper.getSilkTouchModifier(player))
 						{
-							int i = minDrops;
-							minDrops = maxDrops;
-							maxDrops = i;
+							lines.add(I18n.getString("tooltip.block.drops.silk_touch"));
 						}
-						
-						StringBuilder builder = new StringBuilder(I18n.getString("tooltip.block.drops"));
-						builder.append(COLON);
-						
-						if (minDrops != maxDrops)
-							builder.append(minDrops).append("-").append(maxDrops).append(" x ");
-						else if (minDrops != 1)
-							builder.append(minDrops).append(" x ");
-						
-						builder.append(drop.getDisplayName());
-						
-						lines.add(builder.toString());
+						else
+						{
+							int fortune = EnchantmentHelper.getFortuneModifier(hud.mc.thePlayer);
+							ItemStack drop = new ItemStack(item, 1, block.damageDropped(metadata));
+							int minDrops = block.quantityDropped(metadata, fortune, MinRandom.instance);
+							int maxDrops = block.quantityDropped(metadata, fortune, MaxRandom.instance);
+							
+							if (minDrops > maxDrops)
+							{
+								int i = minDrops;
+								minDrops = maxDrops;
+								maxDrops = i;
+							}
+							
+							StringBuilder builder = new StringBuilder(I18n.getString("tooltip.block.drops"));
+							builder.append(COLON);
+							
+							if (minDrops != maxDrops)
+								builder.append(minDrops).append("-").append(maxDrops).append(" x ");
+							else if (minDrops != 1)
+								builder.append(minDrops).append(" x ");
+							
+							builder.append(drop.getDisplayName());
+							
+							lines.add(builder.toString());
+						}
+					}
+				}
+				
+				if (CSHUD.tooltipBreakProgress)
+				{
+					float breakProgress = CSReflection.getValue(Minecraft.getMinecraft().playerController, 6);
+					
+					if (breakProgress > 0F)
+					{
+						lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), breakProgress * 100F));
 					}
 				}
 			}
