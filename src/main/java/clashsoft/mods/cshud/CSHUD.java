@@ -62,7 +62,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			tooltipCommandThreshold			= 32;
 	
 	public static Alignment		pickupAlignment					= Alignment.TOP_RIGHT;
-	public static int			maxPickupTime					= 100;
+	public static int			pickupDisplayTime					= 100;
 	public static int			pickupBoxHeight					= 17;
 	public static int			pickupBoxColor					= 0xA4A4A4;
 	public static int			pickupTextColor					= 0xFFFFFF;
@@ -140,7 +140,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 		tooltipCommandThreshold = CSConfig.getInt("tooltip", "Command Block Treshold", tooltipCommandThreshold);
 		
 		pickupAlignment = Alignment.parseAlignment(CSConfig.getString("itempickup", "Alignment", pickupAlignment));
-		maxPickupTime = CSConfig.getInt("itempickup", "Max Display Time", maxPickupTime);
+		pickupDisplayTime = CSConfig.getInt("itempickup", "Max Display Time", pickupDisplayTime);
 		pickupBoxHeight = CSConfig.getInt("itempickup", "Box Height", pickupBoxHeight);
 		pickupBoxColor = CSConfig.getInt("itempickup", "Box Color", pickupBoxColor);
 		pickupTextColor = CSConfig.getInt("itempickup", "Text Color", pickupTextColor);

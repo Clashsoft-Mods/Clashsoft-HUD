@@ -68,7 +68,7 @@ public class HUDItemPickups extends HUDComponent
 	{
 		super.update();
 		
-		if (this.lastItemPickupTime < maxPickupTime + 20)
+		if (this.lastItemPickupTime < pickupDisplayTime + 20)
 		{
 			this.lastItemPickupTime++;
 		}
@@ -79,7 +79,7 @@ public class HUDItemPickups extends HUDComponent
 			ItemPickup itemPickup = iterator.next();
 			itemPickup.time++;
 			
-			if (itemPickup.time > maxPickupTime + 20)
+			if (itemPickup.time > pickupDisplayTime + 20)
 			{
 				iterator.remove();
 			}
@@ -129,9 +129,9 @@ public class HUDItemPickups extends HUDComponent
 		int color = pickupTextColor;
 		int alpha = hoveringFrameAlpha;
 		
-		if (itemPickup.time > maxPickupTime)
+		if (itemPickup.time > pickupDisplayTime)
 		{
-			float f1 = itemPickup.time - maxPickupTime;
+			float f1 = itemPickup.time - pickupDisplayTime;
 			
 			float f = 1F - f1 / 20F;
 			alpha = Math.min((int) (f * 255F), alpha);
