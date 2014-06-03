@@ -1,3 +1,13 @@
+1.7.2-2.0.0
+
++ Added WorldInfo dimension ID
++ Added Drops tooltip
++ Added tooltip for when a block is not harvestable with the held item
++ Added Jukebox tooltip
+* Improved Alignment
+* Improved Meta tooltips
+* Improved render performance
+
 1.7.2-1.0.1
 
 * Improved tooltips
