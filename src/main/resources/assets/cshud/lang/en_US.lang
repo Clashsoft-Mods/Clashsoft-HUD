@@ -47,6 +47,8 @@ tooltip.music.bassdrum=Bassdrum
 tooltip.music.snare=Snaredrum
 tooltip.music.hat=Hat
 tooltip.music.bassattack=Bass Attack
+tooltip.music.disc=Music Disc
+tooltip.music.disc.none=No Disc
 
 tooltip.inventory.items=Items
 

@@ -12,6 +12,7 @@ import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 
 import net.minecraft.block.*;
+import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
@@ -24,6 +25,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -204,6 +206,10 @@ public class VanillaTooltipHandler implements ITooltipHandler
 						{
 							this.addNoteLines(lines, (TileEntityNote) te);
 						}
+						else if (te instanceof TileEntityJukebox)
+						{
+							this.addJukeboxLines(lines, (TileEntityJukebox) te);
+						}
 						else if (te instanceof TileEntityFurnace)
 						{
 							this.addFurnaceLines(lines, (TileEntityFurnace) te);
@@ -226,7 +232,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addAdvancedTileEntityData(List<String> lines, TileEntity te)
+	private void addAdvancedTileEntityData(List<String> lines, TileEntity te)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		te.writeToNBT(nbt);
@@ -234,7 +240,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		this.addNBTLines(lines, "", nbt, "");
 	}
 	
-	public void addNBTLines(List<String> lines, String prefix, NBTBase tag, String name)
+	private void addNBTLines(List<String> lines, String prefix, NBTBase tag, String name)
 	{
 		if (tag instanceof NBTTagCompound)
 		{
@@ -269,7 +275,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addSignLines(List<String> lines, TileEntitySign sign)
+	private void addSignLines(List<String> lines, TileEntitySign sign)
 	{
 		String[] text = sign.signText;
 		for (String element : text)
@@ -282,7 +288,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addNoteLines(List<String> lines, TileEntityNote te)
+	private void addNoteLines(List<String> lines, TileEntityNote te)
 	{
 		int note = te.note % 12;
 		byte type = this.getNoteType(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
@@ -298,7 +304,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public byte getNoteType(World world, int x, int y, int z)
+	private byte getNoteType(World world, int x, int y, int z)
 	{
 		if (world.getBlock(x, y + 1, z) == Blocks.air)
 		{
@@ -325,7 +331,21 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		return -1;
 	}
 	
-	public void addInventoryLines(List<String> lines, IInventory inventory)
+	private void addJukeboxLines(List<String> lines, TileEntityJukebox jukebox)
+	{
+		ItemStack stack = jukebox.func_145856_a();
+		if (stack != null && stack.getItem() instanceof ItemRecord)
+		{
+			String s = ((ItemRecord) stack.getItem()).getRecordNameLocal();
+			lines.add(I18n.getString("tooltip.music.disc") + COLON + s);
+		}
+		else
+		{
+			lines.add(I18n.getString("tooltip.music.disc.none"));
+		}
+	}
+	
+	private void addInventoryLines(List<String> lines, IInventory inventory)
 	{
 		if (inventory.hasCustomInventoryName())
 		{
@@ -349,7 +369,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addFurnaceLines(List<String> lines, TileEntityFurnace furnace)
+	private void addFurnaceLines(List<String> lines, TileEntityFurnace furnace)
 	{
 		int burn = furnace.furnaceBurnTime;
 		int cook = furnace.furnaceCookTime;
@@ -364,7 +384,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addSkullLines(List<String> lines, TileEntitySkull skull)
+	private void addSkullLines(List<String> lines, TileEntitySkull skull)
 	{
 		String username = skull.func_145907_c();
 		if (username != null && !username.isEmpty())
@@ -373,7 +393,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addCommandBlockLines(List<String> lines, TileEntityCommandBlock commandBlock)
+	private void addCommandBlockLines(List<String> lines, TileEntityCommandBlock commandBlock)
 	{
 		CommandBlockLogic logic = commandBlock.func_145993_a();
 		
@@ -404,7 +424,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		}
 	}
 	
-	public void addSpawnerLines(List<String> lines, TileEntityMobSpawner spawner)
+	private void addSpawnerLines(List<String> lines, TileEntityMobSpawner spawner)
 	{
 		String s = spawner.func_145881_a().getEntityNameToSpawn();
 		lines.add(I18n.getString("tooltip.spawner.entity") + COLON + I18n.getString("entity." + s + ".name"));
