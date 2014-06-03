@@ -61,7 +61,13 @@ public class PacketTEData extends CSPacket
 		
 		if (this.action == CSHUDNetHandler.SEND)
 		{
-			buf.writeNBTTagCompoundToBuffer(this.data);
+			try
+			{
+				buf.writeNBTTagCompoundToBuffer(this.data);
+			}
+			catch (Exception ioex)
+			{
+			}
 		}
 	}
 	
@@ -76,7 +82,13 @@ public class PacketTEData extends CSPacket
 		
 		if (this.action == CSHUDNetHandler.SEND)
 		{
-			this.data = buf.readNBTTagCompoundFromBuffer();
+			try
+			{
+				this.data = buf.readNBTTagCompoundFromBuffer();
+			}
+			catch (Exception ioex)
+			{
+			}
 		}
 	}
 	
