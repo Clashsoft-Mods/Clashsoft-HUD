@@ -69,6 +69,9 @@ public class HUDCurrentObject extends HUDComponent
 	{
 		this.world = this.mc.theWorld;
 		
+		if (this.world == null)
+			return;
+		
 		MovingObjectPosition mop = this.rayTrace(0F);
 		boolean requestTileEntityData = false;
 		
