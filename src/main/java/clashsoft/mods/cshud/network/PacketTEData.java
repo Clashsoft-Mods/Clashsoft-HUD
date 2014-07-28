@@ -54,7 +54,7 @@ public class PacketTEData extends CSPacket
 	public void write(PacketBuffer buf)
 	{
 		buf.writeByte(this.action);
-		this.writeWorld(buf, this.world);
+		writeWorld(buf, this.world);
 		buf.writeInt(this.x);
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
@@ -75,7 +75,7 @@ public class PacketTEData extends CSPacket
 	public void read(PacketBuffer buf)
 	{
 		this.action = buf.readByte();
-		this.world = this.readWorld(buf);
+		this.world = readWorld(buf);
 		this.x = buf.readInt();
 		this.y = buf.readInt();
 		this.z = buf.readInt();

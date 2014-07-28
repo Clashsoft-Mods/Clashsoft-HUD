@@ -244,7 +244,7 @@ public class HUDCurrentObject extends HUDComponent
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = this.lines.size();
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
-		int textWidth = this.getMaxWidth(mop, lines, font);
+		int textWidth = this.getMaxWidth(mop, this.lines, font);
 		if (this.health != -1F)
 		{
 			int w = (int) (this.maxHealth * 9F);
@@ -257,7 +257,7 @@ public class HUDCurrentObject extends HUDComponent
 		int color = this.getEntityColor(entity);
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = this.entityWidth + textWidth + 4;
-		int height = Math.max(entityHeight, textHeight) + 8;
+		int height = Math.max(this.entityHeight, textHeight) + 8;
 		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
 		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
 		int textX = this.entityWidth;
@@ -279,12 +279,12 @@ public class HUDCurrentObject extends HUDComponent
 		for (int i = 1; i < lineCount; i++)
 		{
 			y1 += font.FONT_HEIGHT;
-			String line = lines.get(i);
+			String line = this.lines.get(i);
 			if (line != null)
 			{
 				if ("[HEALTH]".equals(line))
 				{
-					this.renderHealth(x1, y1, health, maxHealth);
+					this.renderHealth(x1, y1, this.health, this.maxHealth);
 				}
 				else
 				{
@@ -300,7 +300,7 @@ public class HUDCurrentObject extends HUDComponent
 		
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = this.lines.size();
-		int textWidth = this.getMaxWidth(mop, lines, font);
+		int textWidth = this.getMaxWidth(mop, this.lines, font);
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		
 		// Compute dimensions
