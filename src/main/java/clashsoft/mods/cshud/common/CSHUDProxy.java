@@ -1,12 +1,11 @@
 package clashsoft.mods.cshud.common;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import clashsoft.cslib.minecraft.common.BaseProxy;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class CSHUDProxy extends BaseProxy
@@ -28,10 +27,5 @@ public class CSHUDProxy extends BaseProxy
 	
 	public void registerToolTipHandler(ITooltipHandler handler)
 	{
-	}
-	
-	public void setTileEntity(TileEntity tileEntity)
-	{
-		
 	}
 }

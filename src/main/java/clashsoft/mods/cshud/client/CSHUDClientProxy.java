@@ -1,7 +1,5 @@
 package clashsoft.mods.cshud.client;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.client.gui.GuiIngameOverlay;
@@ -9,8 +7,9 @@ import clashsoft.mods.cshud.common.CSHUDProxy;
 import clashsoft.mods.cshud.components.*;
 import clashsoft.mods.cshud.tooltip.MetaTooltipHandler;
 import clashsoft.mods.cshud.tooltip.VanillaTooltipHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CSHUDClientProxy extends CSHUDProxy
@@ -48,11 +47,5 @@ public class CSHUDClientProxy extends CSHUDProxy
 	public boolean isClient()
 	{
 		return true;
-	}
-	
-	@Override
-	public void setTileEntity(TileEntity tileEntity)
-	{
-		HUDCurrentObject.instance.setTileEntityData(tileEntity);
 	}
 }

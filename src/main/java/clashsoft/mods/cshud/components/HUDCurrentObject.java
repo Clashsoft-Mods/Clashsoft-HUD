@@ -8,6 +8,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import clashsoft.cslib.minecraft.init.CSLib;
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
@@ -113,6 +114,7 @@ public class HUDCurrentObject extends HUDComponent
 			
 			Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 			int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			this.tileEntity = this.world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 			
 			ItemStack stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
 			if (stack == null)
@@ -131,6 +133,7 @@ public class HUDCurrentObject extends HUDComponent
 					stack = new ItemStack(block, 1, metadata);
 				}
 			}
+			this.stack = stack;
 			
 			if (name == null)
 			{
@@ -144,15 +147,9 @@ public class HUDCurrentObject extends HUDComponent
 				{
 					this.requestTileEntityData();
 				}
-				else
-				{
-					this.setTileEntityData(null);
-				}
 			}
 			
 			this.addInformation(this.lines, stack);
-			
-			this.stack = stack;
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
@@ -467,15 +464,6 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public void requestTileEntityData()
 	{
-		CSHUD.instance.netHandler.requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
-	}
-	
-	public void setTileEntityData(TileEntity tileEntity)
-	{
-		this.tileEntity = tileEntity;
-		if (tileEntity != null)
-		{
-			tileEntity.setWorldObj(this.world);
-		}
+		CSLib.getNetHandler().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
 	}
 }

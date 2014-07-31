@@ -8,7 +8,6 @@ import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.common.CSHUDProxy;
 import clashsoft.mods.cshud.components.Alignment;
-import clashsoft.mods.cshud.network.CSHUDNetHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -17,7 +16,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = CSHUD.MODID, name = CSHUD.NAME, version = CSHUD.VERSION, dependencies = CSHUD.DEPENDENCIES)
-public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
+public class CSHUD extends ClashsoftMod
 {
 	public static final String	MODID							= "cshud";
 	public static final String	ACRONYM							= "cshud";
@@ -62,7 +61,7 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	public static int			tooltipCommandThreshold			= 32;
 	
 	public static Alignment		pickupAlignment					= Alignment.TOP_RIGHT;
-	public static int			pickupDisplayTime					= 100;
+	public static int			pickupDisplayTime				= 100;
 	public static int			pickupBoxHeight					= 17;
 	public static int			pickupBoxColor					= 0xA4A4A4;
 	public static int			pickupTextColor					= 0xFFFFFF;
@@ -100,7 +99,6 @@ public class CSHUD extends ClashsoftMod<CSHUDNetHandler>
 	{
 		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
-		this.netHandlerClass = CSHUDNetHandler.class;
 		this.url = "https://github.com/Clashsoft/Clashsoft-HUD/wiki/";
 	}
 	
