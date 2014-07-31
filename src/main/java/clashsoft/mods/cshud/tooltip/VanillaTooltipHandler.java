@@ -11,6 +11,8 @@ import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.block.*;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.block.material.Material;
@@ -386,10 +388,14 @@ public class VanillaTooltipHandler implements ITooltipHandler
 	
 	private void addSkullLines(List<String> lines, TileEntitySkull skull)
 	{
-		String username = skull.func_145907_c();
-		if (username != null && !username.isEmpty())
+		GameProfile profile = skull.func_152108_a();
+		if (profile != null)
 		{
-			lines.add(I18n.getString("tooltip.head.owner") + COLON + username);
+			String name = profile.getName();
+			if (name != null && !name.isEmpty())
+			{
+				lines.add(I18n.getString("tooltip.head.owner") + COLON + name);
+			}
 		}
 	}
 	
