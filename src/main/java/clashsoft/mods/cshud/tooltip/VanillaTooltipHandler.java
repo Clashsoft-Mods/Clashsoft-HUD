@@ -50,7 +50,7 @@ public class VanillaTooltipHandler implements ITooltipHandler
 		
 		if (object.typeOfHit == MovingObjectType.ENTITY)
 		{
-			Entity entity = object.entityHit;
+			Entity entity = hud.entity;
 			
 			if (entity instanceof EntityLiving)
 			{
@@ -100,8 +100,8 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			int y = object.blockY;
 			int z = object.blockZ;
 			
-			Block block = world.getBlock(x, y, z);
-			int metadata = world.getBlockMetadata(x, y, z);
+			Block block = hud.block;
+			int metadata = hud.metadata;
 			
 			if (block instanceof BlockReed)
 			{

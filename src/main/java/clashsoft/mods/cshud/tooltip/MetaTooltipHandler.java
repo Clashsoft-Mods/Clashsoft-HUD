@@ -46,7 +46,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 		{
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
-				Entity entity = object.entityHit;
+				Entity entity = hud.entity;
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(entity.getClass().getSimpleName());
 				
 				lines.add(I18n.getString("tooltip.entity.position") + COLON + String.format("%.2f %.2f %.2f", entity.posX, entity.posY, entity.posZ));
@@ -60,8 +60,8 @@ public class MetaTooltipHandler implements ITooltipHandler
 			int y = object.blockY;
 			int z = object.blockZ;
 			
-			Block block = world.getBlock(x, y, z);
-			int metadata = world.getBlockMetadata(x, y, z);
+			Block block = hud.block;
+			int metadata = hud.metadata;
 			String name = Block.blockRegistry.getNameForObject(block);
 			
 			if (survival)

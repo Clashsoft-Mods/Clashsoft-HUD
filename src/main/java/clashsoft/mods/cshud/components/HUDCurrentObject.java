@@ -41,8 +41,11 @@ public class HUDCurrentObject extends HUDComponent
 	
 	public World								world;
 	public MovingObjectPosition					object;
-	public boolean								objectChanged;
+	private boolean								objectChanged;
 	
+	public Entity								entity;
+	public Block								block;
+	public int									metadata;
 	public TileEntity							tileEntity;
 	
 	private boolean								isHanging;
@@ -112,8 +115,8 @@ public class HUDCurrentObject extends HUDComponent
 		{
 			String name = null;
 			
-			Block block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			int metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+			Block block = this.block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+			int metadata = this.metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 			this.tileEntity = this.world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 			
 			ItemStack stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
@@ -153,7 +156,7 @@ public class HUDCurrentObject extends HUDComponent
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
-			Entity entity = mop.entityHit;
+			Entity entity = this.entity = mop.entityHit;
 			
 			String name = entity.getCommandSenderName();
 			int entityWidth;
@@ -166,7 +169,7 @@ public class HUDCurrentObject extends HUDComponent
 			if (entity instanceof EntityHanging)
 			{
 				this.isHanging = true;
-				EntityHanging entityhanging = (EntityHanging) mop.entityHit;
+				EntityHanging entityhanging = (EntityHanging) entity;
 				entityWidth = entityhanging.getWidthPixels() + 12;
 				entityHeight = entityhanging.getHeightPixels() + 8;
 			}
@@ -205,12 +208,12 @@ public class HUDCurrentObject extends HUDComponent
 				}
 			}
 			
-			this.addInformation(this.lines, null);
-			
 			this.entityWidth = entityWidth;
 			this.entityHeight = entityHeight;
 			this.health = health;
 			this.maxHealth = maxHealth;
+			
+			this.addInformation(this.lines, null);
 		}
 	}
 	
