@@ -15,6 +15,8 @@ import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.components.HUDCurrentObject;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 import cpw.mods.fml.common.registry.GameData;
 
 import net.minecraft.block.Block;
@@ -44,14 +46,19 @@ public class MetaTooltipHandler implements ITooltipHandler
 		
 		if (object.typeOfHit == MovingObjectType.ENTITY)
 		{
+			Entity entity = hud.entity;
 			if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
 			{
-				Entity entity = hud.entity;
 				String className = FMLDeobfuscatingRemapper.INSTANCE.map(entity.getClass().getSimpleName());
 				
 				lines.add(I18n.getString("tooltip.entity.position") + COLON + String.format("%.2f %.2f %.2f", entity.posX, entity.posY, entity.posZ));
 				lines.add(I18n.getString("tooltip.entity.id") + COLON + EntityList.getEntityString(entity) + " (#" + EntityList.getEntityID(entity) + ")");
 				lines.add(I18n.getString("tooltip.entity.type") + COLON + className);
+			}
+			
+			if (CSHUD.tooltipModName)
+			{
+				lines.add(getEntityOwner(entity));
 			}
 		}
 		else if (stack != null)
@@ -143,10 +150,31 @@ public class MetaTooltipHandler implements ITooltipHandler
 		{
 			return owner;
 		}
+		
 		@SuppressWarnings("deprecation")
 		ModContainer mc = GameData.findModOwner(name);
-		owner = mc == null ? "Minecraft" : mc.getName();
-		modOwners.put(name, owner);
-		return "\u00a79\u00a7o" + owner;
+		if (mc != null)
+		{
+			owner = mc.getName();
+			modOwners.put(name, owner);
+			return "\u00a79\u00a7o" + owner;
+		}
+		
+		modOwners.put(name, "Minecraft");
+		return "\u00a79\u00a7oMinecraft";
+	}
+	
+	public static String getEntityOwner(Entity entity)
+	{
+		EntityRegistration registration = EntityRegistry.instance().lookupModSpawn(entity.getClass(), false);
+		if (registration != null)
+		{
+			ModContainer container = registration.getContainer();
+			if (container != null)
+			{
+				return "\u00a79\u00a7o" + container.getName();
+			}
+		}
+		return "\u00a79\u00a7oMinecraft";
 	}
 }
