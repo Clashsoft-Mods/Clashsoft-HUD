@@ -78,12 +78,12 @@ public class VanillaTooltipHandler implements ITooltipHandler
 				// Reflection is actually faster than getting the value with the
 				// NBT
 				int fuel = CSReflection.getValue((EntityMinecartFurnace) entity, 0);
-				
 				lines.add(I18n.getString("tooltip.fuel") + COLON + StringUtils.ticksToElapsedTime(fuel));
 			}
 			else if (entity instanceof EntityCreeper)
 			{
-				int fuse = (30 - ((Integer) CSReflection.getValue((EntityCreeper) entity, 1)).intValue()) * 60;
+				int i = CSReflection.getValue((EntityCreeper) entity, 2);
+				int fuse = (30 - i) * 60;
 				lines.add(I18n.getString("tooltip.fuse") + COLON + StringUtils.ticksToElapsedTime(fuse));
 			}
 			else if (entity instanceof EntitySheep)
