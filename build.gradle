@@ -23,19 +23,19 @@ buildscript
 apply plugin: 'forge'
 version = "1.7.2-2.0.1"
 group= "clashsoft.mods.cshud"
-archivesBaseName = "Clashsoft's HUD Mod"
+archivesBaseName = "ClashsoftsHUD"
 
 minecraft
 {
-    version = "1.7.2-10.12.1.1103"
-
+    version = "1.7.10-10.13.0.1189"
+    
     if(file('../run').exists())
     {
-        assetDir = "../run/assets/"
+        runDir = "../run/"
     }
     else
     {
-        assetDir = "eclipse/assets"
+        runDir = "eclipse/"
     }
 }
 
@@ -47,7 +47,6 @@ processResources
     from(sourceSets.main.resources.srcDirs)
     {
         include 'mcmod.info'
-
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
 
