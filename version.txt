@@ -1,0 +1,9 @@
+version=1.7.10-2.1.0
+url=https://github.com/Clashsoft/Clashsoft-HUD/releases/download/1.7.10-2.1.0/ClashsoftHUD-1.7.10-2.1.0.jar
+
+! Update to Minecraft 1.7.10
+! Update to Clashsoft Lib 1.7.10-2.4.0
++ Added Entity Mod tooltip
+* Use Clashsoft Lib for getting Tile Entity data
+* Fixed missing localizations
+* Fixed UpdateChecker not working
