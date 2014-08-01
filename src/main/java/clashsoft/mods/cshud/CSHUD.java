@@ -4,6 +4,8 @@ import clashsoft.cslib.config.CSConfig;
 import clashsoft.cslib.minecraft.init.CSLib;
 import clashsoft.cslib.minecraft.init.ClashsoftMod;
 import clashsoft.cslib.minecraft.update.CSUpdate;
+import clashsoft.cslib.minecraft.update.reader.SimpleUpdateReader;
+import clashsoft.cslib.minecraft.update.updater.ModUpdater;
 import clashsoft.mods.cshud.api.IHUDComponent;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 import clashsoft.mods.cshud.common.CSHUDProxy;
@@ -100,6 +102,13 @@ public class CSHUD extends ClashsoftMod
 		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
 		this.url = "https://github.com/Clashsoft/Clashsoft-HUD/wiki/";
+	}
+	
+	@Override
+	public void updateCheck()
+	{
+		final String url = "https://raw.githubusercontent.com/Clashsoft/Clashsoft-HUD/master/version.txt";
+		CSUpdate.updateCheck(new ModUpdater(NAME, ACRONYM, VERSION, url, SimpleUpdateReader.instance));
 	}
 	
 	@Override
