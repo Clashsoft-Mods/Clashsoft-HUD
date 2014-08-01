@@ -121,7 +121,7 @@ public class MetaTooltipHandler implements ITooltipHandler
 					
 					if (breakProgress > 0F)
 					{
-						lines.add(String.format("%s: %.1f %%", I18n.getString("tooltip.breakprogress"), breakProgress * 100F));
+						lines.add(String.format("%s%s%.1f%%", I18n.getString("tooltip.breakprogress"), COLON, breakProgress * 100F));
 					}
 				}
 			}
