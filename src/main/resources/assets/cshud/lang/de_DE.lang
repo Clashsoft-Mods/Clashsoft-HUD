@@ -30,6 +30,7 @@ tooltip.mode=Modus
 tooltip.open=Offen
 tooltip.closed=Geschlossen
 tooltip.deactivated=Deaktiviert
+tooltip.facing=Ausrichtung
 
 tooltip.breakprogress=Abbau Fortschritt
 tooltip.power=Stromstärke

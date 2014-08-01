@@ -30,6 +30,7 @@ tooltip.mode=Mode
 tooltip.open=Open
 tooltip.closed=Closed
 tooltip.deactivated=Deactivated
+tooltip.facing=Facing
 
 tooltip.breakprogress=Break Progress
 tooltip.power=Power
