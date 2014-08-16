@@ -23,7 +23,7 @@ public class CSHUD extends ClashsoftMod
 	public static final String	MODID							= "cshud";
 	public static final String	ACRONYM							= "cshud";
 	public static final String	NAME							= "Clashsoft's HUD Mod";
-	public static final String	VERSION							= "1.7.10-2.1.0";
+	public static final String	VERSION							= "1.7.10-2.1.1";
 	public static final String	DEPENDENCIES					= CSLib.DEPENDENCY;
 	
 	@Instance(MODID)
@@ -102,6 +102,7 @@ public class CSHUD extends ClashsoftMod
 		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
 		this.url = "https://github.com/Clashsoft/Clashsoft-HUD/wiki/";
+		this.description = "A simple mod that adds many useful overlays to the ingame HUD.";
 	}
 	
 	@Override
