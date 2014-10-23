@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 
+import clashsoft.cslib.minecraft.block.ore.BlockOre2;
+import clashsoft.cslib.minecraft.block.ore.OreBase;
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.mods.cshud.CSHUD;
@@ -103,7 +105,16 @@ public class VanillaTooltipHandler implements ITooltipHandler
 			Block block = hud.block;
 			int metadata = hud.metadata;
 			
-			if (block instanceof BlockReed)
+			if (block instanceof BlockOre2)
+			{
+				BlockOre2 ore = ((BlockOre2) block);
+				OreBase base = ore.getBase(metadata);
+				if (base != null)
+				{
+					lines.add(I18n.getString("orebase.base_material") + COLON + base.getBaseDisplayName());
+				}
+			}
+			else if (block instanceof BlockReed)
 			{
 				lines.add(I18n.getString("tooltip.state") + COLON + metadata);
 			}
