@@ -51,6 +51,9 @@ public class HUDCurrentObject extends HUDComponent
 	public int									metadata;
 	public TileEntity							tileEntity;
 	
+	private int									prevWidth;
+	private int									prevHeight;
+	
 	private boolean								isHanging;
 	private int									entityWidth;
 	private int									entityHeight;
@@ -277,7 +280,7 @@ public class HUDCurrentObject extends HUDComponent
 	{
 		Entity entity = mop.entityHit;
 		
-		// Calculate Positions and Dimensions
+		// Calculate font dimensions
 		
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = this.lines.size();
@@ -292,10 +295,27 @@ public class HUDCurrentObject extends HUDComponent
 			}
 		}
 		
+		// Calculate position and dimensions
+		
 		int color = this.getEntityColor(entity);
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = this.entityWidth + textWidth + 4;
 		int height = Math.max(this.entityHeight, textHeight) + 8;
+		
+		if (currentObjBoxResize)
+		{
+			if (this.prevWidth != width)
+			{
+				width = interpolate(width, this.prevWidth, partialTickTime);
+				this.prevWidth = width;
+			}
+			if (this.prevHeight != height)
+			{
+				height = interpolate(height, this.prevHeight, partialTickTime);
+				this.prevHeight = height;
+			}
+		}
+		
 		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
 		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
 		int textX = this.entityWidth;
@@ -349,6 +369,21 @@ public class HUDCurrentObject extends HUDComponent
 		int textColor = currentObjUseColorForText ? color : 0xA4A4A4;
 		int width = textWidth + 28;
 		int height = textHeight + 16;
+		
+		if (currentObjBoxResize)
+		{
+			if (this.prevWidth != width)
+			{
+				width = interpolate(width, this.prevWidth, partialTickTime);
+				this.prevWidth = width;
+			}
+			if (this.prevHeight != height)
+			{
+				height = interpolate(height, this.prevHeight, partialTickTime);
+				this.prevHeight = height;
+			}
+		}
+		
 		int frameX = align.getX(width, this.width, CSHUD.currentObjBoxOffsetX);
 		int frameY = align.getY(height, this.height, CSHUD.currentObjBoxOffsetY);
 		int textX = frameX + 24;
@@ -511,5 +546,10 @@ public class HUDCurrentObject extends HUDComponent
 	public void requestTileEntityData()
 	{
 		CSLib.getNetHandler().requestTEData(this.world, this.object.blockX, this.object.blockY, this.object.blockZ);
+	}
+	
+	public static int interpolate(int i, int j, float f)
+	{
+		return i + (int) ((j - i) * f);
 	}
 }

@@ -53,6 +53,7 @@ public class CSHUD extends ClashsoftMod
 	public static int			currentObjOtherEntityColor		= 0xFFFFFF;
 	public static int			currentObjBoxOffsetX			= 4;
 	public static int			currentObjBoxOffsetY			= 4;
+	public static boolean		currentObjBoxResize				= true;
 	
 	public static boolean		tooltipModName					= false;
 	public static boolean		tooltipBreakProgress			= true;
@@ -137,6 +138,7 @@ public class CSHUD extends ClashsoftMod
 		currentObjOtherEntityColor = CSConfig.getInt("currentobj", "Other Entity Color", currentObjOtherEntityColor);
 		currentObjBoxOffsetX = CSConfig.getInt("currentobj", "Box Offset X", currentObjBoxOffsetX);
 		currentObjBoxOffsetY = CSConfig.getInt("currentobj", "Box Offset Y", currentObjBoxOffsetY);
+		currentObjBoxResize = CSConfig.getBool("currentobj", "Box Resize Animation", currentObjBoxResize);
 		
 		tooltipModName = CSConfig.getBool("tooltip", "Mod Name", tooltipModName);
 		
