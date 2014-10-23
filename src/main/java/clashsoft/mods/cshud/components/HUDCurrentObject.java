@@ -9,7 +9,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import clashsoft.cslib.minecraft.CSLib;
+import clashsoft.cslib.minecraft.hud.ICustomHUDBlock;
+import clashsoft.cslib.minecraft.hud.ICustomHUDEntity;
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.minecraft.stack.CSStacks;
+import clashsoft.cslib.minecraft.stack.StackFactory;
 import clashsoft.mods.cshud.CSHUD;
 import clashsoft.mods.cshud.api.ITooltipHandler;
 
@@ -24,7 +28,6 @@ import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -71,10 +74,11 @@ public class HUDCurrentObject extends HUDComponent
 	@Override
 	public void update()
 	{
-		this.world = this.mc.theWorld;
-		
-		if (this.world == null)
+		World world = this.world = this.mc.theWorld;
+		if (world == null)
+		{
 			return;
+		}
 		
 		MovingObjectPosition mop = this.rayTrace(0F);
 		boolean requestTileEntityData = false;
@@ -92,20 +96,28 @@ public class HUDCurrentObject extends HUDComponent
 			}
 			return;
 		}
+		
+		int x = mop.blockX;
+		int y = mop.blockY;
+		int z = mop.blockZ;
+		
+		if (tooltipTEDataTick)
+		{
+			requestTileEntityData = tooltipTEData;
+		}
+		
+		if (this.object == null || x != this.object.blockX || y != this.object.blockY || z != this.object.blockZ || mop.entityHit != this.object.entityHit)
+		{
+			this.object = mop;
+			this.objectChanged = true;
+			requestTileEntityData = tooltipTEData;
+		}
 		else
 		{
-			if (tooltipTEDataTick)
-				requestTileEntityData = tooltipTEData;
-			
-			if (this.object == null || mop.blockX != this.object.blockX || mop.blockY != this.object.blockY || mop.blockZ != this.object.blockZ || mop.entityHit != this.object.entityHit)
+			this.objectChanged = false;
+			if (!tooltipTEDataTick)
 			{
-				this.object = mop;
-				this.objectChanged = true;
-				requestTileEntityData = tooltipTEData;
-			}
-			else
-			{
-				this.objectChanged = false;
+				return;
 			}
 		}
 		
@@ -113,22 +125,34 @@ public class HUDCurrentObject extends HUDComponent
 		
 		if (mop.typeOfHit == MovingObjectType.BLOCK)
 		{
+			ItemStack stack;
 			String name = null;
 			
-			Block block = this.block = this.world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			int metadata = this.metadata = this.world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-			this.tileEntity = this.world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+			Block block = this.block = world.getBlock(x, y, z);
+			ICustomHUDBlock hudBlock = block instanceof ICustomHUDBlock ? (ICustomHUDBlock) block : null;
+			int metadata = this.metadata = world.getBlockMetadata(x, y, z);
+			this.tileEntity = world.getTileEntity(x, y, z);
 			
-			ItemStack stack = block.getPickBlock(mop, this.mc.theWorld, mop.blockX, mop.blockY, mop.blockZ);
+			// Get Display Stack
+			if (hudBlock != null)
+			{
+				stack = hudBlock.getDisplayStack(metadata, world, x, y, z);
+			}
+			else
+			{
+				stack = block.getPickBlock(mop, world, x, y, z);
+			}
+			
+			// Display Stack error handling
 			if (stack == null)
 			{
 				if (block == Blocks.lit_redstone_ore)
 				{
-					stack = new ItemStack(Blocks.redstone_ore, 1, metadata);
+					stack = StackFactory.create(Blocks.redstone_ore, 1, metadata);
 				}
 				else if (block == Blocks.end_portal)
 				{
-					stack = new ItemStack(Items.ender_eye, 1, metadata);
+					stack = CSStacks.ender_pearl;
 					name = I18n.getString("tile.endPortal.name");
 				}
 				else
@@ -138,12 +162,14 @@ public class HUDCurrentObject extends HUDComponent
 			}
 			this.stack = stack;
 			
+			// Name
 			if (name == null)
 			{
 				name = getStackName(stack);
 			}
 			this.lines.add(name);
 			
+			// Tile Entity Data
 			if (requestTileEntityData)
 			{
 				if (block.hasTileEntity(metadata))
@@ -152,11 +178,18 @@ public class HUDCurrentObject extends HUDComponent
 				}
 			}
 			
+			// Information
+			if (hudBlock != null)
+			{
+				hudBlock.addInformation(metadata, world, x, y, z, this.lines);
+			}
+			
 			this.addInformation(this.lines, stack);
 		}
 		else if (mop.typeOfHit == MovingObjectType.ENTITY)
 		{
 			Entity entity = this.entity = mop.entityHit;
+			ICustomHUDEntity hudEntity = entity instanceof ICustomHUDEntity ? (ICustomHUDEntity) entity : null;
 			
 			String name = entity.getCommandSenderName();
 			int entityWidth;
@@ -213,6 +246,11 @@ public class HUDCurrentObject extends HUDComponent
 			this.health = health;
 			this.maxHealth = maxHealth;
 			
+			if (hudEntity != null)
+			{
+				hudEntity.addInformation(this.lines);
+			}
+			
 			this.addInformation(this.lines, null);
 		}
 	}
@@ -244,7 +282,7 @@ public class HUDCurrentObject extends HUDComponent
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = this.lines.size();
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
-		int textWidth = this.getMaxWidth(mop, this.lines, font);
+		int textWidth = this.getMaxWidth(this.lines, font);
 		if (this.health != -1F)
 		{
 			int w = (int) (this.maxHealth * 9F);
@@ -273,6 +311,8 @@ public class HUDCurrentObject extends HUDComponent
 		
 		this.renderEntity(mop.entityHit, entityX, entityY, 16, partialTickTime);
 		
+		// Draw name and information
+		
 		font.drawStringWithShadow(this.lines.get(0), x1, y1, currentObjUseColorForText ? color : 0xFFFFFF);
 		textY += 2;
 		
@@ -300,7 +340,7 @@ public class HUDCurrentObject extends HUDComponent
 		
 		FontRenderer font = this.mc.fontRenderer;
 		int lineCount = this.lines.size();
-		int textWidth = this.getMaxWidth(mop, this.lines, font);
+		int textWidth = this.getMaxWidth(this.lines, font);
 		int textHeight = lineCount == 1 ? font.FONT_HEIGHT : lineCount * font.FONT_HEIGHT + 2;
 		
 		// Compute dimensions
@@ -320,6 +360,9 @@ public class HUDCurrentObject extends HUDComponent
 		
 		this.drawHoveringFrame(frameX, frameY, width, height, color);
 		this.drawItem(this.stack, stackX, stackY);
+		
+		// Draw name and information
+		
 		font.drawStringWithShadow(this.lines.get(0), textX, textY, currentObjUseColorForText ? color : 0xFFFFFF);
 		textY += 2;
 		
@@ -352,7 +395,7 @@ public class HUDCurrentObject extends HUDComponent
 		}
 	}
 	
-	public int getMaxWidth(MovingObjectPosition mop, List<String> lines, FontRenderer font)
+	public int getMaxWidth(List<String> lines, FontRenderer font)
 	{
 		int width = 0;
 		
