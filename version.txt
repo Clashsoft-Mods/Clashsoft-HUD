@@ -1,5 +1,8 @@
-version=1.7.10-2.1.1
-url=https://github.com/Clashsoft/Clashsoft-HUD/releases/download/1.7.10-2.1.1/ClashsoftHUD-1.7.10-2.1.1.jar
+version=1.7.10-2.1.2
+url=https://github.com/Clashsoft/Clashsoft-HUD/releases/download/1.7.10-2.1.2/ClashsoftHUD-1.7.10-2.1.2.jar
 
-> Update to Forge 1.7.10-10.13.0.1207.
-> Update to Clashsoft Lib 1.7.10-2.5.0.
+> Update to Forge 10.13.2.1232.
+> Update to Clashsoft Lib 1.7.10-2.7.2.
++ Added Ore Base Material tooltips.
++ Added support for Custom Tooltip Interfaces from CSLib
++ Added CurrentObject box resizing animation.
